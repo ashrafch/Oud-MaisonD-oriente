@@ -1,0 +1,144 @@
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { Product } from '@/types/catalog';
+
+export type CartItem = { productId: string; quantity: number };
+export type ToastMessage = { id: string; title: string; description?: string; tone?: 'success' | 'info' | 'warning' };
+export type CustomerDraft = {
+  fullName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  zip: string;
+  notes?: string;
+};
+export type Order = {
+  id: string;
+  items: CartItem[];
+  customer: CustomerDraft;
+  subtotal: number;
+  discount: number;
+  shipping: number;
+  total: number;
+  status: 'new' | 'paid' | 'preparing' | 'shipped' | 'delivered' | 'cancelled';
+  createdAt: string;
+};
+
+type CartState = {
+  items: CartItem[];
+  wishlist: string[];
+  orders: Order[];
+  couponCode: string;
+  toast?: ToastMessage;
+  addItem: (productId: string) => void;
+  setQuantity: (productId: string, quantity: number) => void;
+  removeItem: (productId: string) => void;
+  clearCart: () => void;
+  toggleWishlist: (productId: string) => void;
+  setCouponCode: (code: string) => void;
+  createOrder: (order: Omit<Order, 'id' | 'status' | 'createdAt'>) => Order;
+  updateOrderStatus: (orderId: string, status: Order['status']) => void;
+  notify: (message: Omit<ToastMessage, 'id'>) => void;
+  dismissToast: () => void;
+};
+
+export const formatPrice = (value: number) => new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(value);
+
+export const calculateCart = (items: CartItem[], products: Product[], couponCode = '') => {
+  const subtotal = items.reduce((sum, item) => {
+    const product = products.find((entry) => entry.id === item.productId);
+    return sum + (product ? product.price * item.quantity : 0);
+  }, 0);
+  const normalizedCoupon = couponCode.trim().toUpperCase();
+  const discount = normalizedCoupon === 'OUDE10' ? subtotal * 0.1 : normalizedCoupon === 'WELCOME15' ? subtotal * 0.15 : 0;
+  const shipping = subtotal - discount >= 79 || subtotal === 0 ? 0 : 6.9;
+  return { subtotal, discount, shipping, total: Math.max(0, subtotal - discount + shipping) };
+};
+
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      wishlist: [],
+      orders: [],
+      couponCode: '',
+      addItem: (productId) => set((state) => {
+        const existing = state.items.find((item) => item.productId === productId);
+        const items = existing
+          ? state.items.map((item) => item.productId === productId ? { ...item, quantity: Math.min(item.quantity + 1, 99) } : item)
+          : [...state.items, { productId, quantity: 1 }];
+        return {
+          items,
+          toast: { id: crypto.randomUUID(), title: 'Aggiunto al carrello', description: 'Il prodotto è pronto per il checkout.', tone: 'success' }
+        };
+      }),
+      setQuantity: (productId, quantity) => set((state) => ({
+        items: quantity <= 0
+          ? state.items.filter((item) => item.productId !== productId)
+          : state.items.map((item) => item.productId === productId ? { ...item, quantity: Math.min(quantity, 99) } : item)
+      })),
+      removeItem: (productId) => set((state) => ({
+        items: state.items.filter((item) => item.productId !== productId),
+        toast: { id: crypto.randomUUID(), title: 'Prodotto rimosso', tone: 'info' }
+      })),
+      clearCart: () => set({ items: [], couponCode: '' }),
+      toggleWishlist: (productId) => set((state) => {
+        const wishlist = state.wishlist.includes(productId)
+          ? state.wishlist.filter((item) => item !== productId)
+          : [...state.wishlist, productId];
+        return {
+          wishlist,
+          toast: {
+            id: crypto.randomUUID(),
+            title: wishlist.includes(productId) ? 'Salvato in wishlist' : 'Rimosso dalla wishlist',
+            tone: 'success'
+          }
+        };
+      }),
+      setCouponCode: (couponCode) => set({
+        couponCode,
+        toast: couponCode ? { id: crypto.randomUUID(), title: 'Coupon applicato', description: couponCode.toUpperCase(), tone: 'success' } : undefined
+      }),
+      createOrder: (orderInput) => {
+        const order: Order = {
+          ...orderInput,
+          id: `OUDE-${Date.now().toString().slice(-7)}`,
+          status: 'new',
+          createdAt: new Date().toISOString()
+        };
+        set((state) => ({
+          orders: [order, ...state.orders],
+          items: [],
+          couponCode: '',
+          toast: { id: crypto.randomUUID(), title: 'Ordine creato', description: order.id, tone: 'success' }
+        }));
+        return order;
+      },
+      updateOrderStatus: (orderId, status) => set((state) => ({
+        orders: state.orders.map((order) => order.id === orderId ? { ...order, status } : order),
+        toast: { id: crypto.randomUUID(), title: 'Stato ordine aggiornato', tone: 'success' }
+      })),
+      notify: (message) => set({ toast: { ...message, id: crypto.randomUUID() } }),
+      dismissToast: () => set({ toast: undefined })
+    }),
+    { name: 'oude-commerce-store', partialize: (state) => ({ items: state.items, wishlist: state.wishlist, orders: state.orders, couponCode: state.couponCode }) }
+  )
+);
+
+export function getStoredProducts(seedProducts: Product[]): Product[] {
+  if (typeof window === 'undefined') return seedProducts;
+  const raw = window.localStorage.getItem('oude-products');
+  if (!raw) return seedProducts;
+  try {
+    const custom = JSON.parse(raw) as Product[];
+    const seedIds = new Set(seedProducts.map((product) => product.id));
+    return [...custom.filter((product) => !seedIds.has(product.id)), ...seedProducts];
+  } catch {
+    return seedProducts;
+  }
+}
+
+export function setStoredProducts(products: Product[]) {
+  window.localStorage.setItem('oude-products', JSON.stringify(products));
+}
