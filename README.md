@@ -29,6 +29,13 @@ npm run dev
 - `supabase/migrations`: schema PostgreSQL iniziale
 - `docs`: specifica originale e roadmap
 
+## Documentazione
+
+- `docs/FUNCTIONAL_GUIDE.md`: guida completa a tutte le funzionalita e come usarle.
+- `docs/PROJECT_STATUS.md`: checklist di cio che e sviluppato, predisposto e ancora da completare.
+- `docs/PRODUCTION_CHECKLIST.md`: checklist per Vercel, Supabase, Stripe, legal e contenuti.
+- `docs/ROADMAP.md`: roadmap MVP/V1/V2.
+
 ## Deploy
 
 1. Crea repo GitHub e collega il progetto a Vercel.
