@@ -1,8 +1,12 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { ProductCard } from '@/components/product/product-card';
 import { ProductActions } from '@/components/product/product-actions';
+import { ProductViewTracker } from '@/components/product/product-view-tracker';
+import { RecommendedPairings } from '@/components/storefront/recommended-pairings';
+import { ReviewSummary } from '@/components/storefront/review-summary';
+import { StockUrgencyBadge } from '@/components/storefront/stock-urgency-badge';
 import { products } from '@/data/catalog';
+import { formatPrice } from '@/lib/cart/store';
 import { productJsonLd } from '@/lib/seo/json-ld';
 
 export function generateStaticParams() {
@@ -22,7 +26,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
   const product = products.find((item) => item.slug === slug);
   if (!product) notFound();
-  const related = products.filter((item) => item.category === product.category && item.id !== product.id).slice(0, 3);
   return (
     <section className="container py-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd(product)) }} />
@@ -32,11 +35,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
         <div>
           <p className="text-sm font-semibold uppercase tracking-widest text-oud">{product.brand}</p>
+          <ProductViewTracker productId={product.id} />
+          <div className="mt-3"><StockUrgencyBadge product={product} /></div>
           <h1 className="mt-3 font-serif text-4xl sm:text-5xl lg:text-6xl">{product.name}</h1>
           <p className="mt-4 text-base leading-7 text-ink/68 sm:text-lg sm:leading-8">{product.shortDescription}</p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <span className="text-2xl font-semibold sm:text-3xl">€{product.price.toFixed(2)}</span>
-            {product.compareAtPrice ? <span className="text-lg text-ink/40 line-through">€{product.compareAtPrice.toFixed(2)}</span> : null}
+            <span className="text-2xl font-semibold sm:text-3xl">{formatPrice(product.price)}</span>
+            {product.compareAtPrice ? <span className="text-lg text-ink/40 line-through">{formatPrice(product.compareAtPrice)}</span> : null}
             <span className="rounded bg-sage/12 px-3 py-1 text-sm font-semibold text-sage">{product.stock > 0 ? 'Disponibile' : 'Esaurito'}</span>
           </div>
           <ProductActions product={product} />
@@ -55,12 +60,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
       </div>
-      <section className="mt-16">
-        <h2 className="font-serif text-3xl sm:text-4xl">Abbina e completa il rituale</h2>
-        <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {(related.length ? related : products.slice(1, 4)).map((item) => <ProductCard key={item.id} product={item} />)}
-        </div>
-      </section>
+      <div className="mt-16"><ReviewSummary product={product} /></div>
+      <RecommendedPairings product={product} />
     </section>
   );
 }

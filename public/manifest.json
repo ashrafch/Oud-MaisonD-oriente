@@ -1,0 +1,16 @@
+{
+  "name": "OUDÉ Maison D'Oriente",
+  "short_name": "OUDÉ",
+  "description": "Boutique ecommerce per profumi arabi, oud, musk e rituali orientali.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbf5ec",
+  "theme_color": "#741d12",
+  "icons": [
+    {
+      "src": "/brand/oude-logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import { Heart, ShoppingBag } from 'lucide-react';
 import type { Product } from '@/types/catalog';
 import { formatPrice, useCartStore } from '@/lib/cart/store';
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product, onQuickView }: { product: Product; onQuickView?: (product: Product) => void }) {
   const addItem = useCartStore((state) => state.addItem);
   const toggleWishlist = useCartStore((state) => state.toggleWishlist);
   const wishlist = useCartStore((state) => state.wishlist);
@@ -30,6 +30,7 @@ export function ProductCard({ product }: { product: Product }) {
             {product.compareAtPrice ? <span className="ml-2 text-sm text-ink/40 line-through">{formatPrice(product.compareAtPrice)}</span> : null}
           </div>
           <div className="flex gap-2">
+            {onQuickView ? <button aria-label="Anteprima rapida" className="rounded border border-ink/10 px-3 py-2 text-xs font-semibold hover:bg-mist" onClick={() => onQuickView(product)}>Preview</button> : null}
             <button aria-label="Wishlist" className="rounded border border-ink/10 p-2 hover:bg-mist" onClick={() => toggleWishlist(product.id)}><Heart size={17} fill={isWishlisted ? 'currentColor' : 'none'} /></button>
             <button aria-label="Aggiungi al carrello" className="rounded bg-oud p-2 text-white hover:bg-bark" onClick={() => addItem(product.id)}><ShoppingBag size={17} /></button>
           </div>

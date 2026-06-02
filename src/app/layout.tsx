@@ -8,12 +8,13 @@ export const metadata: Metadata = {
     template: "%s | OUDÉ Maison D'Oriente"
   },
   description: 'Ecommerce boutique per profumi arabi, oud, musk, attar, bakhoor e gift box.',
-  openGraph: {
-    title: "OUDÉ Maison D'Oriente",
-    description: 'Profumi arabi selezionati, eleganti e accessibili.',
-    images: ['/brand/oude-logo.jpg']
-  }
-};
+          openGraph: {
+            title: "OUDÉ Maison D'Oriente",
+            description: 'Profumi arabi selezionati, eleganti e accessibili.',
+            images: ['/brand/oude-logo.jpg']
+          },
+          manifest: '/manifest.json'
+        };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

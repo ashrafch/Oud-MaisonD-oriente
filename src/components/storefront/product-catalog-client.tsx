@@ -2,13 +2,16 @@
 
 import { useMemo, useState } from 'react';
 import { ProductCard } from '@/components/product/product-card';
+import { ProductQuickViewDialog } from '@/components/storefront/product-quick-view-dialog';
 import { categories, products as seedProducts } from '@/data/catalog';
 import { getStoredProducts } from '@/lib/cart/store';
+import type { Product } from '@/types/catalog';
 
 export function ProductCatalogClient() {
   const [query, setQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState('recommended');
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | undefined>();
   const [products] = useState(() => getStoredProducts(seedProducts));
 
   const visibleProducts = useMemo(() => {
@@ -61,7 +64,7 @@ export function ProductCatalogClient() {
         </aside>
         {visibleProducts.length ? (
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {visibleProducts.map((product) => <ProductCard key={product.id} product={product} />)}
+            {visibleProducts.map((product) => <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />)}
           </div>
         ) : (
           <div className="rounded border border-dashed border-ink/20 bg-white p-10 text-center">
@@ -70,6 +73,7 @@ export function ProductCatalogClient() {
           </div>
         )}
       </div>
+      <ProductQuickViewDialog product={quickViewProduct} onClose={() => setQuickViewProduct(undefined)} />
     </>
   );
 }

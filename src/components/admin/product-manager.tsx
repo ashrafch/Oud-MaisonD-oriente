@@ -12,6 +12,8 @@ type ProductDraft = Omit<Product, 'notes' | 'tags'> & {
   topNotes: string;
   heartNotes: string;
   baseNotes: string;
+  seoTitle: string;
+  seoDescription: string;
 };
 
 const emptyDraft: ProductDraft = {
@@ -28,6 +30,8 @@ const emptyDraft: ProductDraft = {
   duration: '6-8 ore',
   gender: 'unisex',
   tags: 'nuovo',
+  seoTitle: '',
+  seoDescription: '',
   shortDescription: '',
   topNotes: '',
   heartNotes: '',
@@ -44,7 +48,9 @@ function draftFromProduct(product: Product): ProductDraft {
     tags: product.tags.join(', '),
     topNotes: product.notes.top.join(', '),
     heartNotes: product.notes.heart.join(', '),
-    baseNotes: product.notes.base.join(', ')
+    baseNotes: product.notes.base.join(', '),
+    seoTitle: product.seoTitle ?? product.name,
+    seoDescription: product.seoDescription ?? product.shortDescription
   };
 }
 
@@ -64,6 +70,8 @@ function productFromDraft(draft: ProductDraft): Product {
     duration: draft.duration,
     gender: draft.gender,
     tags: draft.tags.split(',').map((tag) => tag.trim()).filter(Boolean),
+    seoTitle: draft.seoTitle || draft.name,
+    seoDescription: draft.seoDescription || draft.shortDescription,
     shortDescription: draft.shortDescription,
     notes: {
       top: draft.topNotes.split(',').map((note) => note.trim()).filter(Boolean),
@@ -154,6 +162,13 @@ export function ProductManager() {
           <Field label="Note cuore" value={draft.heartNotes} onChange={(value) => setDraft((current) => ({ ...current, heartNotes: value }))} />
           <Field label="Note fondo" value={draft.baseNotes} onChange={(value) => setDraft((current) => ({ ...current, baseNotes: value }))} />
           <Field label="Tag marketing" value={draft.tags} onChange={(value) => setDraft((current) => ({ ...current, tags: value }))} />
+          <div className="rounded border border-ink/10 bg-cream p-4">
+            <p className="font-serif text-2xl">SEO prodotto</p>
+            <div className="mt-4 grid gap-4">
+              <Field label="SEO title" value={draft.seoTitle} onChange={(value) => setDraft((current) => ({ ...current, seoTitle: value }))} />
+              <Field label="SEO description" value={draft.seoDescription} onChange={(value) => setDraft((current) => ({ ...current, seoDescription: value }))} />
+            </div>
+          </div>
           <div className="flex gap-3">
             <button className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded bg-oud px-4 text-sm font-semibold text-white" onClick={saveProduct}><Save size={17} /> Salva</button>
             <button className="min-h-11 rounded border border-ink/12 px-4 text-sm font-semibold" onClick={() => setDraft(emptyDraft)}>Reset</button>

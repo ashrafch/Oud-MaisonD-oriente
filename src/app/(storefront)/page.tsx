@@ -1,4 +1,7 @@
 import Image from 'next/image';
+import { BundleBuilder } from '@/components/storefront/bundle-builder';
+import { FragranceFinderQuiz } from '@/components/storefront/fragrance-finder-quiz';
+import { RecentlyViewedProducts } from '@/components/storefront/recently-viewed';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/product/product-card';
 import { categories, featuredProducts, products } from '@/data/catalog';
@@ -81,6 +84,10 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      <FragranceFinderQuiz />
+      <BundleBuilder />
+      <RecentlyViewedProducts />
 
       <section className="bg-white py-16">
         <div className="container grid gap-10 lg:grid-cols-3">

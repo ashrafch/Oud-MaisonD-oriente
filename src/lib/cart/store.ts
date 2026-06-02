@@ -29,13 +29,18 @@ type CartState = {
   items: CartItem[];
   wishlist: string[];
   orders: Order[];
+  recentlyViewed: string[];
   couponCode: string;
+  isCartDrawerOpen: boolean;
   toast?: ToastMessage;
   addItem: (productId: string) => void;
   setQuantity: (productId: string, quantity: number) => void;
   removeItem: (productId: string) => void;
   clearCart: () => void;
+  openCartDrawer: () => void;
+  closeCartDrawer: () => void;
   toggleWishlist: (productId: string) => void;
+  addRecentlyViewed: (productId: string) => void;
   setCouponCode: (code: string) => void;
   createOrder: (order: Omit<Order, 'id' | 'status' | 'createdAt'>) => Order;
   updateOrderStatus: (orderId: string, status: Order['status']) => void;
@@ -62,7 +67,9 @@ export const useCartStore = create<CartState>()(
       items: [],
       wishlist: [],
       orders: [],
+      recentlyViewed: [],
       couponCode: '',
+      isCartDrawerOpen: false,
       addItem: (productId) => set((state) => {
         const existing = state.items.find((item) => item.productId === productId);
         const items = existing
@@ -70,6 +77,7 @@ export const useCartStore = create<CartState>()(
           : [...state.items, { productId, quantity: 1 }];
         return {
           items,
+          isCartDrawerOpen: true,
           toast: { id: crypto.randomUUID(), title: 'Aggiunto al carrello', description: 'Il prodotto è pronto per il checkout.', tone: 'success' }
         };
       }),
@@ -83,6 +91,11 @@ export const useCartStore = create<CartState>()(
         toast: { id: crypto.randomUUID(), title: 'Prodotto rimosso', tone: 'info' }
       })),
       clearCart: () => set({ items: [], couponCode: '' }),
+      openCartDrawer: () => set({ isCartDrawerOpen: true }),
+      closeCartDrawer: () => set({ isCartDrawerOpen: false }),
+      addRecentlyViewed: (productId) => set((state) => ({
+        recentlyViewed: [productId, ...state.recentlyViewed.filter((item) => item !== productId)].slice(0, 8)
+      })),
       toggleWishlist: (productId) => set((state) => {
         const wishlist = state.wishlist.includes(productId)
           ? state.wishlist.filter((item) => item !== productId)
@@ -122,7 +135,7 @@ export const useCartStore = create<CartState>()(
       notify: (message) => set({ toast: { ...message, id: crypto.randomUUID() } }),
       dismissToast: () => set({ toast: undefined })
     }),
-    { name: 'oude-commerce-store', partialize: (state) => ({ items: state.items, wishlist: state.wishlist, orders: state.orders, couponCode: state.couponCode }) }
+    { name: 'oude-commerce-store', partialize: (state) => ({ items: state.items, wishlist: state.wishlist, orders: state.orders, couponCode: state.couponCode, recentlyViewed: state.recentlyViewed }) }
   )
 );
 

@@ -18,6 +18,10 @@ export type Product = {
   duration: string;
   gender: 'uomo' | 'donna' | 'unisex';
   tags: string[];
+  rating?: number;
+  reviewCount?: number;
+  seoTitle?: string;
+  seoDescription?: string;
   shortDescription: string;
   notes: {
     top: string[];
