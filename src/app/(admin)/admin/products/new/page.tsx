@@ -1,0 +1,1 @@
+export default function NewProductPage() { return <section><h1 className="font-serif text-5xl">Nuovo prodotto</h1><p className="mt-4 text-ink/65">Form CRUD predisposto: dati base, immagini, prezzo, stock, note olfattive, SEO e stato pubblicazione.</p></section>; }

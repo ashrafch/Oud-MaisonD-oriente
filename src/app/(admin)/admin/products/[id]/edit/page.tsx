@@ -1,0 +1,1 @@
+export default function EditProductPage() { return <section><h1 className="font-serif text-5xl">Modifica prodotto</h1><p className="mt-4 text-ink/65">Schermata pronta per editing prodotto, duplicazione e soft delete.</p></section>; }
