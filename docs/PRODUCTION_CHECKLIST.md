@@ -8,13 +8,13 @@ Documenti collegati:
 
 ## Supabase
 
-- [ ] Create the Supabase project.
-- [ ] Run `supabase/migrations/001_initial_schema.sql`.
-- [ ] Run `supabase/seed.sql`.
-- [ ] Create a Storage bucket named `product-images`.
-- [ ] Add `NEXT_PUBLIC_SUPABASE_URL`.
-- [ ] Add `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
-- [ ] Add `SUPABASE_SERVICE_ROLE_KEY` only in server/Vercel env.
+- [x] Create the Supabase project.
+- [x] Run `supabase/migrations/001_initial_schema.sql`.
+- [x] Run `supabase/seed.sql`.
+- [x] Create a Storage bucket named `product-images`.
+- [x] Add `NEXT_PUBLIC_SUPABASE_URL`.
+- [x] Add `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+- [x] Add `SUPABASE_SERVICE_ROLE_KEY` only in server/Vercel env.
 - [ ] Enable RLS policies for admin/staff/customer flows before opening admin to real users.
 - [ ] Replace localStorage product/order/customer/coupon flows with Supabase queries and server actions.
 
