@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ShieldCheck } from 'lucide-react';
+import { MessageCircle, ShieldCheck } from 'lucide-react';
 import { products as seedProducts } from '@/data/catalog';
 import { calculateCart, formatPrice, getStoredProducts, type CustomerDraft, useCartStore } from '@/lib/cart/store';
 import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
@@ -42,7 +42,7 @@ export function CheckoutClient() {
       const payload = await response.json() as { order?: { id: string }; error?: string };
       if (!response.ok || !payload.order) throw new Error(payload.error ?? 'Ordine non creato');
       clearCart();
-      notify({ title: 'Ordine creato su Supabase', description: payload.order.id, tone: 'success' });
+      notify({ title: 'Richiesta ordine inviata', description: payload.order.id, tone: 'success' });
       router.push(`/checkout/success?order=${payload.order.id}`);
     } catch {
       const order = createOrder({ items, customer, ...totals });
@@ -57,7 +57,7 @@ export function CheckoutClient() {
     return (
       <section className="container py-12">
         <div className="rounded border border-dashed border-ink/20 bg-white p-10 text-center">
-          <h1 className="font-serif text-4xl sm:text-5xl">Nessun prodotto da pagare</h1>
+          <h1 className="font-serif text-4xl sm:text-5xl">Nessun prodotto da ordinare</h1>
           <p className="mt-3 text-ink/60">Il checkout si attiva dopo aver aggiunto almeno un prodotto.</p>
         </div>
       </section>
@@ -68,8 +68,11 @@ export function CheckoutClient() {
     <section className="container py-12">
       <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
         <form onSubmit={submitOrder} className="rounded border border-ink/10 bg-white p-6 sm:p-8">
-          <p className="text-sm font-semibold uppercase tracking-widest text-oud">Checkout</p>
+          <p className="text-sm font-semibold uppercase tracking-widest text-oud">Richiesta ordine</p>
           <h1 className="mt-3 font-serif text-4xl sm:text-5xl">Dati cliente e spedizione</h1>
+          <div className="mt-5 rounded border border-saffron/25 bg-saffron/10 p-4 text-sm leading-6 text-ink/70">
+            In questa fase non paghi online. Invierai una richiesta ordine: il negozio controllera disponibilita, indirizzo e modalita di pagamento, poi ti contattera per confermare.
+          </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <Field label="Nome e cognome" value={customer.fullName} onChange={(value) => updateField('fullName', value)} />
             <Field label="Email" type="email" value={customer.email} onChange={(value) => updateField('email', value)} />
@@ -83,11 +86,11 @@ export function CheckoutClient() {
             </label>
           </div>
           <button className="mt-8 min-h-12 w-full rounded bg-oud px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50" disabled={!isValid || isSubmitting}>
-            {isSubmitting ? 'Creazione ordine...' : 'Conferma ordine'}
+            {isSubmitting ? 'Invio richiesta...' : 'Invia richiesta ordine'}
           </button>
         </form>
         <aside className="h-fit rounded border border-ink/10 bg-white p-6">
-          <div className="flex items-center gap-2 text-sage"><ShieldCheck size={20} /><span className="text-sm font-semibold">Pagamento sicuro predisposto</span></div>
+          <div className="flex items-center gap-2 text-sage"><ShieldCheck size={20} /><span className="text-sm font-semibold">Ordine manuale assistito</span></div>
           <p className="mt-4 font-serif text-3xl">Riepilogo</p>
           <div className="mt-5 grid gap-3 text-sm">
             {items.map((item) => {
@@ -97,9 +100,12 @@ export function CheckoutClient() {
             })}
             <div className="flex justify-between border-t border-ink/10 pt-3"><span>Sconto</span><span>-{formatPrice(totals.discount)}</span></div>
             <div className="flex justify-between"><span>Spedizione</span><span>{totals.shipping ? formatPrice(totals.shipping) : 'Gratis'}</span></div>
-            <div className="flex justify-between text-lg font-semibold"><span>Totale</span><span>{formatPrice(totals.total)}</span></div>
+            <div className="flex justify-between text-lg font-semibold"><span>Totale indicativo</span><span>{formatPrice(totals.total)}</span></div>
           </div>
-          <p className="mt-5 text-xs leading-5 text-ink/50">In questa fase l&apos;ordine viene salvato su Supabase come ordine manuale. Stripe resta predisposto per il passaggio successivo.</p>
+          <div className="mt-5 rounded bg-mist p-3 text-xs leading-5 text-ink/60">
+            <p className="flex items-center gap-2 font-semibold text-ink"><MessageCircle size={15} /> Dopo l&apos;invio</p>
+            <p className="mt-1">Riceverai conferma dal negozio prima della preparazione. Il pagamento online sara attivato nel prossimo step con Stripe.</p>
+          </div>
         </aside>
       </div>
     </section>

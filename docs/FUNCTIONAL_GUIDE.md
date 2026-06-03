@@ -11,7 +11,7 @@ npm run dev
 
 Apri `http://127.0.0.1:3000`.
 
-Nota: oggi molte funzioni operative usano `localStorage`. Significa che carrello, wishlist, ordini locali e prodotti creati dall'admin restano nello stesso browser, ma non sono ancora salvati su Supabase.
+Nota: il catalogo, admin, ordini, clienti, coupon, inventario, categorie, contenuti e marketing usano Supabase. `localStorage` resta per carrello anonimo, wishlist, prodotti visti di recente e fallback locale se Supabase non risponde.
 
 ## Storefront pubblico
 
@@ -119,7 +119,7 @@ Funzionalita:
 - Aggiunta al carrello da card.
 - Empty state.
 
-### Checkout locale
+### Checkout manuale assistito
 
 Percorso: `/checkout`
 
@@ -129,7 +129,8 @@ Funzionalita:
 - Note ordine.
 - Riepilogo prodotti.
 - Calcolo totale.
-- Creazione ordine locale.
+- Creazione richiesta ordine su Supabase.
+- Email cliente/proprietario se Resend e configurato.
 - Success page con numero ordine.
 
 Campi richiesti:
@@ -140,7 +141,7 @@ Campi richiesti:
 - Citta.
 - CAP.
 
-Nota: il checkout reale Stripe e predisposto, ma non ancora collegato alle credenziali di produzione.
+Nota: in questa fase il cliente non paga online. Il negozio verifica disponibilita e contatta il cliente per conferma e pagamento. Stripe resta il prossimo step.
 
 ### Ricerca
 
@@ -165,20 +166,18 @@ Stato: sono placeholder. Prima della pubblicazione vanno sostituite con testi re
 
 Percorso principale: `/admin`
 
-Nota sicurezza: l'area admin non e ancora protetta da login reale. Prima della pubblicazione serve Supabase Auth con ruoli e middleware.
+Nota sicurezza: l'area admin usa Supabase Auth. Le email autorizzate sono definite in `ADMIN_SUPER_EMAILS` e `ADMIN_EMAILS`.
 
 ### Dashboard
 
 Percorso: `/admin`
 
 Funzionalita:
-- Vendite totali.
-- Ordini recenti.
-- Prodotti sotto scorta.
-- Fatturato periodo.
-- Alert intelligenti.
-- Prodotti da spingere.
-- Ordini recenti.
+- Dati reali Supabase.
+- Vendite totali e ordini.
+- Prodotti sotto scorta e prodotti catalogo.
+- Coupon attivi, categorie, contenuti e social.
+- Refresh manuale, refresh automatico e refresh al ritorno sulla tab.
 
 ### Gestione prodotti
 
@@ -203,23 +202,24 @@ Uso:
 4. Salva.
 5. Il prodotto appare nel catalogo nello stesso browser.
 
-Limite: le immagini sono salvate in locale come data URL. In produzione serve Supabase Storage.
+Le immagini vengono caricate su Supabase Storage quando le variabili server sono configurate.
 
 ### Inventario
 
 Percorso: `/admin/inventory`
 
 Funzionalita:
-- Lista prodotti.
+- Lista prodotti da Supabase, uguale alla gestione prodotti.
 - Stato disponibile/sotto scorta/esaurito.
 - Modifica rapida stock.
+- Tracciamento movimenti in `inventory_movements`.
 
 ### Ordini
 
 Percorso: `/admin/orders`
 
 Funzionalita:
-- Lista ordini locali.
+- Lista ordini Supabase.
 - Dati cliente.
 - Indirizzo.
 - Totale.
@@ -249,25 +249,23 @@ Funzionalita:
 Percorso: `/admin/discounts`
 
 Funzionalita:
-- Creazione coupon locale.
+- Creazione coupon Supabase.
 - Tipo percentuale/importo fisso.
 - Valore.
 - Minimo ordine.
 - Rimozione coupon.
 
-Nota: il coupon manager prepara il flusso admin. La validazione completa dei coupon custom va collegata al backend.
+I coupon attivi vengono letti dal carrello, drawer e checkout.
 
 ### Social & Marketing
 
 Percorso: `/admin/social`
 
 Funzionalita:
-- Selezione prodotto.
-- Selezione canale.
-- Generazione caption Instagram.
-- Generazione caption TikTok.
-- Generazione testo WhatsApp.
-- Copia negli appunti.
+- Selezione prodotto e canale.
+- Generazione caption Instagram, TikTok e WhatsApp.
+- Salvataggio bozze, post pianificati o pubblicati su Supabase.
+- Storico contenuti social.
 
 ### Impostazioni
 
@@ -335,8 +333,8 @@ Da completare:
 ## Persistenza dati
 
 Attuale:
-- Prodotti demo: `src/data/catalog.ts`.
-- Carrello, wishlist, ordini e prodotti creati in admin: `localStorage`.
+- Supabase: catalogo, admin, ordini, clienti, coupon, categorie, inventario, contenuti e marketing.
+- `localStorage`: carrello anonimo, wishlist e fallback locale.
 
 Produzione:
 - Supabase deve diventare fonte unica di verita.

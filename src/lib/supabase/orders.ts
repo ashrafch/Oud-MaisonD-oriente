@@ -1,4 +1,5 @@
 import type { CartItem, CustomerDraft, Order } from '@/lib/cart/store';
+import { sendOrderEmails } from '@/lib/email/order-email';
 import { createSupabaseServiceClient } from '@/lib/supabase/server';
 import { getSupabaseProducts } from './catalog';
 import { getSupabaseCoupons } from './coupons';
@@ -115,6 +116,17 @@ export async function createSupabaseOrder(input: {
 
   const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
   if (itemsError) throw itemsError;
+
+  await sendOrderEmails({
+    orderId: order.id,
+    customer: input.customer,
+    items: input.items,
+    products,
+    subtotal,
+    discount,
+    shipping,
+    total
+  });
 
   return { id: order.id as string, createdAt: order.created_at as string };
 }

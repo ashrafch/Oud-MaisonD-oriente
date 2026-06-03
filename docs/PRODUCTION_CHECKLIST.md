@@ -56,11 +56,13 @@ Documenti collegati:
 
 ## Legal and Commerce
 
-- [ ] Replace placeholder privacy, terms, returns and shipping pages.
-- [ ] Add VAT/company data, contact email, phone and store policy.
-- [ ] Configure cookie consent management before enabling analytics/pixels.
-- [ ] Add real shipping rules and return/refund rules.
+- [x] Replace placeholder privacy, terms, returns, FAQ, contact and shipping pages with complete pre-production text.
+- [ ] Add real VAT/company data, legal entity, PEC/SDI if applicable and final contact email.
+- [x] Keep cookie banner limited to technical cookies until analytics/pixels are configured.
+- [x] Add real shipping and return/refund baseline rules.
 - [ ] Add product ingredients, warnings and allergen notes where needed.
+- [x] Make manual checkout clear to customers before Stripe is enabled.
+- [x] Add order confirmation/owner notification email flow, skipped safely when Resend is not configured.
 
 ## Content
 
