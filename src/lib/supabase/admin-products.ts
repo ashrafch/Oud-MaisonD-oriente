@@ -78,6 +78,35 @@ export async function softDeleteAdminProduct(productId: string) {
   if (error) throw error;
 }
 
+export async function updateAdminProductStock(productId: string, stock: number, note = 'Aggiornamento da pannello inventario') {
+  const supabase = createSupabaseServiceClient() as SupabaseServiceClient;
+  if (!supabase) throw new Error('Supabase service client non configurato');
+
+  const { data: current, error: currentError } = await supabase
+    .from('products')
+    .select('stock')
+    .eq('id', productId)
+    .single();
+  if (currentError) throw currentError;
+
+  const nextStock = Math.max(0, stock);
+  const quantityDelta = nextStock - Number(current.stock ?? 0);
+  const { error } = await supabase
+    .from('products')
+    .update({ stock: nextStock, updated_at: new Date().toISOString() })
+    .eq('id', productId);
+  if (error) throw error;
+
+  if (quantityDelta !== 0) {
+    await supabase.from('inventory_movements').insert({
+      product_id: productId,
+      quantity_delta: quantityDelta,
+      reason: quantityDelta > 0 ? 'carico_magazzino' : 'correzione_manuale',
+      note
+    });
+  }
+}
+
 export async function uploadProductImage(file: File) {
   const supabase = createSupabaseServiceClient() as SupabaseServiceClient;
   if (!supabase) throw new Error('Supabase service client non configurato');

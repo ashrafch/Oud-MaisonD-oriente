@@ -1,22 +1,49 @@
 'use client';
 
 import Link from 'next/link';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AlertCircle, PackageCheck, TrendingUp } from 'lucide-react';
-import { products as seedProducts } from '@/data/catalog';
-import { formatPrice, getStoredProducts, useCartStore } from '@/lib/cart/store';
+import { formatPrice } from '@/lib/cart/store';
+import type { Product } from '@/types/catalog';
+import type { AdminOrder } from '@/lib/supabase/orders';
 
 export function DashboardClient() {
-  const orders = useCartStore((state) => state.orders);
-  const products = getStoredProducts(seedProducts);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadDashboard = useCallback(async () => {
+    try {
+      const [ordersResponse, productsResponse] = await Promise.all([
+        fetch('/api/admin/orders', { cache: 'no-store' }),
+        fetch('/api/admin/products', { cache: 'no-store' })
+      ]);
+      if (ordersResponse.ok) {
+        const payload = await ordersResponse.json() as { orders: AdminOrder[] };
+        setOrders(payload.orders);
+      }
+      if (productsResponse.ok) {
+        const payload = await productsResponse.json() as { products: Product[] };
+        setProducts(payload.products);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadDashboard();
+  }, [loadDashboard]);
+
   const revenue = orders.reduce((sum, order) => sum + order.total, 0);
   const lowStock = products.filter((product) => product.stock <= 8);
   const bestsellers = products.filter((product) => product.tags.includes('bestseller') || product.tags.includes('gift')).slice(0, 4);
-  const stats = [
-    ['Vendite totali', formatPrice(revenue || 8420)],
+  const stats = useMemo(() => [
+    ['Vendite totali', formatPrice(revenue)],
     ['Ordini recenti', String(orders.length)],
     ['Prodotti sotto scorta', String(lowStock.length)],
-    ['Fatturato periodo', formatPrice(revenue || 2140)]
-  ];
+    ['Prodotti catalogo', String(products.length)]
+  ], [revenue, orders.length, lowStock.length, products.length]);
 
   return (
     <>
@@ -24,6 +51,7 @@ export function DashboardClient() {
         <div>
           <p className="text-sm font-semibold uppercase tracking-widest text-oud">Pannello proprietario</p>
           <h1 className="font-serif text-4xl sm:text-5xl">Dashboard</h1>
+          {isLoading ? <p className="mt-2 text-sm text-ink/55">Caricamento dati Supabase...</p> : null}
         </div>
         <Link className="rounded bg-oud px-4 py-3 text-center text-sm font-semibold text-white" href="/admin/products">Gestisci prodotti</Link>
       </div>
@@ -34,9 +62,8 @@ export function DashboardClient() {
         <section className="rounded border border-ink/10 bg-white p-5 sm:p-6">
           <h2 className="flex items-center gap-2 font-serif text-2xl sm:text-3xl"><AlertCircle className="text-oud" size={22} /> Alert intelligenti</h2>
           <div className="mt-4 grid gap-3 text-sm">
-            {lowStock.slice(0, 3).map((product) => <p key={product.id} className="rounded bg-saffron/12 p-3">{product.name} sta finendo: restano {product.stock} pezzi.</p>)}
-            <p className="rounded bg-sage/12 p-3">I prodotti gift sono perfetti per la prossima campagna WhatsApp.</p>
-            <p className="rounded bg-oud/10 p-3">Aggiungi foto reali alle nuove schede per aumentare conversione e fiducia.</p>
+            {lowStock.slice(0, 4).map((product) => <p key={product.id} className="rounded bg-saffron/12 p-3">{product.name} sta finendo: restano {product.stock} pezzi.</p>)}
+            {!lowStock.length ? <p className="rounded bg-sage/12 p-3">Nessun prodotto sotto scorta.</p> : null}
           </div>
         </section>
         <section className="rounded border border-ink/10 bg-white p-5 sm:p-6">
@@ -50,8 +77,8 @@ export function DashboardClient() {
           <div className="mt-4 grid gap-3">
             {orders.length ? orders.slice(0, 5).map((order) => (
               <Link key={order.id} href="/admin/orders" className="flex flex-col gap-1 rounded border border-ink/10 p-3 text-sm hover:bg-mist sm:flex-row sm:items-center sm:justify-between">
-                <span className="font-semibold">{order.id} · {order.customer.fullName}</span>
-                <span>{order.status} · {formatPrice(order.total)}</span>
+                <span className="font-semibold">{order.id} - {order.customer.fullName}</span>
+                <span>{order.status} - {formatPrice(order.total)}</span>
               </Link>
             )) : <p className="rounded border border-dashed border-ink/20 p-5 text-sm text-ink/60">Gli ordini creati dal checkout appariranno qui.</p>}
           </div>
