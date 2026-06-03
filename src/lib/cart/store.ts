@@ -28,13 +28,15 @@ export type Order = {
 
 type CartState = {
   items: CartItem[];
+  catalogProducts: Product[];
   wishlist: string[];
   orders: Order[];
   recentlyViewed: string[];
   couponCode: string;
   isCartDrawerOpen: boolean;
   toast?: ToastMessage;
-  addItem: (productId: string) => void;
+  addItem: (productId: string, product?: Product) => void;
+  syncProducts: (products: Product[]) => void;
   setQuantity: (productId: string, quantity: number) => void;
   removeItem: (productId: string) => void;
   clearCart: () => void;
@@ -50,6 +52,14 @@ type CartState = {
 };
 
 export const formatPrice = (value: number) => new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(value);
+
+export function mergeProducts(...productSets: Product[][]): Product[] {
+  const products = new Map<string, Product>();
+  productSets.flat().forEach((product) => {
+    if (!products.has(product.id)) products.set(product.id, product);
+  });
+  return [...products.values()];
+}
 
 export const calculateCart = (items: CartItem[], products: Product[], couponCode = '', coupons?: Coupon[]) => {
   const subtotal = items.reduce((sum, item) => {
@@ -71,22 +81,27 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      catalogProducts: [],
       wishlist: [],
       orders: [],
       recentlyViewed: [],
       couponCode: '',
       isCartDrawerOpen: false,
-      addItem: (productId) => set((state) => {
+      addItem: (productId, product) => set((state) => {
         const existing = state.items.find((item) => item.productId === productId);
         const items = existing
           ? state.items.map((item) => item.productId === productId ? { ...item, quantity: Math.min(item.quantity + 1, 99) } : item)
           : [...state.items, { productId, quantity: 1 }];
         return {
           items,
+          catalogProducts: product ? mergeProducts([product], state.catalogProducts) : state.catalogProducts,
           isCartDrawerOpen: true,
           toast: { id: crypto.randomUUID(), title: 'Aggiunto al carrello', description: 'Il prodotto è pronto per il checkout.', tone: 'success' }
         };
       }),
+      syncProducts: (products) => set((state) => ({
+        catalogProducts: mergeProducts(products, state.catalogProducts)
+      })),
       setQuantity: (productId, quantity) => set((state) => ({
         items: quantity <= 0
           ? state.items.filter((item) => item.productId !== productId)
@@ -141,7 +156,7 @@ export const useCartStore = create<CartState>()(
       notify: (message) => set({ toast: { ...message, id: crypto.randomUUID() } }),
       dismissToast: () => set({ toast: undefined })
     }),
-    { name: 'oude-commerce-store', partialize: (state) => ({ items: state.items, wishlist: state.wishlist, orders: state.orders, couponCode: state.couponCode, recentlyViewed: state.recentlyViewed }) }
+    { name: 'oude-commerce-store', partialize: (state) => ({ items: state.items, catalogProducts: state.catalogProducts, wishlist: state.wishlist, orders: state.orders, couponCode: state.couponCode, recentlyViewed: state.recentlyViewed }) }
   )
 );
 

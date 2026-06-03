@@ -29,7 +29,7 @@ export function BundleBuilder() {
       notify({ title: 'Scegli almeno un prodotto', tone: 'warning' });
       return;
     }
-    selectedProducts.forEach((product) => product && addItem(product.id));
+    selectedProducts.forEach((product) => product && addItem(product.id, product));
     notify({ title: 'Bundle aggiunto', description: 'Sconto rituale applicato al riepilogo promozionale.', tone: 'success' });
   };
 

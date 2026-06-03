@@ -1,9 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ProductCard } from '@/components/product/product-card';
 import { ProductQuickViewDialog } from '@/components/storefront/product-quick-view-dialog';
-import { getStoredProducts } from '@/lib/cart/store';
+import { getStoredProducts, useCartStore } from '@/lib/cart/store';
 import type { Category, Product } from '@/types/catalog';
 
 type ProductCatalogClientProps = {
@@ -17,6 +17,11 @@ export function ProductCatalogClient({ initialProducts, initialCategories }: Pro
   const [sort, setSort] = useState('recommended');
   const [quickViewProduct, setQuickViewProduct] = useState<Product | undefined>();
   const [products] = useState(() => getStoredProducts(initialProducts));
+  const syncProducts = useCartStore((state) => state.syncProducts);
+
+  useEffect(() => {
+    syncProducts(products);
+  }, [products, syncProducts]);
 
   const visibleProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();

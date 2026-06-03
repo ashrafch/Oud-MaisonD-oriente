@@ -5,18 +5,19 @@ import Link from 'next/link';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { products as seedProducts } from '@/data/catalog';
-import { calculateCart, formatPrice, getStoredProducts, useCartStore } from '@/lib/cart/store';
+import { calculateCart, formatPrice, getStoredProducts, mergeProducts, useCartStore } from '@/lib/cart/store';
 import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
 
 export function CartClient() {
   const items = useCartStore((state) => state.items);
   const couponCode = useCartStore((state) => state.couponCode);
+  const catalogProducts = useCartStore((state) => state.catalogProducts);
   const setCouponCode = useCartStore((state) => state.setCouponCode);
   const setQuantity = useCartStore((state) => state.setQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const addItem = useCartStore((state) => state.addItem);
   const coupons = useActiveCoupons();
-  const products = getStoredProducts(seedProducts);
+  const products = mergeProducts(catalogProducts, getStoredProducts(seedProducts));
   const totals = calculateCart(items, products, couponCode, coupons);
   const cartProducts = items.map((item) => ({ item, product: products.find((product) => product.id === item.productId) })).filter((entry) => entry.product);
   const upsells = products.filter((product) => !items.some((item) => item.productId === product.id)).slice(0, 3);
@@ -62,7 +63,7 @@ export function CartClient() {
             <p className="font-serif text-2xl">Completa il rituale</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
               {upsells.map((product) => (
-                <button key={product.id} className="rounded border border-ink/10 p-3 text-left hover:bg-mist" onClick={() => addItem(product.id)}>
+                <button key={product.id} className="rounded border border-ink/10 p-3 text-left hover:bg-mist" onClick={() => addItem(product.id, product)}>
                   <span className="block text-sm font-semibold">{product.name}</span>
                   <span className="mt-1 block text-sm text-ink/55">{formatPrice(product.price)}</span>
                 </button>

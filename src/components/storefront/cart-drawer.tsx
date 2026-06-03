@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, ShoppingBag, X } from 'lucide-react';
 import { products as seedProducts } from '@/data/catalog';
-import { calculateCart, formatPrice, getStoredProducts, useCartStore } from '@/lib/cart/store';
+import { calculateCart, formatPrice, getStoredProducts, mergeProducts, useCartStore } from '@/lib/cart/store';
 import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
 
 export function CartDrawer() {
@@ -12,10 +12,11 @@ export function CartDrawer() {
   const close = useCartStore((state) => state.closeCartDrawer);
   const items = useCartStore((state) => state.items);
   const couponCode = useCartStore((state) => state.couponCode);
+  const catalogProducts = useCartStore((state) => state.catalogProducts);
   const setCouponCode = useCartStore((state) => state.setCouponCode);
   const setQuantity = useCartStore((state) => state.setQuantity);
   const coupons = useActiveCoupons();
-  const products = getStoredProducts(seedProducts);
+  const products = mergeProducts(catalogProducts, getStoredProducts(seedProducts));
   const totals = calculateCart(items, products, couponCode, coupons);
 
   return (

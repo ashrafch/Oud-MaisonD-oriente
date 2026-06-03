@@ -32,7 +32,7 @@ export function ProductCard({ product, onQuickView }: { product: Product; onQuic
           <div className="flex gap-2">
             {onQuickView ? <button aria-label="Anteprima rapida" className="rounded border border-ink/10 px-3 py-2 text-xs font-semibold hover:bg-mist" onClick={() => onQuickView(product)}>Preview</button> : null}
             <button aria-label="Wishlist" className="rounded border border-ink/10 p-2 hover:bg-mist" onClick={() => toggleWishlist(product.id)}><Heart size={17} fill={isWishlisted ? 'currentColor' : 'none'} /></button>
-            <button aria-label="Aggiungi al carrello" className="rounded bg-oud p-2 text-white hover:bg-bark" onClick={() => addItem(product.id)}><ShoppingBag size={17} /></button>
+            <button aria-label="Aggiungi al carrello" className="rounded bg-oud p-2 text-white hover:bg-bark" onClick={() => addItem(product.id, product)}><ShoppingBag size={17} /></button>
           </div>
         </div>
       </div>

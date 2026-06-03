@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { MessageCircle, ShieldCheck } from 'lucide-react';
 import { products as seedProducts } from '@/data/catalog';
-import { calculateCart, formatPrice, getStoredProducts, type CustomerDraft, useCartStore } from '@/lib/cart/store';
+import { calculateCart, formatPrice, getStoredProducts, mergeProducts, type CustomerDraft, useCartStore } from '@/lib/cart/store';
 import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
 
 const emptyCustomer: CustomerDraft = { fullName: '', email: '', phone: '', address: '', city: '', zip: '', notes: '' };
@@ -13,13 +13,14 @@ export function CheckoutClient() {
   const router = useRouter();
   const items = useCartStore((state) => state.items);
   const couponCode = useCartStore((state) => state.couponCode);
+  const catalogProducts = useCartStore((state) => state.catalogProducts);
   const createOrder = useCartStore((state) => state.createOrder);
   const clearCart = useCartStore((state) => state.clearCart);
   const notify = useCartStore((state) => state.notify);
   const [customer, setCustomer] = useState(emptyCustomer);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const coupons = useActiveCoupons();
-  const products = getStoredProducts(seedProducts);
+  const products = mergeProducts(catalogProducts, getStoredProducts(seedProducts));
   const totals = calculateCart(items, products, couponCode, coupons);
   const isValid = customer.fullName && customer.email.includes('@') && customer.phone && customer.address && customer.city && customer.zip && items.length;
 

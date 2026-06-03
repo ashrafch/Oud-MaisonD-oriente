@@ -13,13 +13,13 @@ export function ProductActions({ product }: { product: Product }) {
   const isWishlisted = wishlist.includes(product.id);
 
   const buyNow = () => {
-    addItem(product.id);
+    addItem(product.id, product);
     router.push('/checkout');
   };
 
   return (
     <div className="mt-7 flex flex-wrap gap-3">
-      <button className="inline-flex min-h-11 w-full items-center justify-center rounded bg-oud px-5 text-sm font-semibold text-white transition hover:bg-bark sm:w-auto" onClick={() => addItem(product.id)}>
+      <button className="inline-flex min-h-11 w-full items-center justify-center rounded bg-oud px-5 text-sm font-semibold text-white transition hover:bg-bark sm:w-auto" onClick={() => addItem(product.id, product)}>
         <ShoppingBag className="mr-2" size={18} /> Aggiungi al carrello
       </button>
       <button className="inline-flex min-h-11 w-full items-center justify-center rounded border border-ink/15 bg-cream px-5 text-sm font-semibold text-ink transition hover:bg-mist sm:w-auto" onClick={buyNow}>
