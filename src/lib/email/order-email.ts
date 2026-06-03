@@ -16,18 +16,38 @@ type OrderEmailInput = {
 export async function sendOrderEmails(input: OrderEmailInput) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.ORDER_EMAIL_FROM || 'OUDE Maison D Oriente <ordini@oude.example>';
-  const ownerEmail = process.env.ORDER_NOTIFICATION_EMAIL || process.env.ADMIN_EMAILS?.split(',')[0]?.trim();
-  if (!apiKey || !ownerEmail) return { skipped: true };
+  const ownerEmails = getOwnerEmails();
+  if (!apiKey || ownerEmails.length === 0) return { skipped: true };
 
   const html = renderOrderHtml(input);
   await Promise.allSettled([
     sendEmail({ apiKey, from, to: input.customer.email, subject: `Ordine ricevuto ${input.orderId}`, html }),
-    sendEmail({ apiKey, from, to: ownerEmail, subject: `Nuovo ordine ${input.orderId}`, html })
+    sendEmail({ apiKey, from, to: ownerEmails, subject: `Nuovo ordine ${input.orderId}`, html })
   ]);
   return { skipped: false };
 }
 
-async function sendEmail({ apiKey, from, to, subject, html }: { apiKey: string; from: string; to: string; subject: string; html: string }) {
+function getOwnerEmails() {
+  const emails = [process.env.ORDER_NOTIFICATION_EMAIL, process.env.ADMIN_EMAILS]
+    .flatMap((value) => value?.split(',') ?? [])
+    .map((email) => email.trim())
+    .filter(Boolean);
+  return [...new Set(emails)];
+}
+
+async function sendEmail({
+  apiKey,
+  from,
+  to,
+  subject,
+  html
+}: {
+  apiKey: string;
+  from: string;
+  to: string | string[];
+  subject: string;
+  html: string;
+}) {
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {

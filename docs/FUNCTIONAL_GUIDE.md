@@ -143,6 +143,34 @@ Campi richiesti:
 
 Nota: in questa fase il cliente non paga online. Il negozio verifica disponibilita e contatta il cliente per conferma e pagamento. Stripe resta il prossimo step.
 
+### Email ordine e notifica interna
+
+Quando il cliente invia la richiesta ordine, il sistema prova a inviare:
+- una conferma al cliente;
+- una notifica interna al proprietario/admin.
+
+Il salvataggio ordine non dipende dalle email: se Resend non e configurato o l'invio fallisce, l'ordine resta comunque salvato in Supabase.
+
+Variabili da configurare in `.env.local` e poi su Vercel:
+
+```env
+RESEND_API_KEY=
+ORDER_EMAIL_FROM="OUDE Maison D Oriente <ordini@tuodominio.it>"
+ORDER_NOTIFICATION_EMAIL="mail-proprietario@dominio.it,mail-creatore@dominio.it"
+NEXT_PUBLIC_CONTACT_EMAIL=ordini@tuodominio.it
+NEXT_PUBLIC_BUSINESS_FISCAL_DATA="Ragione sociale, P.IVA, indirizzo, PEC/SDI se disponibili"
+```
+
+Come completare:
+1. Crea un account su Resend.
+2. Crea una API key e inseriscila in `RESEND_API_KEY`.
+3. Quando hai il dominio, verifica il dominio su Resend.
+4. Sostituisci `ORDER_EMAIL_FROM` con una casella del dominio verificato.
+5. Metti in `ORDER_NOTIFICATION_EMAIL` una o piu mail interne separate da virgola.
+6. Riavvia il server locale dopo ogni modifica a `.env.local`.
+
+Nota: finche il dominio email non e verificato, `ORDER_EMAIL_FROM` resta un valore da completare. Per la produzione non usare domini placeholder.
+
 ### Ricerca
 
 Percorso: `/search`

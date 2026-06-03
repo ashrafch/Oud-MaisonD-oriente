@@ -63,6 +63,10 @@ Documenti collegati:
 - [ ] Add product ingredients, warnings and allergen notes where needed.
 - [x] Make manual checkout clear to customers before Stripe is enabled.
 - [x] Add order confirmation/owner notification email flow, skipped safely when Resend is not configured.
+- [ ] Add `RESEND_API_KEY` locally and on Vercel.
+- [ ] Verify the sender domain in Resend and replace `ORDER_EMAIL_FROM`.
+- [ ] Confirm `ORDER_NOTIFICATION_EMAIL` includes the owner/admin recipients.
+- [ ] Send a real test order and confirm customer/internal emails arrive.
 
 ## Content
 
