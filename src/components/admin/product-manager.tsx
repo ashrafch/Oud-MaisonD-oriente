@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Copy, ImagePlus, Pencil, Plus, Save, Trash2 } from 'lucide-react';
 import { categories, products as seedProducts } from '@/data/catalog';
 import { formatPrice, getStoredProducts, setStoredProducts, useCartStore } from '@/lib/cart/store';
@@ -86,45 +86,117 @@ export function ProductManager() {
   const [products, setProducts] = useState(() => getStoredProducts(seedProducts));
   const [draft, setDraft] = useState<ProductDraft>(emptyDraft);
   const [query, setQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const editing = Boolean(draft.id);
   const visibleProducts = useMemo(() => products.filter((product) => [product.name, product.brand, product.category].join(' ').toLowerCase().includes(query.toLowerCase())), [products, query]);
+
+  const loadProducts = useCallback(async () => {
+    try {
+      const response = await fetch('/api/admin/products', { cache: 'no-store' });
+      if (!response.ok) throw new Error('Catalogo Supabase non disponibile');
+      const payload = await response.json() as { products: Product[] };
+      setProducts(payload.products);
+      setStoredProducts(payload.products);
+    } catch {
+      setProducts(getStoredProducts(seedProducts));
+      notify({ title: 'Uso catalogo locale', description: 'Controlla le variabili Supabase se non vedi i prodotti del database.', tone: 'warning' });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [notify]);
+
+  useEffect(() => {
+    void loadProducts();
+  }, [loadProducts]);
 
   const persistProducts = (nextProducts: Product[]) => {
     setProducts(nextProducts);
     setStoredProducts(nextProducts);
   };
 
-  const saveProduct = () => {
+  const saveProduct = async () => {
     if (!draft.name || !draft.shortDescription || !draft.price) {
       notify({ title: 'Compila nome, descrizione e prezzo', tone: 'warning' });
       return;
     }
+    setIsSaving(true);
     const product = productFromDraft({ ...draft, slug: draft.slug || slugify(draft.name) });
-    const nextProducts = products.some((item) => item.id === product.id)
-      ? products.map((item) => item.id === product.id ? product : item)
-      : [product, ...products];
-    persistProducts(nextProducts);
-    setDraft(emptyDraft);
-    notify({ title: editing ? 'Prodotto aggiornato' : 'Prodotto creato', description: product.name, tone: 'success' });
+    try {
+      const response = await fetch('/api/admin/products', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(product)
+      });
+      if (!response.ok) throw new Error('Salvataggio Supabase fallito');
+      await loadProducts();
+      setDraft(emptyDraft);
+      notify({ title: editing ? 'Prodotto aggiornato su Supabase' : 'Prodotto creato su Supabase', description: product.name, tone: 'success' });
+    } catch {
+      const nextProducts = products.some((item) => item.id === product.id)
+        ? products.map((item) => item.id === product.id ? product : item)
+        : [product, ...products];
+      persistProducts(nextProducts);
+      notify({ title: 'Prodotto salvato in locale', description: 'Supabase non ha confermato il salvataggio.', tone: 'warning' });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const deleteProduct = (productId: string) => {
-    if (!window.confirm('Nascondere/eliminare questo prodotto dal catalogo locale?')) return;
-    persistProducts(products.filter((product) => product.id !== productId));
-    notify({ title: 'Prodotto rimosso', tone: 'info' });
+  const deleteProduct = async (productId: string) => {
+    if (!window.confirm('Nascondere questo prodotto dal catalogo?')) return;
+    try {
+      const response = await fetch('/api/admin/products', {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ productId })
+      });
+      if (!response.ok) throw new Error('Eliminazione Supabase fallita');
+      await loadProducts();
+      notify({ title: 'Prodotto nascosto su Supabase', tone: 'info' });
+    } catch {
+      persistProducts(products.filter((product) => product.id !== productId));
+      notify({ title: 'Prodotto rimosso in locale', description: 'Supabase non ha confermato la modifica.', tone: 'warning' });
+    }
   };
 
-  const duplicateProduct = (product: Product) => {
+  const duplicateProduct = async (product: Product) => {
     const copy = { ...product, id: `${product.id}-copy-${Date.now()}`, slug: `${product.slug}-copia`, name: `${product.name} copia` };
-    persistProducts([copy, ...products]);
-    notify({ title: 'Prodotto duplicato', description: copy.name, tone: 'success' });
+    try {
+      const response = await fetch('/api/admin/products', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(copy)
+      });
+      if (!response.ok) throw new Error('Duplicazione Supabase fallita');
+      await loadProducts();
+      notify({ title: 'Prodotto duplicato su Supabase', description: copy.name, tone: 'success' });
+    } catch {
+      persistProducts([copy, ...products]);
+      notify({ title: 'Prodotto duplicato in locale', description: copy.name, tone: 'warning' });
+    }
   };
 
-  const handleImage = (file?: File) => {
+  const handleImage = async (file?: File) => {
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setDraft((current) => ({ ...current, image: String(reader.result) }));
-    reader.readAsDataURL(file);
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await fetch('/api/admin/upload', { method: 'POST', body: formData });
+      if (!response.ok) throw new Error('Upload Supabase fallito');
+      const payload = await response.json() as { url: string };
+      setDraft((current) => ({ ...current, image: payload.url }));
+      notify({ title: 'Immagine caricata su Supabase', tone: 'success' });
+    } catch {
+      const reader = new FileReader();
+      reader.onload = () => setDraft((current) => ({ ...current, image: String(reader.result) }));
+      reader.readAsDataURL(file);
+      notify({ title: 'Anteprima locale caricata', description: 'Supabase Storage non ha confermato upload.', tone: 'warning' });
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -153,7 +225,8 @@ export function ProductManager() {
           </div>
           <label className="flex cursor-pointer items-center justify-center gap-2 rounded border border-dashed border-ink/20 p-3 text-sm font-semibold hover:bg-mist">
             <ImagePlus size={18} /> Carica foto prodotto
-            <input type="file" accept="image/*" className="sr-only" onChange={(event) => handleImage(event.target.files?.[0])} />
+            <input type="file" accept="image/*" className="sr-only" onChange={(event) => void handleImage(event.target.files?.[0])} />
+            {isUploading ? <span className="text-xs text-ink/55">Upload...</span> : null}
           </label>
           <Field label="Intensità" value={draft.intensity} onChange={(value) => setDraft((current) => ({ ...current, intensity: value }))} />
           <Field label="Durata" value={draft.duration} onChange={(value) => setDraft((current) => ({ ...current, duration: value }))} />
@@ -170,7 +243,7 @@ export function ProductManager() {
             </div>
           </div>
           <div className="flex gap-3">
-            <button className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded bg-oud px-4 text-sm font-semibold text-white" onClick={saveProduct}><Save size={17} /> Salva</button>
+            <button className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded bg-oud px-4 text-sm font-semibold text-white disabled:opacity-55" disabled={isSaving} onClick={() => void saveProduct()}><Save size={17} /> {isSaving ? 'Salvataggio...' : 'Salva'}</button>
             <button className="min-h-11 rounded border border-ink/12 px-4 text-sm font-semibold" onClick={() => setDraft(emptyDraft)}>Reset</button>
           </div>
         </div>
@@ -184,6 +257,7 @@ export function ProductManager() {
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cerca prodotto" className="min-h-11 rounded border border-ink/12 bg-white px-3 text-sm" />
         </div>
         <div className="mt-6 grid gap-4">
+          {isLoading ? <div className="rounded border border-ink/10 bg-white p-5 text-sm text-ink/60">Caricamento catalogo da Supabase...</div> : null}
           {visibleProducts.map((product) => (
             <article key={product.id} className="grid gap-4 rounded border border-ink/10 bg-white p-4 md:grid-cols-[96px_1fr_auto] md:items-center">
               <div className="relative h-28 overflow-hidden rounded bg-mist md:h-24">
@@ -196,8 +270,8 @@ export function ProductManager() {
               </div>
               <div className="flex flex-wrap gap-2 md:justify-end">
                 <button className="rounded border border-ink/10 p-2 hover:bg-mist" aria-label="Modifica" onClick={() => setDraft(draftFromProduct(product))}><Pencil size={17} /></button>
-                <button className="rounded border border-ink/10 p-2 hover:bg-mist" aria-label="Duplica" onClick={() => duplicateProduct(product)}><Copy size={17} /></button>
-                <button className="rounded border border-ink/10 p-2 text-oud hover:bg-mist" aria-label="Elimina" onClick={() => deleteProduct(product.id)}><Trash2 size={17} /></button>
+                <button className="rounded border border-ink/10 p-2 hover:bg-mist" aria-label="Duplica" onClick={() => void duplicateProduct(product)}><Copy size={17} /></button>
+                <button className="rounded border border-ink/10 p-2 text-oud hover:bg-mist" aria-label="Elimina" onClick={() => void deleteProduct(product.id)}><Trash2 size={17} /></button>
               </div>
             </article>
           ))}

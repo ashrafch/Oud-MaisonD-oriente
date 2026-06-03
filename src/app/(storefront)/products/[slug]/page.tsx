@@ -5,26 +5,27 @@ import { ProductViewTracker } from '@/components/product/product-view-tracker';
 import { RecommendedPairings } from '@/components/storefront/recommended-pairings';
 import { ReviewSummary } from '@/components/storefront/review-summary';
 import { StockUrgencyBadge } from '@/components/storefront/stock-urgency-badge';
-import { products } from '@/data/catalog';
 import { formatPrice } from '@/lib/cart/store';
 import { productJsonLd } from '@/lib/seo/json-ld';
+import { getSupabaseProductBySlug, getSupabaseProductSlugs } from '@/lib/supabase/catalog';
 
-export function generateStaticParams() {
-  return products.map((product) => ({ slug: product.slug }));
+export async function generateStaticParams() {
+  const slugs = await getSupabaseProductSlugs();
+  return slugs.map((slug: string) => ({ slug }));
 }
 
 type ProductPageProps = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = products.find((item) => item.slug === slug);
+  const product = await getSupabaseProductBySlug(slug);
   if (!product) return {};
   return { title: product.name, description: product.shortDescription, openGraph: { images: [product.image] } };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = products.find((item) => item.slug === slug);
+  const product = await getSupabaseProductBySlug(slug);
   if (!product) notFound();
   return (
     <section className="container py-12">

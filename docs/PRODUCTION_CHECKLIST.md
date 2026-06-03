@@ -15,8 +15,10 @@ Documenti collegati:
 - [x] Add `NEXT_PUBLIC_SUPABASE_URL`.
 - [x] Add `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 - [x] Add `SUPABASE_SERVICE_ROLE_KEY` only in server/Vercel env.
+- [x] Read storefront catalog, categories and product SEO pages from Supabase with local fallback.
+- [x] Save, duplicate, soft-delete and upload product images from admin to Supabase/Storage.
 - [ ] Enable RLS policies for admin/staff/customer flows before opening admin to real users.
-- [ ] Replace localStorage product/order/customer/coupon flows with Supabase queries and server actions.
+- [ ] Replace localStorage order/customer/coupon flows with Supabase queries and server actions.
 
 ## Stripe
 

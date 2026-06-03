@@ -4,7 +4,7 @@ import { FragranceFinderQuiz } from '@/components/storefront/fragrance-finder-qu
 import { RecentlyViewedProducts } from '@/components/storefront/recently-viewed';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/product/product-card';
-import { categories, featuredProducts, products } from '@/data/catalog';
+import { getSupabaseCategories, getSupabaseProducts } from '@/lib/supabase/catalog';
 import { ShieldCheck, Sparkles, Truck, MessageCircle } from 'lucide-react';
 
 const benefits = [
@@ -14,7 +14,12 @@ const benefits = [
   { icon: Sparkles, label: 'Profumi selezionati' }
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [categories, products] = await Promise.all([
+    getSupabaseCategories(),
+    getSupabaseProducts()
+  ]);
+  const featuredProducts = products.filter((product) => product.tags.includes('bestseller') || product.tags.includes('nuovo') || product.tags.includes('gift')).slice(0, 3);
   const daily = products[0];
   return (
     <>

@@ -3,16 +3,20 @@
 import { useMemo, useState } from 'react';
 import { ProductCard } from '@/components/product/product-card';
 import { ProductQuickViewDialog } from '@/components/storefront/product-quick-view-dialog';
-import { categories, products as seedProducts } from '@/data/catalog';
 import { getStoredProducts } from '@/lib/cart/store';
-import type { Product } from '@/types/catalog';
+import type { Category, Product } from '@/types/catalog';
 
-export function ProductCatalogClient() {
+type ProductCatalogClientProps = {
+  initialProducts: Product[];
+  initialCategories: Category[];
+};
+
+export function ProductCatalogClient({ initialProducts, initialCategories }: ProductCatalogClientProps) {
   const [query, setQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState('recommended');
   const [quickViewProduct, setQuickViewProduct] = useState<Product | undefined>();
-  const [products] = useState(() => getStoredProducts(seedProducts));
+  const [products] = useState(() => getStoredProducts(initialProducts));
 
   const visibleProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -48,7 +52,7 @@ export function ProductCatalogClient() {
         <aside className="rounded border border-ink/10 bg-white p-5">
           <p className="font-semibold">Filtri</p>
           <div className="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-3 lg:grid-cols-1">
-            {categories.map((category) => (
+            {initialCategories.map((category) => (
               <label key={category.slug} className="flex items-center gap-2">
                 <input checked={selectedCategories.includes(category.slug)} onChange={() => toggleCategory(category.slug)} type="checkbox" /> {category.name}
               </label>

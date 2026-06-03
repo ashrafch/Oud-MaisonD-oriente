@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation';
 import { ProductCard } from '@/components/product/product-card';
-import { categories, products } from '@/data/catalog';
+import { getSupabaseCategories, getSupabaseProducts } from '@/lib/supabase/catalog';
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const categories = await getSupabaseCategories();
   return categories.map((category) => ({ slug: category.slug }));
 }
 
@@ -10,6 +11,10 @@ type CategoryPageProps = { params: Promise<{ slug: string }> };
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
+  const [categories, products] = await Promise.all([
+    getSupabaseCategories(),
+    getSupabaseProducts()
+  ]);
   const category = categories.find((item) => item.slug === slug);
   if (!category) notFound();
   const items = products.filter((product) => product.category === category.slug);
