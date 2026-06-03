@@ -1,0 +1,285 @@
+# Project checklist e quadro produzione
+
+Ultimo aggiornamento: 03/06/2026
+
+Questo e il documento unico per capire lo stato del progetto OUDÉ Maison D'Oriente Ecommerce: cosa e completato, cosa e predisposto, cosa manca prima della produzione e cosa conviene sviluppare dopo.
+
+Documenti collegati:
+
+- `docs/FUNCTIONAL_GUIDE.md`: guida operativa per usare storefront, admin, checkout, Supabase e email.
+- `docs/SUPABASE_ADMIN_AUTH.md`: procedura specifica per login admin/super admin.
+- `README.md`: setup rapido, stack e link documentazione.
+
+## Stato sintetico
+
+- [x] Storefront responsive e professionale.
+- [x] Catalogo e schede prodotto collegate a Supabase con fallback locale.
+- [x] Carrello persistente funzionante con prodotti Supabase, drawer, pagina carrello e checkout.
+- [x] Wishlist, prodotti visti di recente, quick view, finder olfattivo e bundle builder.
+- [x] Checkout manuale assistito con salvataggio ordine su Supabase.
+- [x] Coupon reali letti da Supabase in carrello/drawer/checkout.
+- [x] Admin protetto con Supabase Auth e ruoli `super_admin`/`admin`.
+- [x] Admin operativo per dashboard, prodotti, categorie, collezioni, ordini, clienti, inventario, coupon, contenuti e social.
+- [x] Upload immagini prodotto su Supabase Storage quando le env sono configurate.
+- [x] Email ordine/notifica proprietario predisposte con Resend.
+- [x] Pagine legali/informative complete in versione pre-produzione.
+- [x] Build Next.js verificata localmente.
+- [ ] Vercel non ancora configurato.
+- [ ] Stripe non ancora configurato.
+- [ ] Resend non ancora attivo con API key/dominio reale.
+- [ ] Dati fiscali reali attivita non ancora inseriti.
+
+## Storefront pubblico
+
+- [x] Home responsive.
+- [x] Hero con CTA verso catalogo e idee regalo.
+- [x] Categorie principali.
+- [x] Prodotti in evidenza da Supabase.
+- [x] Catalogo `/products`.
+- [x] Ricerca catalogo.
+- [x] Filtri categoria.
+- [x] Ordinamento prodotti.
+- [x] Product card responsive.
+- [x] Quick view prodotto.
+- [x] Scheda prodotto `/products/[slug]`.
+- [x] Note olfattive testa/cuore/fondo.
+- [x] Badge disponibilita, intensita, bestseller, nuovo, gift.
+- [x] Pairing prodotti consigliati.
+- [x] Recensioni demo.
+- [x] Wishlist.
+- [x] Prodotti visti di recente.
+- [x] Finder olfattivo interattivo.
+- [x] Bundle builder.
+- [x] WhatsApp floating button.
+- [x] Cookie banner limitato ai cookie tecnici.
+- [x] Footer con link utili, contatti e dati fiscali da env.
+- [x] Pagine informative: chi siamo, contatti, FAQ, spedizioni, resi, privacy, termini.
+- [ ] Foto prodotto reali complete.
+- [ ] Foto categoria reali.
+- [ ] Foto negozio/storytelling reale.
+- [ ] Ingredienti, allergeni, avvertenze e note normative per ogni prodotto.
+- [ ] Recensioni reali collegate al database.
+- [ ] Account cliente e storico ordini.
+- [ ] Recupero carrello.
+
+## Carrello e checkout
+
+- [x] Store carrello persistente con Zustand/localStorage.
+- [x] Aggiunta da catalogo.
+- [x] Aggiunta da quick view.
+- [x] Aggiunta da scheda prodotto.
+- [x] Aggiunta da bundle builder.
+- [x] Aggiunta da upsell pagina carrello.
+- [x] Drawer carrello laterale.
+- [x] Pagina carrello completa.
+- [x] Modifica quantita.
+- [x] Rimozione prodotto.
+- [x] Coupon form nel drawer e nella pagina carrello.
+- [x] Coupon validati contro Supabase.
+- [x] Calcolo subtotale, sconto, spedizione e totale.
+- [x] Checkout manuale assistito.
+- [x] Salvataggio ordine, cliente e righe ordine su Supabase.
+- [x] Success page con numero richiesta ordine.
+- [x] Email cliente/proprietario predisposte con Resend.
+- [ ] Attivare Resend con `RESEND_API_KEY`.
+- [ ] Verificare dominio mittente in Resend.
+- [ ] Fare test reale email cliente e interna.
+- [ ] Checkout Stripe reale.
+- [ ] Webhook Stripe per confermare pagamento.
+- [ ] Aggiornamento inventario solo dopo pagamento confermato.
+- [ ] Gestione rimborsi e annullamenti da webhook/admin.
+
+## Admin portal
+
+- [x] Login admin con Supabase Auth.
+- [x] Ruolo `super_admin` per creatore progetto.
+- [x] Ruolo `admin` per proprietario negozio.
+- [x] Protezione middleware per `/admin`.
+- [x] Protezione API admin server-side.
+- [x] Dashboard con dati reali Supabase.
+- [x] Refresh dashboard manuale, automatico e al ritorno sulla tab.
+- [x] Gestione prodotti.
+- [x] Creazione prodotto.
+- [x] Modifica prodotto.
+- [x] Duplicazione prodotto.
+- [x] Soft delete prodotto.
+- [x] Upload immagine con preview e Supabase Storage.
+- [x] Campi SEO prodotto.
+- [x] Campi note olfattive, prezzo, stock, tag, stato.
+- [x] Inventario allineato agli stessi prodotti della gestione prodotti.
+- [x] Modifica stock.
+- [x] Tracciamento movimenti inventario.
+- [x] Gestione categorie.
+- [x] Gestione collezioni.
+- [x] Gestione ordini e cambio stato.
+- [x] CRM clienti leggero.
+- [x] Gestione coupon.
+- [x] Gestione contenuti/pagine.
+- [x] Social/marketing: generatore caption e salvataggio post.
+- [x] Settings con checklist env.
+- [ ] Bulk actions prodotti.
+- [ ] Import/export CSV prodotti.
+- [ ] Gestione recensioni reali.
+- [ ] Newsletter reale.
+- [ ] Storico modifiche prodotto.
+- [ ] Log audit admin.
+
+## Supabase
+
+- [x] Progetto Supabase creato.
+- [x] Env locali Supabase configurate.
+- [x] Migration `001_initial_schema.sql` eseguita.
+- [x] Seed `seed.sql` eseguito.
+- [x] Storage bucket `product-images` creato.
+- [x] Migration `002_admin_auth.sql` eseguita.
+- [x] Utenti Supabase Auth creati.
+- [x] `ADMIN_AUTH_ENABLED=true` in locale.
+- [x] Catalogo pubblico da Supabase.
+- [x] Categorie pubbliche da Supabase.
+- [x] Product slug/SEO da Supabase.
+- [x] Admin prodotti da Supabase.
+- [x] Ordini/clienti da Supabase.
+- [x] Coupon da Supabase.
+- [x] Categorie/collezioni/contenuti/marketing da Supabase.
+- [x] Inventario e movimenti da Supabase.
+- [ ] Replicare tutte le env su Vercel.
+- [ ] Rafforzare RLS per dati personali cliente prima di account pubblici.
+- [ ] Ridurre fallback localStorage dopo monitoraggio produzione.
+- [ ] Backup/restore strategy.
+
+## Stripe
+
+- [x] File server Stripe predisposti.
+- [x] API checkout predisposta.
+- [x] Webhook route `/api/webhooks/stripe` predisposta.
+- [ ] Creare account/progetto Stripe.
+- [ ] Aggiungere `STRIPE_SECRET_KEY`.
+- [ ] Aggiungere `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`.
+- [ ] Configurare webhook endpoint su dominio Vercel.
+- [ ] Aggiungere `STRIPE_WEBHOOK_SECRET`.
+- [ ] Creare ordine pending prima del redirect Stripe.
+- [ ] Confermare ordine solo da webhook.
+- [ ] Aggiornare stock solo dopo pagamento.
+- [ ] Testare pagamento completato, cancellato, fallito, rimborso.
+
+## Resend email
+
+- [x] Codice email ordine predisposto.
+- [x] Notifica cliente predisposta.
+- [x] Notifica proprietario/admin predisposta.
+- [x] Supporto destinatari interni multipli separati da virgola.
+- [x] Invio email non blocca il salvataggio ordine.
+- [x] Env documentate in `.env.example` e `FUNCTIONAL_GUIDE`.
+- [ ] Creare API key Resend.
+- [ ] Aggiungere `RESEND_API_KEY` in locale e Vercel.
+- [ ] Verificare dominio mittente.
+- [ ] Sostituire `ORDER_EMAIL_FROM` con email dominio reale.
+- [ ] Test reale ordine + email.
+- [ ] Email cambio stato ordine.
+- [ ] Template email piu brandizzato.
+
+## Vercel e deploy
+
+- [x] Repository GitHub configurata.
+- [x] Codice pushato su `main`.
+- [x] Build locale Next.js verificata.
+- [ ] Importare repository in Vercel.
+- [ ] Impostare tutte le variabili da `.env.example`.
+- [ ] Impostare `NEXT_PUBLIC_SITE_URL` con dominio reale.
+- [ ] Collegare dominio custom.
+- [ ] Verificare DNS.
+- [ ] Deploy production.
+- [ ] Testare storefront online.
+- [ ] Testare admin online.
+- [ ] Testare upload immagini online.
+- [ ] Testare ordine manuale online.
+- [ ] Attivare Vercel Analytics/Speed Insights se desiderato.
+
+## Legal, contenuti e commerce
+
+- [x] Privacy policy pre-produzione.
+- [x] Termini e condizioni pre-produzione.
+- [x] Spedizioni pre-produzione.
+- [x] Resi/rimborsi pre-produzione.
+- [x] FAQ pre-produzione.
+- [x] Contatti pre-produzione.
+- [x] Chi siamo pre-produzione.
+- [x] Cookie banner coerente con soli cookie tecnici.
+- [x] Checkout manuale chiarito prima di Stripe.
+- [ ] Inserire ragione sociale reale.
+- [ ] Inserire P.IVA/codice fiscale attivita.
+- [ ] Inserire indirizzo legale/esercizio.
+- [ ] Inserire PEC/SDI se applicabile.
+- [ ] Inserire email finale ordini/assistenza.
+- [ ] Validazione finale da commercialista/legale.
+- [ ] Ingredienti, avvertenze e allergeni prodotto.
+- [ ] Tempi/costi spedizione reali definitivi.
+- [ ] Regole promo/coupon definitive.
+
+## SEO, performance e tracking
+
+- [x] Metadata base.
+- [x] OpenGraph base.
+- [x] JSON-LD Product.
+- [x] Sitemap statica.
+- [x] Robots.
+- [x] Manifest PWA.
+- [ ] Sitemap dinamica da Supabase.
+- [ ] Metadata dinamici avanzati prodotto/categoria.
+- [ ] OG image dinamiche.
+- [ ] Vercel Analytics.
+- [ ] Speed Insights.
+- [ ] Eventi ecommerce.
+- [ ] Meta Pixel.
+- [ ] TikTok Pixel.
+- [ ] Google Analytics se necessario.
+- [ ] Cookie consent avanzato prima di tracking non tecnico.
+
+## Qualita tecnica
+
+- [x] Next.js App Router.
+- [x] TypeScript.
+- [x] Tailwind CSS.
+- [x] Zustand persist.
+- [x] Supabase client/server.
+- [x] API route admin protette.
+- [x] Validazioni principali server-side.
+- [x] `npm run typecheck` verificato.
+- [x] `npm run build` verificato.
+- [x] Fix cache/chunk Next documentato operativamente durante sviluppo.
+- [ ] Test automatici smoke principali.
+- [ ] Test checkout manuale.
+- [ ] Test webhook Stripe quando attivo.
+- [ ] Test admin CRUD.
+- [ ] Error monitoring produzione.
+- [ ] Rate limiting/API hardening per endpoint sensibili.
+
+## Roadmap consigliata
+
+### Prima della produzione
+
+1. Configurare Vercel e replicare env.
+2. Configurare dominio e `NEXT_PUBLIC_SITE_URL`.
+3. Configurare Resend e test email ordine.
+4. Inserire dati fiscali e contatti reali.
+5. Fare smoke test completo online.
+
+### Produzione pagamento
+
+1. Configurare Stripe.
+2. Collegare checkout reale.
+3. Gestire ordine pending.
+4. Confermare pagamento via webhook.
+5. Aggiornare inventario via webhook.
+6. Testare pagamenti, cancellazioni e rimborsi.
+
+### Crescita V2
+
+1. Account cliente e storico ordini.
+2. Recensioni reali.
+3. Newsletter e automazioni email.
+4. Analytics/pixel con consenso.
+5. Import/export CSV.
+6. Bundle con pricing reale.
+7. Gift card.
+8. Social calendar piu avanzato.

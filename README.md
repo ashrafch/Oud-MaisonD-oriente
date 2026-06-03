@@ -31,10 +31,9 @@ npm run dev
 
 ## Documentazione
 
+- `docs/PROJECT_CHECKLIST.md`: documento unico con stato progetto, checklist produzione, roadmap, cose fatte, predisposte e mancanti.
 - `docs/FUNCTIONAL_GUIDE.md`: guida completa a tutte le funzionalita e come usarle.
-- `docs/PROJECT_STATUS.md`: checklist di cio che e sviluppato, predisposto e ancora da completare.
-- `docs/PRODUCTION_CHECKLIST.md`: checklist per Vercel, Supabase, Stripe, legal e contenuti.
-- `docs/ROADMAP.md`: roadmap MVP/V1/V2.
+- `docs/SUPABASE_ADMIN_AUTH.md`: guida specifica per accesso admin/super admin.
 
 ## Deploy
 
@@ -44,8 +43,6 @@ npm run dev
 4. Configura Stripe Checkout e il webhook `/api/webhooks/stripe`.
 5. Aggiorna testi legali, policy spedizione/resi e numero WhatsApp.
 
-## Roadmap
+## Roadmap e stato
 
-- MVP: catalogo, schede prodotto, carrello persistente, checkout Stripe, dashboard admin leggibile.
-- V1: CRUD completo con Supabase, upload immagini, ordini reali, inventario e email Resend.
-- V2: recensioni, coupon avanzati, calendario social, analytics, pixel, PWA e automazioni marketing.
+La roadmap e lo stato produzione sono mantenuti in `docs/PROJECT_CHECKLIST.md`.

@@ -28,7 +28,7 @@ Funzionalita:
 - Bundle builder.
 - Prodotti visti di recente.
 - Storytelling boutique.
-- Footer con newsletter placeholder.
+- Footer con link legali, contatti e dati fiscali da env.
 - Cookie banner.
 - Pulsante WhatsApp floating.
 
@@ -188,7 +188,7 @@ Percorsi:
 - `/privacy`
 - `/terms`
 
-Stato: sono placeholder. Prima della pubblicazione vanno sostituite con testi reali.
+Stato: contengono testi completi pre-produzione. Prima della pubblicazione vanno completate con dati fiscali, contatti definitivi e validazione finale dell'attivita.
 
 ## Area admin
 
