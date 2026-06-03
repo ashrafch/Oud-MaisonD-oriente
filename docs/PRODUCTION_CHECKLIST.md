@@ -18,6 +18,9 @@ Documenti collegati:
 - [x] Add `SUPABASE_SERVICE_ROLE_KEY` only in server/Vercel env.
 - [x] Read storefront catalog, categories and product SEO pages from Supabase with local fallback.
 - [x] Save, duplicate, soft-delete and upload product images from admin to Supabase/Storage.
+- [x] Save manual checkout orders, customers and order items to Supabase.
+- [x] Read admin orders/customers from Supabase and update order status through server API.
+- [x] Manage coupons in Supabase and expose active coupons to storefront cart/checkout.
 - [x] Add Supabase Auth login/logout for `/admin`.
 - [x] Protect admin pages and admin product APIs behind authorized Supabase users.
 - [x] Add `super_admin` for the project creator and `admin` for the store owner.
@@ -26,7 +29,7 @@ Documenti collegati:
 - [x] Set `ADMIN_AUTH_ENABLED=true` locally after users are created.
 - [ ] Set the same admin auth env vars on Vercel when deployment is configured.
 - [ ] Enable deeper RLS policies for customer-facing personal data before opening accounts to real customers.
-- [ ] Replace localStorage order/customer/coupon flows with Supabase queries and server actions.
+- [ ] Replace remaining local fallback storage after production monitoring is stable.
 
 ## Stripe
 

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Minus, Plus, ShoppingBag, X } from 'lucide-react';
 import { products as seedProducts } from '@/data/catalog';
 import { calculateCart, formatPrice, getStoredProducts, useCartStore } from '@/lib/cart/store';
+import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
 
 export function CartDrawer() {
   const isOpen = useCartStore((state) => state.isCartDrawerOpen);
@@ -12,8 +13,9 @@ export function CartDrawer() {
   const items = useCartStore((state) => state.items);
   const couponCode = useCartStore((state) => state.couponCode);
   const setQuantity = useCartStore((state) => state.setQuantity);
+  const coupons = useActiveCoupons();
   const products = getStoredProducts(seedProducts);
-  const totals = calculateCart(items, products, couponCode);
+  const totals = calculateCart(items, products, couponCode, coupons);
 
   return (
     <div className={`fixed inset-0 z-50 ${isOpen ? '' : 'pointer-events-none'}`} aria-hidden={!isOpen}>

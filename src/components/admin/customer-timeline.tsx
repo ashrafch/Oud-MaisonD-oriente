@@ -1,10 +1,34 @@
 'use client';
 
+import { useCallback, useEffect, useState } from 'react';
 import { Mail, Phone, UserRound } from 'lucide-react';
 import { formatPrice, useCartStore } from '@/lib/cart/store';
+import type { AdminOrder } from '@/lib/supabase/orders';
 
 export function CustomerTimeline() {
-  const orders = useCartStore((state) => state.orders);
+  const localOrders = useCartStore((state) => state.orders);
+  const notify = useCartStore((state) => state.notify);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadCustomers = useCallback(async () => {
+    try {
+      const response = await fetch('/api/admin/orders', { cache: 'no-store' });
+      if (!response.ok) throw new Error('Clienti Supabase non disponibili');
+      const payload = await response.json() as { orders: AdminOrder[] };
+      setOrders(payload.orders);
+    } catch {
+      setOrders(localOrders);
+      notify({ title: 'Uso clienti locali', description: 'Supabase non ha risposto.', tone: 'warning' });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [localOrders, notify]);
+
+  useEffect(() => {
+    void loadCustomers();
+  }, [loadCustomers]);
+
   const customers = orders.reduce<Record<string, typeof orders>>((acc, order) => {
     acc[order.customer.email] = [...(acc[order.customer.email] ?? []), order];
     return acc;
@@ -13,8 +37,9 @@ export function CustomerTimeline() {
   return (
     <section>
       <h1 className="font-serif text-4xl sm:text-5xl">Clienti</h1>
-      <p className="mt-3 max-w-2xl text-ink/60">Vista CRM leggera: storico ordini, contatti e valore cliente. Con Supabase diventerà una tabella clienti persistente.</p>
+      <p className="mt-3 max-w-2xl text-ink/60">Vista CRM leggera persistente: storico ordini, contatti e valore cliente salvati su Supabase.</p>
       <div className="mt-8 grid gap-4">
+        {isLoading ? <div className="rounded border border-ink/10 bg-white p-5 text-sm text-ink/60">Caricamento clienti...</div> : null}
         {Object.entries(customers).length ? Object.entries(customers).map(([email, customerOrders]) => {
           const customer = customerOrders[0].customer;
           const total = customerOrders.reduce((sum, order) => sum + order.total, 0);
@@ -33,7 +58,7 @@ export function CustomerTimeline() {
                 </div>
               </div>
               <div className="mt-4 grid gap-2">
-                {customerOrders.map((order) => <div key={order.id} className="flex flex-col gap-1 rounded border border-ink/10 p-3 text-sm sm:flex-row sm:justify-between"><span>{order.id}</span><span>{order.status} · {formatPrice(order.total)}</span></div>)}
+                {customerOrders.map((order) => <div key={order.id} className="flex flex-col gap-1 rounded border border-ink/10 p-3 text-sm sm:flex-row sm:justify-between"><span>{order.id}</span><span>{order.status} - {formatPrice(order.total)}</span></div>)}
               </div>
             </article>
           );

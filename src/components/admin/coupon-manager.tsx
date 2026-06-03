@@ -1,39 +1,86 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Percent, Plus, Trash2 } from 'lucide-react';
 import { useCartStore } from '@/lib/cart/store';
-
-type Coupon = { code: string; type: 'percent' | 'fixed'; value: number; minOrder: number; active: boolean };
+import type { Coupon } from '@/lib/supabase/coupons';
 
 const initialCoupons: Coupon[] = [
-  { code: 'OUDE10', type: 'percent', value: 10, minOrder: 0, active: true },
-  { code: 'WELCOME15', type: 'percent', value: 15, minOrder: 59, active: true }
+  { code: 'OUDE10', type: 'percent', value: 10, active: true },
+  { code: 'WELCOME15', type: 'percent', value: 15, active: true }
 ];
 
 export function CouponManager() {
   const notify = useCartStore((state) => state.notify);
-  const [coupons, setCoupons] = useState<Coupon[]>(() => {
-    if (typeof window === 'undefined') return initialCoupons;
-    const raw = window.localStorage.getItem('oude-coupons');
-    return raw ? JSON.parse(raw) as Coupon[] : initialCoupons;
-  });
-  const [draft, setDraft] = useState<Coupon>({ code: '', type: 'percent', value: 10, minOrder: 0, active: true });
+  const [coupons, setCoupons] = useState<Coupon[]>(initialCoupons);
+  const [draft, setDraft] = useState<Coupon>({ code: '', type: 'percent', value: 10, active: true });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const persist = (next: Coupon[]) => {
+  const loadCoupons = useCallback(async () => {
+    try {
+      const response = await fetch('/api/admin/coupons', { cache: 'no-store' });
+      if (!response.ok) throw new Error('Coupon Supabase non disponibili');
+      const payload = await response.json() as { coupons: Coupon[] };
+      setCoupons(payload.coupons);
+      window.localStorage.setItem('oude-coupons', JSON.stringify(payload.coupons));
+    } catch {
+      const raw = window.localStorage.getItem('oude-coupons');
+      setCoupons(raw ? JSON.parse(raw) as Coupon[] : initialCoupons);
+      notify({ title: 'Uso coupon locali', description: 'Supabase non ha risposto.', tone: 'warning' });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [notify]);
+
+  useEffect(() => {
+    void loadCoupons();
+  }, [loadCoupons]);
+
+  const persistLocal = (next: Coupon[]) => {
     setCoupons(next);
     window.localStorage.setItem('oude-coupons', JSON.stringify(next));
   };
 
-  const save = () => {
+  const save = async () => {
     if (!draft.code || draft.value <= 0) {
       notify({ title: 'Coupon non valido', description: 'Inserisci codice e valore.', tone: 'warning' });
       return;
     }
+    setIsSaving(true);
     const normalized = { ...draft, code: draft.code.trim().toUpperCase() };
-    persist([normalized, ...coupons.filter((coupon) => coupon.code !== normalized.code)]);
-    setDraft({ code: '', type: 'percent', value: 10, minOrder: 0, active: true });
-    notify({ title: 'Coupon salvato', description: normalized.code, tone: 'success' });
+    try {
+      const response = await fetch('/api/admin/coupons', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(normalized)
+      });
+      if (!response.ok) throw new Error('Salvataggio coupon fallito');
+      await loadCoupons();
+      setDraft({ code: '', type: 'percent', value: 10, active: true });
+      notify({ title: 'Coupon salvato su Supabase', description: normalized.code, tone: 'success' });
+    } catch {
+      persistLocal([normalized, ...coupons.filter((coupon) => coupon.code !== normalized.code)]);
+      notify({ title: 'Coupon salvato in locale', description: normalized.code, tone: 'warning' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const remove = async (code: string) => {
+    try {
+      const response = await fetch('/api/admin/coupons', {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      if (!response.ok) throw new Error('Eliminazione coupon fallita');
+      await loadCoupons();
+      notify({ title: 'Coupon eliminato', description: code, tone: 'info' });
+    } catch {
+      persistLocal(coupons.filter((item) => item.code !== code));
+      notify({ title: 'Coupon rimosso in locale', description: code, tone: 'warning' });
+    }
   };
 
   return (
@@ -51,18 +98,22 @@ export function CouponManager() {
               </select>
             </label>
             <Field label="Valore" type="number" value={String(draft.value)} onChange={(value) => setDraft((current) => ({ ...current, value: Number(value) }))} />
-            <Field label="Minimo ordine" type="number" value={String(draft.minOrder)} onChange={(value) => setDraft((current) => ({ ...current, minOrder: Number(value) }))} />
-            <button className="inline-flex min-h-11 items-center justify-center gap-2 rounded bg-oud px-4 text-sm font-semibold text-white" onClick={save}><Plus size={17} /> Salva coupon</button>
+            <label className="flex items-center gap-2 text-sm font-semibold">
+              <input type="checkbox" checked={draft.active} onChange={(event) => setDraft((current) => ({ ...current, active: event.target.checked }))} />
+              Attivo
+            </label>
+            <button className="inline-flex min-h-11 items-center justify-center gap-2 rounded bg-oud px-4 text-sm font-semibold text-white disabled:opacity-55" disabled={isSaving} onClick={() => void save()}><Plus size={17} /> {isSaving ? 'Salvataggio...' : 'Salva coupon'}</button>
           </div>
         </div>
         <div className="grid gap-4">
+          {isLoading ? <div className="rounded border border-ink/10 bg-white p-5 text-sm text-ink/60">Caricamento coupon...</div> : null}
           {coupons.map((coupon) => (
             <article key={coupon.code} className="flex flex-col gap-3 rounded border border-ink/10 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="font-serif text-2xl">{coupon.code}</p>
-                <p className="text-sm text-ink/55">{coupon.type === 'percent' ? `${coupon.value}%` : `€${coupon.value}`} · minimo €{coupon.minOrder} · {coupon.active ? 'attivo' : 'spento'}</p>
+                <p className="text-sm text-ink/55">{coupon.type === 'percent' ? `${coupon.value}%` : `${coupon.value} EUR`} - {coupon.active ? 'attivo' : 'spento'}</p>
               </div>
-              <button className="rounded border border-ink/10 p-2 text-oud hover:bg-mist" onClick={() => persist(coupons.filter((item) => item.code !== coupon.code))}><Trash2 size={17} /></button>
+              <button className="rounded border border-ink/10 p-2 text-oud hover:bg-mist" onClick={() => void remove(coupon.code)}><Trash2 size={17} /></button>
             </article>
           ))}
         </div>

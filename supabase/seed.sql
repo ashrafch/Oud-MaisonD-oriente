@@ -10,3 +10,11 @@ insert into products (name, slug, brand, status, price, stock, short_description
 ('Oud Sultan', 'oud-sultan', 'OUDÉ Selection', 'published', 89, 12, 'Oud caldo e regale con ambra, spezie scure e legno levigato.', array['Zafferano','Pepe rosa'], array['Oud','Rosa damascena'], array['Ambra','Sandalo'], 'Intenso', '8-10 ore', 'unisex', array['bestseller','luxury'], true, true, false, false),
 ('Musk Al Tahara', 'musk-al-tahara', 'Maison D’Oriente', 'published', 34, 30, 'Musk bianco pulito, cremoso e delicato.', array['Cotone bianco'], array['Musk puro'], array['Vaniglia chiara','Talco'], 'Morbido', '5-7 ore', 'unisex', array['nuovo','daily'], true, false, true, false),
 ('Amber Night', 'amber-night', 'OUDÉ Selection', 'published', 59, 9, 'Ambra resinosa, vaniglia scura e spezie dolci da sera.', array['Cannella','Dattero'], array['Ambra'], array['Vaniglia','Benzoino'], 'Caldo', '7-9 ore', 'unisex', array['sera','gift'], true, false, false, true);
+
+insert into coupons (code, discount_type, discount_value, is_active) values
+('OUDE10', 'percent', 10, true),
+('WELCOME15', 'percent', 15, true)
+on conflict (code) do update set
+discount_type = excluded.discount_type,
+discount_value = excluded.discount_value,
+is_active = excluded.is_active;

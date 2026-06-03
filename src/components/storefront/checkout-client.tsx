@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ShieldCheck } from 'lucide-react';
 import { products as seedProducts } from '@/data/catalog';
 import { calculateCart, formatPrice, getStoredProducts, type CustomerDraft, useCartStore } from '@/lib/cart/store';
+import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
 
 const emptyCustomer: CustomerDraft = { fullName: '', email: '', phone: '', address: '', city: '', zip: '', notes: '' };
 
@@ -13,22 +14,43 @@ export function CheckoutClient() {
   const items = useCartStore((state) => state.items);
   const couponCode = useCartStore((state) => state.couponCode);
   const createOrder = useCartStore((state) => state.createOrder);
+  const clearCart = useCartStore((state) => state.clearCart);
   const notify = useCartStore((state) => state.notify);
   const [customer, setCustomer] = useState(emptyCustomer);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const coupons = useActiveCoupons();
   const products = getStoredProducts(seedProducts);
-  const totals = calculateCart(items, products, couponCode);
+  const totals = calculateCart(items, products, couponCode, coupons);
   const isValid = customer.fullName && customer.email.includes('@') && customer.phone && customer.address && customer.city && customer.zip && items.length;
 
   const updateField = (field: keyof CustomerDraft, value: string) => setCustomer((current) => ({ ...current, [field]: value }));
 
-  const submitOrder = (event: React.FormEvent<HTMLFormElement>) => {
+  const submitOrder = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!isValid) {
-      notify({ title: 'Completa i dati richiesti', description: 'Servono contatti e indirizzo per preparare l’ordine.', tone: 'warning' });
+      notify({ title: 'Completa i dati richiesti', description: "Servono contatti e indirizzo per preparare l'ordine.", tone: 'warning' });
       return;
     }
-    const order = createOrder({ items, customer, ...totals });
-    router.push(`/checkout/success?order=${order.id}`);
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ mode: 'manual_order', items, customer, couponCode, ...totals })
+      });
+      const payload = await response.json() as { order?: { id: string }; error?: string };
+      if (!response.ok || !payload.order) throw new Error(payload.error ?? 'Ordine non creato');
+      clearCart();
+      notify({ title: 'Ordine creato su Supabase', description: payload.order.id, tone: 'success' });
+      router.push(`/checkout/success?order=${payload.order.id}`);
+    } catch {
+      const order = createOrder({ items, customer, ...totals });
+      notify({ title: 'Ordine salvato in locale', description: 'Supabase non ha confermato la creazione.', tone: 'warning' });
+      router.push(`/checkout/success?order=${order.id}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!items.length) {
@@ -54,14 +76,14 @@ export function CheckoutClient() {
             <Field label="Telefono" value={customer.phone} onChange={(value) => updateField('phone', value)} />
             <Field label="CAP" value={customer.zip} onChange={(value) => updateField('zip', value)} />
             <Field label="Indirizzo" className="sm:col-span-2" value={customer.address} onChange={(value) => updateField('address', value)} />
-            <Field label="Città" value={customer.city} onChange={(value) => updateField('city', value)} />
+            <Field label="Citta" value={customer.city} onChange={(value) => updateField('city', value)} />
             <label className="grid gap-2 sm:col-span-2">
               <span className="text-sm font-semibold">Note ordine</span>
               <textarea value={customer.notes} onChange={(event) => updateField('notes', event.target.value)} className="min-h-28 rounded border border-ink/12 px-3 py-2 text-sm" />
             </label>
           </div>
-          <button className="mt-8 min-h-12 w-full rounded bg-oud px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50" disabled={!isValid}>
-            Conferma ordine
+          <button className="mt-8 min-h-12 w-full rounded bg-oud px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50" disabled={!isValid || isSubmitting}>
+            {isSubmitting ? 'Creazione ordine...' : 'Conferma ordine'}
           </button>
         </form>
         <aside className="h-fit rounded border border-ink/10 bg-white p-6">
@@ -71,13 +93,13 @@ export function CheckoutClient() {
             {items.map((item) => {
               const product = products.find((entry) => entry.id === item.productId);
               if (!product) return null;
-              return <div key={item.productId} className="flex justify-between gap-3"><span>{product.name} × {item.quantity}</span><span>{formatPrice(product.price * item.quantity)}</span></div>;
+              return <div key={item.productId} className="flex justify-between gap-3"><span>{product.name} x {item.quantity}</span><span>{formatPrice(product.price * item.quantity)}</span></div>;
             })}
             <div className="flex justify-between border-t border-ink/10 pt-3"><span>Sconto</span><span>-{formatPrice(totals.discount)}</span></div>
             <div className="flex justify-between"><span>Spedizione</span><span>{totals.shipping ? formatPrice(totals.shipping) : 'Gratis'}</span></div>
             <div className="flex justify-between text-lg font-semibold"><span>Totale</span><span>{formatPrice(totals.total)}</span></div>
           </div>
-          <p className="mt-5 text-xs leading-5 text-ink/50">In produzione questo passaggio invierà il carrello a Stripe Checkout e salverà l’ordine su Supabase.</p>
+          <p className="mt-5 text-xs leading-5 text-ink/50">In questa fase l&apos;ordine viene salvato su Supabase come ordine manuale. Stripe resta predisposto per il passaggio successivo.</p>
         </aside>
       </div>
     </section>

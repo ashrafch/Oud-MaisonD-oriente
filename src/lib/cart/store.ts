@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Product } from '@/types/catalog';
+import type { Coupon } from '@/lib/supabase/coupons';
 
 export type CartItem = { productId: string; quantity: number };
 export type ToastMessage = { id: string; title: string; description?: string; tone?: 'success' | 'info' | 'warning' };
@@ -50,13 +51,18 @@ type CartState = {
 
 export const formatPrice = (value: number) => new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(value);
 
-export const calculateCart = (items: CartItem[], products: Product[], couponCode = '') => {
+export const calculateCart = (items: CartItem[], products: Product[], couponCode = '', coupons?: Coupon[]) => {
   const subtotal = items.reduce((sum, item) => {
     const product = products.find((entry) => entry.id === item.productId);
     return sum + (product ? product.price * item.quantity : 0);
   }, 0);
   const normalizedCoupon = couponCode.trim().toUpperCase();
-  const discount = normalizedCoupon === 'OUDE10' ? subtotal * 0.1 : normalizedCoupon === 'WELCOME15' ? subtotal * 0.15 : 0;
+  const availableCoupons = coupons ?? [
+    { code: 'OUDE10', type: 'percent', value: 10, active: true },
+    { code: 'WELCOME15', type: 'percent', value: 15, active: true }
+  ];
+  const coupon = availableCoupons.find((entry) => entry.active && entry.code.toUpperCase() === normalizedCoupon);
+  const discount = coupon?.type === 'percent' ? subtotal * (coupon.value / 100) : coupon?.type === 'fixed' ? coupon.value : 0;
   const shipping = subtotal - discount >= 79 || subtotal === 0 ? 0 : 6.9;
   return { subtotal, discount, shipping, total: Math.max(0, subtotal - discount + shipping) };
 };

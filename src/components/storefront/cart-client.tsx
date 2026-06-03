@@ -6,6 +6,7 @@ import { Minus, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { products as seedProducts } from '@/data/catalog';
 import { calculateCart, formatPrice, getStoredProducts, useCartStore } from '@/lib/cart/store';
+import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
 
 export function CartClient() {
   const items = useCartStore((state) => state.items);
@@ -14,8 +15,9 @@ export function CartClient() {
   const setQuantity = useCartStore((state) => state.setQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const addItem = useCartStore((state) => state.addItem);
+  const coupons = useActiveCoupons();
   const products = getStoredProducts(seedProducts);
-  const totals = calculateCart(items, products, couponCode);
+  const totals = calculateCart(items, products, couponCode, coupons);
   const cartProducts = items.map((item) => ({ item, product: products.find((product) => product.id === item.productId) })).filter((entry) => entry.product);
   const upsells = products.filter((product) => !items.some((item) => item.productId === product.id)).slice(0, 3);
 
@@ -80,6 +82,7 @@ export function CartClient() {
             <input value={couponCode} onChange={(event) => setCouponCode(event.target.value)} placeholder="OUDE10" className="min-w-0 flex-1 rounded border border-ink/12 px-3 text-sm" />
             <button className="rounded bg-mist px-3 text-sm font-semibold" onClick={() => setCouponCode(couponCode)}>Applica</button>
           </div>
+          <p className="mt-2 text-xs text-ink/45">Coupon attivi: {coupons.map((coupon) => coupon.code).join(', ') || 'nessuno'}</p>
           <Button href="/checkout" className="mt-6 w-full">Vai al checkout</Button>
         </aside>
       </div>
