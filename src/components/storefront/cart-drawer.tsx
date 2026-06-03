@@ -72,6 +72,7 @@ export function CartDrawer({ initialProducts = [] }: { initialProducts?: Product
           <div className="grid gap-2 text-sm">
             <div className="flex justify-between"><span>Subtotale</span><span>{formatPrice(totals.subtotal)}</span></div>
             <div className="flex justify-between"><span>Sconto</span><span>-{formatPrice(totals.discount)}</span></div>
+            <div className="flex justify-between"><span>Spedizione</span><span>{totals.shipping ? formatPrice(totals.shipping) : 'Gratis'}</span></div>
             <div className="flex justify-between text-lg font-semibold"><span>Totale</span><span>{formatPrice(totals.total)}</span></div>
           </div>
           {items.length ? (
