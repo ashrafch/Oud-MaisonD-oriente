@@ -1,30 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { MessageCircle, ShieldCheck } from 'lucide-react';
 import { products as seedProducts } from '@/data/catalog';
 import { calculateCart, formatPrice, getStoredProducts, mergeProducts, type CustomerDraft, useCartStore } from '@/lib/cart/store';
 import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
+import type { Product } from '@/types/catalog';
 
 const emptyCustomer: CustomerDraft = { fullName: '', email: '', phone: '', address: '', city: '', zip: '', notes: '' };
 
-export function CheckoutClient() {
+export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Product[] }) {
   const router = useRouter();
   const items = useCartStore((state) => state.items);
   const couponCode = useCartStore((state) => state.couponCode);
   const catalogProducts = useCartStore((state) => state.catalogProducts);
+  const syncProducts = useCartStore((state) => state.syncProducts);
   const createOrder = useCartStore((state) => state.createOrder);
   const clearCart = useCartStore((state) => state.clearCart);
   const notify = useCartStore((state) => state.notify);
   const [customer, setCustomer] = useState(emptyCustomer);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const coupons = useActiveCoupons();
-  const products = mergeProducts(catalogProducts, getStoredProducts(seedProducts));
+  const products = mergeProducts(catalogProducts, initialProducts, getStoredProducts(seedProducts));
   const totals = calculateCart(items, products, couponCode, coupons);
   const isValid = customer.fullName && customer.email.includes('@') && customer.phone && customer.address && customer.city && customer.zip && items.length;
 
   const updateField = (field: keyof CustomerDraft, value: string) => setCustomer((current) => ({ ...current, [field]: value }));
+
+  useEffect(() => {
+    if (initialProducts.length) syncProducts(initialProducts);
+  }, [initialProducts, syncProducts]);
 
   const submitOrder = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

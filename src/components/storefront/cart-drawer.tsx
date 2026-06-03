@@ -1,23 +1,30 @@
 'use client';
 
+import { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, ShoppingBag, X } from 'lucide-react';
 import { products as seedProducts } from '@/data/catalog';
 import { calculateCart, formatPrice, getStoredProducts, mergeProducts, useCartStore } from '@/lib/cart/store';
 import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
+import type { Product } from '@/types/catalog';
 
-export function CartDrawer() {
+export function CartDrawer({ initialProducts = [] }: { initialProducts?: Product[] }) {
   const isOpen = useCartStore((state) => state.isCartDrawerOpen);
   const close = useCartStore((state) => state.closeCartDrawer);
   const items = useCartStore((state) => state.items);
   const couponCode = useCartStore((state) => state.couponCode);
   const catalogProducts = useCartStore((state) => state.catalogProducts);
+  const syncProducts = useCartStore((state) => state.syncProducts);
   const setCouponCode = useCartStore((state) => state.setCouponCode);
   const setQuantity = useCartStore((state) => state.setQuantity);
   const coupons = useActiveCoupons();
-  const products = mergeProducts(catalogProducts, getStoredProducts(seedProducts));
+  const products = mergeProducts(catalogProducts, initialProducts, getStoredProducts(seedProducts));
   const totals = calculateCart(items, products, couponCode, coupons);
+
+  useEffect(() => {
+    if (initialProducts.length) syncProducts(initialProducts);
+  }, [initialProducts, syncProducts]);
 
   return (
     <div className={`fixed inset-0 z-50 ${isOpen ? '' : 'pointer-events-none'}`} aria-hidden={!isOpen}>

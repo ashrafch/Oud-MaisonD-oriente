@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, Trash2 } from 'lucide-react';
@@ -7,20 +8,26 @@ import { Button } from '@/components/ui/button';
 import { products as seedProducts } from '@/data/catalog';
 import { calculateCart, formatPrice, getStoredProducts, mergeProducts, useCartStore } from '@/lib/cart/store';
 import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
+import type { Product } from '@/types/catalog';
 
-export function CartClient() {
+export function CartClient({ initialProducts = [] }: { initialProducts?: Product[] }) {
   const items = useCartStore((state) => state.items);
   const couponCode = useCartStore((state) => state.couponCode);
   const catalogProducts = useCartStore((state) => state.catalogProducts);
+  const syncProducts = useCartStore((state) => state.syncProducts);
   const setCouponCode = useCartStore((state) => state.setCouponCode);
   const setQuantity = useCartStore((state) => state.setQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const addItem = useCartStore((state) => state.addItem);
   const coupons = useActiveCoupons();
-  const products = mergeProducts(catalogProducts, getStoredProducts(seedProducts));
+  const products = mergeProducts(catalogProducts, initialProducts, getStoredProducts(seedProducts));
   const totals = calculateCart(items, products, couponCode, coupons);
   const cartProducts = items.map((item) => ({ item, product: products.find((product) => product.id === item.productId) })).filter((entry) => entry.product);
   const upsells = products.filter((product) => !items.some((item) => item.productId === product.id)).slice(0, 3);
+
+  useEffect(() => {
+    if (initialProducts.length) syncProducts(initialProducts);
+  }, [initialProducts, syncProducts]);
 
   if (!items.length) {
     return (

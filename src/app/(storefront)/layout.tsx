@@ -4,13 +4,16 @@ import { CartDrawer } from '@/components/storefront/cart-drawer';
 import { CookieBanner } from '@/components/storefront/cookie-banner';
 import { Toast } from '@/components/storefront/toast';
 import { WhatsAppButton } from '@/components/storefront/whatsapp-button';
+import { getSupabaseProducts } from '@/lib/supabase/catalog';
 
-export default function StorefrontLayout({ children }: { children: React.ReactNode }) {
+export default async function StorefrontLayout({ children }: { children: React.ReactNode }) {
+  const products = await getSupabaseProducts();
+
   return (
     <>
               <Header />
               <main>{children}</main>
-              <CartDrawer />
+              <CartDrawer initialProducts={products} />
               <Toast />
               <CookieBanner />
               <WhatsAppButton />
