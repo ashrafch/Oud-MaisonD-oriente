@@ -5,6 +5,7 @@ Documenti collegati:
 - `docs/FUNCTIONAL_GUIDE.md`: come usare tutte le funzionalita.
 - `docs/PROJECT_STATUS.md`: cosa e gia sviluppato e cosa manca.
 - `docs/ROADMAP.md`: priorita evolutive.
+- `docs/SUPABASE_ADMIN_AUTH.md`: configurazione accesso admin/super admin.
 
 ## Supabase
 
@@ -17,7 +18,13 @@ Documenti collegati:
 - [x] Add `SUPABASE_SERVICE_ROLE_KEY` only in server/Vercel env.
 - [x] Read storefront catalog, categories and product SEO pages from Supabase with local fallback.
 - [x] Save, duplicate, soft-delete and upload product images from admin to Supabase/Storage.
-- [ ] Enable RLS policies for admin/staff/customer flows before opening admin to real users.
+- [x] Add Supabase Auth login/logout for `/admin`.
+- [x] Protect admin pages and admin product APIs behind authorized Supabase users.
+- [x] Add `super_admin` for the project creator and `admin` for the store owner.
+- [ ] Run `supabase/migrations/002_admin_auth.sql`.
+- [ ] Create the two Supabase Auth users and put their emails in `ADMIN_SUPER_EMAILS` and `ADMIN_EMAILS`.
+- [ ] Set `ADMIN_AUTH_ENABLED=true` in production after users are created.
+- [ ] Enable deeper RLS policies for customer-facing personal data before opening accounts to real customers.
 - [ ] Replace localStorage order/customer/coupon flows with Supabase queries and server actions.
 
 ## Stripe

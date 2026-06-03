@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
+import { requireAdminApiSession } from '@/lib/admin/auth';
 import { uploadProductImage } from '@/lib/supabase/admin-products';
 
 export async function POST(request: Request) {
   try {
+    const admin = await requireAdminApiSession();
+    if (!admin) return NextResponse.json({ error: 'Accesso admin richiesto' }, { status: 401 });
     const formData = await request.formData();
     const file = formData.get('file');
     if (!(file instanceof File)) {
