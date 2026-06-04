@@ -1,9 +1,10 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, Clock3, CreditCard, PackageCheck, RefreshCw, Search, Send, Truck, XCircle } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, ChevronRight, Clock3, CreditCard, Eye, PackageCheck, RefreshCw, Search, Send, Truck, XCircle } from 'lucide-react';
 import { formatPrice, type Order, useCartStore } from '@/lib/cart/store';
 import type { AdminOrder } from '@/lib/supabase/orders';
+import { AdminModal } from './admin-modal';
 
 type PaymentStatus = 'manual_pending' | 'pending' | 'paid' | 'failed' | 'refunded';
 type FulfillmentStatus = 'new' | 'ready_to_prepare' | 'preparing' | 'packed' | 'completed' | 'blocked';
@@ -55,14 +56,17 @@ const queues: { key: QueueKey; label: string; description: string }[] = [
   { key: 'issues', label: 'Critici', description: 'Falliti, bloccati, resi' }
 ];
 
+const pageSize = 8;
+
 export function OrdersClient() {
   const localOrders = useCartStore((state) => state.orders);
   const updateLocalOrderStatus = useCartStore((state) => state.updateOrderStatus);
   const notify = useCartStore((state) => state.notify);
   const [orders, setOrders] = useState<AdminOrder[]>([]);
-  const [selectedOrderId, setSelectedOrderId] = useState<string>();
+  const [detailOrderId, setDetailOrderId] = useState<string>();
   const [activeQueue, setActiveQueue] = useState<QueueKey>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -74,11 +78,9 @@ export function OrdersClient() {
       if (!response.ok) throw new Error('Ordini Supabase non disponibili');
       const payload = await response.json() as { orders: AdminOrder[] };
       setOrders(payload.orders);
-      setSelectedOrderId((current) => current && payload.orders.some((order) => order.id === current) ? current : payload.orders[0]?.id);
       setLastUpdated(new Date());
     } catch {
       setOrders(localOrders as AdminOrder[]);
-      setSelectedOrderId((current) => current ?? localOrders[0]?.id);
       notify({ title: 'Uso ordini locali', description: 'Supabase non ha risposto.', tone: 'warning' });
     } finally {
       setIsLoading(false);
@@ -88,6 +90,10 @@ export function OrdersClient() {
   useEffect(() => {
     void loadOrders();
   }, [loadOrders]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeQueue, searchTerm]);
 
   const stats = useMemo(() => {
     const toConfirm = orders.filter(isToConfirm);
@@ -128,7 +134,10 @@ export function OrdersClient() {
     });
   }, [activeQueue, orders, searchTerm]);
 
-  const selectedOrder = orders.find((order) => order.id === selectedOrderId) ?? filteredOrders[0] ?? orders[0];
+  const totalPages = Math.max(1, Math.ceil(filteredOrders.length / pageSize));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedOrders = filteredOrders.slice((safePage - 1) * pageSize, safePage * pageSize);
+  const detailOrder = orders.find((order) => order.id === detailOrderId);
 
   const patchOrder = async (orderId: string, patch: Partial<AdminOrder>) => {
     setIsSaving(true);
@@ -230,16 +239,42 @@ export function OrdersClient() {
         ))}
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]">
+      <div className="mt-6">
+        <div className="mb-3 flex flex-col gap-2 text-sm text-ink/55 sm:flex-row sm:items-center sm:justify-between">
+          <span>
+            {filteredOrders.length ? `Mostro ${(safePage - 1) * pageSize + 1}-${Math.min(safePage * pageSize, filteredOrders.length)} di ${filteredOrders.length} ordini` : 'Nessun ordine da mostrare'}
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={safePage <= 1}
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              className="inline-flex min-h-9 items-center gap-1 rounded border border-ink/10 bg-white px-3 text-xs font-semibold transition hover:bg-mist disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              <ChevronLeft size={15} />
+              Indietro
+            </button>
+            <span className="rounded bg-mist px-3 py-2 text-xs font-semibold text-ink">Pagina {safePage}/{totalPages}</span>
+            <button
+              type="button"
+              disabled={safePage >= totalPages}
+              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+              className="inline-flex min-h-9 items-center gap-1 rounded border border-ink/10 bg-white px-3 text-xs font-semibold transition hover:bg-mist disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              Avanti
+              <ChevronRight size={15} />
+            </button>
+          </div>
+        </div>
+
         <div className="grid gap-4">
           {isLoading ? <div className="rounded border border-ink/10 bg-white p-5 text-sm text-ink/60">Caricamento ordini...</div> : null}
-          {filteredOrders.length ? filteredOrders.map((order) => (
+          {paginatedOrders.length ? paginatedOrders.map((order) => (
             <OrderCard
               key={order.id}
               order={order}
-              selected={selectedOrder?.id === order.id}
               disabled={isSaving}
-              onSelect={() => setSelectedOrderId(order.id)}
+              onOpenDetail={() => setDetailOrderId(order.id)}
               onAdvance={() => advanceOrder(order)}
               onCancel={() => void patchOrder(order.id, { status: 'cancelled', fulfillmentStatus: 'blocked' } as Partial<AdminOrder>)}
             />
@@ -250,13 +285,21 @@ export function OrdersClient() {
             </div>
           )}
         </div>
-
-        <OrderDetail
-          order={selectedOrder}
-          disabled={isSaving || !selectedOrder}
-          onPatch={(patch) => selectedOrder ? void patchOrder(selectedOrder.id, patch) : undefined}
-        />
       </div>
+
+      <AdminModal
+        title={detailOrder ? `Ordine ${shortOrderId(detailOrder.id)}` : 'Dettaglio ordine'}
+        description="Gestisci dati cliente, stati operativi, tracking e note interne."
+        isOpen={Boolean(detailOrder)}
+        onClose={() => setDetailOrderId(undefined)}
+        size="xl"
+      >
+        <OrderDetail
+          order={detailOrder}
+          disabled={isSaving || !detailOrder}
+          onPatch={(patch) => detailOrder ? void patchOrder(detailOrder.id, patch) : undefined}
+        />
+      </AdminModal>
     </section>
   );
 }
@@ -280,65 +323,72 @@ function Metric({ label, value, icon, tone = 'neutral' }: { label: string; value
 
 function OrderCard({
   order,
-  selected,
   disabled,
-  onSelect,
+  onOpenDetail,
   onAdvance,
   onCancel
 }: {
   order: AdminOrder;
-  selected: boolean;
   disabled: boolean;
-  onSelect: () => void;
+  onOpenDetail: () => void;
   onAdvance: () => void;
   onCancel: () => void;
 }) {
   const nextAction = getNextAction(order);
   return (
-    <article className={`rounded border bg-white p-4 transition ${selected ? 'border-oud/45 shadow-soft' : 'border-ink/10 hover:border-oud/25'}`}>
-      <button type="button" onClick={onSelect} className="block w-full text-left">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <p className="font-serif text-2xl">{shortOrderId(order.id)}</p>
-              <StatusBadge label={getLabel(orderStatuses, order.status)} tone={getOrderTone(order)} />
-              <StatusBadge label={getLabel(paymentStatuses, normalizePaymentStatus(order.paymentStatus))} tone={getPaymentTone(order)} />
-            </div>
-            <p className="mt-2 text-sm text-ink/55">{new Date(order.createdAt).toLocaleString('it-IT')} - {order.customer.fullName}</p>
-            <p className="mt-2 text-sm text-ink/70">{order.customer.city || 'Citta non indicata'} - {order.customer.email}</p>
+    <article className="rounded border border-ink/10 bg-white p-4 transition hover:border-oud/25 hover:shadow-soft">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_260px]">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="font-serif text-2xl">{shortOrderId(order.id)}</p>
+            <span className="max-w-full truncate rounded bg-mist px-2 py-1 text-[11px] font-semibold text-ink/55" title={order.id}>{order.id}</span>
+            <StatusBadge label={getLabel(orderStatuses, order.status)} tone={getOrderTone(order)} />
+            <StatusBadge label={getLabel(paymentStatuses, normalizePaymentStatus(order.paymentStatus))} tone={getPaymentTone(order)} />
           </div>
-          <div className="text-left lg:text-right">
+          <p className="mt-2 truncate text-sm text-ink/55">{new Date(order.createdAt).toLocaleString('it-IT')} - {order.customer.fullName}</p>
+          <p className="mt-2 truncate text-sm text-ink/70">{order.customer.city || 'Citta non indicata'} - {order.customer.email}</p>
+          <div className="mt-4 grid gap-3 rounded bg-mist/70 p-3 text-sm md:grid-cols-3">
+            <FlowStep label="Pagamento" value={getLabel(paymentStatuses, normalizePaymentStatus(order.paymentStatus))} active={normalizePaymentStatus(order.paymentStatus) === 'paid'} />
+            <FlowStep label="Preparazione" value={getLabel(fulfillmentStatuses, normalizeFulfillmentStatus(order.fulfillmentStatus))} active={['preparing', 'packed', 'completed'].includes(normalizeFulfillmentStatus(order.fulfillmentStatus))} />
+            <FlowStep label="Spedizione" value={getLabel(shippingStatuses, normalizeShippingStatus(order.shippingStatus))} active={['shipped', 'delivered'].includes(normalizeShippingStatus(order.shippingStatus))} />
+          </div>
+        </div>
+        <div className="flex flex-col justify-between gap-3 xl:items-end">
+          <div className="text-left xl:text-right">
             <p className="text-xl font-semibold">{formatPrice(order.total)}</p>
             <p className="mt-1 text-xs uppercase tracking-widest text-ink/45">{order.items.length} righe ordine</p>
           </div>
+          <div className="grid w-full gap-2 sm:grid-cols-3 xl:grid-cols-1">
+            <button
+              type="button"
+              onClick={onOpenDetail}
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded border border-ink/10 bg-white px-3 text-sm font-semibold transition hover:bg-mist"
+            >
+              <Eye size={16} />
+              Dettaglio
+            </button>
+            <button
+              type="button"
+              disabled={disabled}
+              onClick={onAdvance}
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded bg-oud px-3 text-sm font-semibold text-white transition hover:bg-oud/90 disabled:cursor-not-allowed disabled:opacity-55"
+            >
+              <Send size={16} />
+              {nextAction}
+            </button>
+            {!['cancelled', 'delivered', 'refunded'].includes(order.status) ? (
+              <button
+                type="button"
+                disabled={disabled}
+                onClick={onCancel}
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded border border-oud/20 bg-white px-3 text-sm font-semibold text-oud transition hover:bg-oud/8 disabled:cursor-not-allowed disabled:opacity-55"
+              >
+                <XCircle size={16} />
+                Blocca
+              </button>
+            ) : null}
+          </div>
         </div>
-      </button>
-      <div className="mt-4 grid gap-3 rounded bg-mist/70 p-3 text-sm md:grid-cols-3">
-        <FlowStep label="Pagamento" value={getLabel(paymentStatuses, normalizePaymentStatus(order.paymentStatus))} active={normalizePaymentStatus(order.paymentStatus) === 'paid'} />
-        <FlowStep label="Preparazione" value={getLabel(fulfillmentStatuses, normalizeFulfillmentStatus(order.fulfillmentStatus))} active={['preparing', 'packed', 'completed'].includes(normalizeFulfillmentStatus(order.fulfillmentStatus))} />
-        <FlowStep label="Spedizione" value={getLabel(shippingStatuses, normalizeShippingStatus(order.shippingStatus))} active={['shipped', 'delivered'].includes(normalizeShippingStatus(order.shippingStatus))} />
-      </div>
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={onAdvance}
-          className="inline-flex min-h-10 items-center justify-center gap-2 rounded bg-oud px-4 text-sm font-semibold text-white transition hover:bg-oud/90 disabled:cursor-not-allowed disabled:opacity-55"
-        >
-          <Send size={16} />
-          {nextAction}
-        </button>
-        {!['cancelled', 'delivered', 'refunded'].includes(order.status) ? (
-          <button
-            type="button"
-            disabled={disabled}
-            onClick={onCancel}
-            className="inline-flex min-h-10 items-center justify-center gap-2 rounded border border-oud/20 bg-white px-4 text-sm font-semibold text-oud transition hover:bg-oud/8 disabled:cursor-not-allowed disabled:opacity-55"
-          >
-            <XCircle size={16} />
-            Blocca/annulla
-          </button>
-        ) : null}
       </div>
     </article>
   );
@@ -354,92 +404,97 @@ function OrderDetail({ order, disabled, onPatch }: { order?: AdminOrder; disable
   }, [order]);
 
   if (!order) {
-    return (
-      <aside className="rounded border border-dashed border-ink/20 bg-white p-8 text-center text-sm text-ink/60">
-        Seleziona un ordine per vedere dettagli, indirizzo e stati operativi.
-      </aside>
-    );
+    return <div className="rounded border border-dashed border-ink/20 bg-white p-8 text-center text-sm text-ink/60">Seleziona un ordine.</div>;
   }
 
   return (
-    <aside className="rounded border border-ink/10 bg-white p-5 xl:sticky xl:top-24 xl:self-start">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-oud">Dettaglio ordine</p>
-          <h2 className="mt-1 font-serif text-3xl">{shortOrderId(order.id)}</h2>
-        </div>
-        <p className="text-right text-2xl font-semibold">{formatPrice(order.total)}</p>
-      </div>
-
-      <div className="mt-5 grid gap-3">
-        <SelectRow label="Stato ordine" value={order.status} options={orderStatuses} disabled={disabled} onChange={(status) => onPatch({ status: status as Order['status'] })} />
-        <SelectRow label="Pagamento" value={normalizePaymentStatus(order.paymentStatus)} options={paymentStatuses} disabled={disabled} onChange={(paymentStatus) => onPatch({ paymentStatus })} />
-        <SelectRow label="Preparazione" value={normalizeFulfillmentStatus(order.fulfillmentStatus)} options={fulfillmentStatuses} disabled={disabled} onChange={(fulfillmentStatus) => onPatch({ fulfillmentStatus })} />
-        <SelectRow label="Spedizione" value={normalizeShippingStatus(order.shippingStatus)} options={shippingStatuses} disabled={disabled} onChange={(shippingStatus) => onPatch({ shippingStatus })} />
-      </div>
-
-      <section className="mt-6 border-t border-ink/10 pt-5">
-        <h3 className="font-serif text-2xl">Cliente</h3>
-        <div className="mt-3 grid gap-1 text-sm text-ink/70">
-          <p className="font-semibold text-ink">{order.customer.fullName}</p>
-          <p>{order.customer.email}</p>
-          <p>{order.customer.phone}</p>
-          <p>{order.customer.address}, {order.customer.zip} {order.customer.city}</p>
-        </div>
-      </section>
-
-      <section className="mt-6 border-t border-ink/10 pt-5">
-        <h3 className="font-serif text-2xl">Prodotti</h3>
-        <div className="mt-3 grid gap-2">
-          {order.items.map((item) => (
-            <div key={`${item.productId}-${item.quantity}`} className="flex items-start justify-between gap-3 border-b border-ink/8 pb-2 text-sm">
-              <span>
-                <span className="block font-semibold">{item.productName ?? item.productId}</span>
-                <span className="text-ink/55">Quantita {item.quantity}</span>
-              </span>
-              <span className="font-semibold">{formatPrice((item.unitPrice ?? 0) * item.quantity)}</span>
+    <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+      <div className="grid gap-5">
+        <section className="rounded border border-ink/10 bg-white p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0">
+              <p className="text-xs font-semibold uppercase tracking-widest text-oud">Numero ordine</p>
+              <p className="mt-1 break-all font-mono text-sm text-ink/65">{order.id}</p>
             </div>
-          ))}
-        </div>
-        <div className="mt-3 rounded bg-mist p-3 text-sm">
-          <p>Subtotale: {formatPrice(order.subtotal)}</p>
-          <p>Sconto: -{formatPrice(order.discount)}</p>
-          <p>Spedizione: {order.shipping ? formatPrice(order.shipping) : 'Gratis'}</p>
-        </div>
-      </section>
+            <p className="text-2xl font-semibold">{formatPrice(order.total)}</p>
+          </div>
+        </section>
 
-      <section className="mt-6 border-t border-ink/10 pt-5">
-        <h3 className="font-serif text-2xl">Tracking e note</h3>
-        <label className="mt-3 block text-sm font-semibold">
-          Codice tracking
-          <input
-            value={trackingCode}
-            onChange={(event) => setTrackingCode(event.target.value)}
-            className="mt-2 min-h-11 w-full rounded border border-ink/12 px-3 text-sm outline-none focus:border-oud/40"
-            placeholder="Es. BRT123..."
-          />
-        </label>
-        <label className="mt-3 block text-sm font-semibold">
-          Note interne / cliente
-          <textarea
-            value={internalNotes}
-            onChange={(event) => setInternalNotes(event.target.value)}
-            rows={4}
-            className="mt-2 w-full rounded border border-ink/12 p-3 text-sm outline-none focus:border-oud/40"
-            placeholder="Disponibilita, pagamento, richieste particolari..."
-          />
-        </label>
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={() => onPatch({ trackingCode, internalNotes })}
-          className="mt-3 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded bg-ink px-4 text-sm font-semibold text-white transition hover:bg-ink/90 disabled:cursor-not-allowed disabled:opacity-55"
-        >
-          <CheckCircle2 size={16} />
-          Salva tracking e note
-        </button>
-      </section>
-    </aside>
+        <section className="rounded border border-ink/10 bg-white p-4">
+          <h3 className="font-serif text-2xl">Cliente</h3>
+          <div className="mt-3 grid gap-1 text-sm text-ink/70">
+            <p className="font-semibold text-ink">{order.customer.fullName}</p>
+            <p>{order.customer.email}</p>
+            <p>{order.customer.phone}</p>
+            <p>{order.customer.address}, {order.customer.zip} {order.customer.city}</p>
+          </div>
+        </section>
+
+        <section className="rounded border border-ink/10 bg-white p-4">
+          <h3 className="font-serif text-2xl">Prodotti</h3>
+          <div className="mt-3 grid gap-2">
+            {order.items.map((item) => (
+              <div key={`${item.productId}-${item.quantity}`} className="flex items-start justify-between gap-3 border-b border-ink/8 pb-2 text-sm">
+                <span>
+                  <span className="block font-semibold">{item.productName ?? item.productId}</span>
+                  <span className="text-ink/55">Quantita {item.quantity}</span>
+                </span>
+                <span className="font-semibold">{formatPrice((item.unitPrice ?? 0) * item.quantity)}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 rounded bg-mist p-3 text-sm">
+            <p>Subtotale: {formatPrice(order.subtotal)}</p>
+            <p>Sconto: -{formatPrice(order.discount)}</p>
+            <p>Spedizione: {order.shipping ? formatPrice(order.shipping) : 'Gratis'}</p>
+          </div>
+        </section>
+      </div>
+
+      <div className="grid gap-5">
+        <section className="rounded border border-ink/10 bg-white p-4">
+          <h3 className="font-serif text-2xl">Stati</h3>
+          <div className="mt-4 grid gap-3">
+            <SelectRow label="Stato ordine" value={order.status} options={orderStatuses} disabled={disabled} onChange={(status) => onPatch({ status: status as Order['status'] })} />
+            <SelectRow label="Pagamento" value={normalizePaymentStatus(order.paymentStatus)} options={paymentStatuses} disabled={disabled} onChange={(paymentStatus) => onPatch({ paymentStatus })} />
+            <SelectRow label="Preparazione" value={normalizeFulfillmentStatus(order.fulfillmentStatus)} options={fulfillmentStatuses} disabled={disabled} onChange={(fulfillmentStatus) => onPatch({ fulfillmentStatus })} />
+            <SelectRow label="Spedizione" value={normalizeShippingStatus(order.shippingStatus)} options={shippingStatuses} disabled={disabled} onChange={(shippingStatus) => onPatch({ shippingStatus })} />
+          </div>
+        </section>
+
+        <section className="rounded border border-ink/10 bg-white p-4">
+          <h3 className="font-serif text-2xl">Tracking e note</h3>
+          <label className="mt-3 block text-sm font-semibold">
+            Codice tracking
+            <input
+              value={trackingCode}
+              onChange={(event) => setTrackingCode(event.target.value)}
+              className="mt-2 min-h-11 w-full rounded border border-ink/12 px-3 text-sm outline-none focus:border-oud/40"
+              placeholder="Es. BRT123..."
+            />
+          </label>
+          <label className="mt-3 block text-sm font-semibold">
+            Note interne / cliente
+            <textarea
+              value={internalNotes}
+              onChange={(event) => setInternalNotes(event.target.value)}
+              rows={5}
+              className="mt-2 w-full rounded border border-ink/12 p-3 text-sm outline-none focus:border-oud/40"
+              placeholder="Disponibilita, pagamento, richieste particolari..."
+            />
+          </label>
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={() => onPatch({ trackingCode, internalNotes })}
+            className="mt-3 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded bg-ink px-4 text-sm font-semibold text-white transition hover:bg-ink/90 disabled:cursor-not-allowed disabled:opacity-55"
+          >
+            <CheckCircle2 size={16} />
+            Salva tracking e note
+          </button>
+        </section>
+      </div>
+    </div>
   );
 }
 
