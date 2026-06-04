@@ -19,6 +19,7 @@ Documenti collegati:
 - [x] Checkout manuale assistito con salvataggio ordine su Supabase.
 - [x] Coupon reali letti da Supabase in carrello/drawer/checkout.
 - [x] Admin protetto con Supabase Auth e ruoli `super_admin`/`admin`.
+- [x] Area configurazione tecnica separata e visibile solo al `super_admin`.
 - [x] Admin operativo per dashboard, prodotti, categorie, collezioni, ordini, clienti, inventario, coupon, contenuti e social.
 - [x] Upload immagini prodotto su Supabase Storage quando le env sono configurate.
 - [x] Email ordine/notifica proprietario predisposte con Resend.
@@ -94,6 +95,10 @@ Documenti collegati:
 - [x] Login admin con Supabase Auth.
 - [x] Ruolo `super_admin` per creatore progetto.
 - [x] Ruolo `admin` per proprietario negozio.
+- [x] Logout evidente dal portale admin.
+- [x] Link "Torna alla home" visibile nel portale admin.
+- [x] Navigazione admin differenziata per ruolo.
+- [x] Pagina configurazione tecnica riservata al `super_admin`.
 - [x] Protezione middleware per `/admin`.
 - [x] Protezione API admin server-side.
 - [x] Dashboard con dati reali Supabase.
