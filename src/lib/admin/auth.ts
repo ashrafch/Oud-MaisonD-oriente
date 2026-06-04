@@ -48,6 +48,12 @@ export async function requireAdminSession(): Promise<AdminSession> {
   return session;
 }
 
+export async function requireSuperAdminSession(): Promise<AdminSession> {
+  const session = await requireAdminSession();
+  if (session.role !== 'super_admin') redirect('/admin');
+  return session;
+}
+
 export async function requireAdminApiSession(): Promise<AdminSession | null> {
   return getCurrentAdminSession();
 }

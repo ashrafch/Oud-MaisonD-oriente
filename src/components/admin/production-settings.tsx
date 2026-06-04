@@ -12,8 +12,9 @@ const checklist = [
 export function ProductionSettings() {
   return (
     <section>
-      <h1 className="font-serif text-4xl sm:text-5xl">Impostazioni</h1>
-      <p className="mt-3 max-w-2xl text-ink/60">Checklist operativa per passare da demo locale a produzione Vercel + Supabase + Stripe.</p>
+      <p className="text-sm font-semibold uppercase tracking-widest text-oud">Area super admin</p>
+      <h1 className="mt-2 font-serif text-4xl sm:text-5xl">Configurazione tecnica</h1>
+      <p className="mt-3 max-w-2xl text-ink/60">Checklist riservata al profilo sviluppatore per ambiente Vercel, Supabase, Stripe, email e variabili sensibili. L&apos;admin operativo non vede questa sezione.</p>
       <div className="mt-8 grid gap-4">
         {checklist.map(([label, env]) => {
           const configured = env.split(', ').every((key) => Boolean(process.env[key]));
