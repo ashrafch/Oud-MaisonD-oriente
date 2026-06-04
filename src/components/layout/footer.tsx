@@ -22,8 +22,10 @@ export function Footer() {
     <footer className="border-t border-ink/10 bg-ink text-cream">
       <div className="container grid gap-10 py-10 sm:py-12 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
-          <p className="font-serif text-3xl">OUDÉ</p>
-          <p className="mt-3 max-w-md text-sm leading-6 text-cream/70">Maison D&apos;Oriente seleziona profumi arabi, oud, musk e rituali olfattivi con un approccio boutique: caldo, elegante e concreto.</p>
+          <p className="font-serif text-3xl">OUDE</p>
+          <p className="mt-3 max-w-md text-sm leading-6 text-cream/70">
+            Maison D&apos;Oriente seleziona profumi arabi, oud, musk e rituali olfattivi con un approccio boutique: caldo, elegante e concreto.
+          </p>
           <p className="mt-5 text-sm text-cream/70">Via Farini 26/D, 40124 Bologna</p>
           <p className="mt-2 text-sm text-cream/70">Email: <a href={`mailto:${email}`} className="underline underline-offset-4">{email}</a></p>
           <p className="mt-2 text-xs leading-5 text-cream/45">{process.env.NEXT_PUBLIC_BUSINESS_FISCAL_DATA || 'Dati fiscali da completare prima della pubblicazione.'}</p>

@@ -34,13 +34,13 @@ export function BundleBuilder() {
   };
 
   return (
-    <section className="container py-16">
+    <section className="container py-14 sm:py-16">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-oud"><Gift size={18} /> Bundle builder</p>
-          <h2 className="mt-2 font-serif text-4xl sm:text-5xl">Crea il rituale perfetto</h2>
+          <h2 className="mt-2 font-serif text-3xl sm:text-4xl">Crea il rituale perfetto</h2>
         </div>
-        <div className="rounded border border-ink/10 bg-white p-4">
+        <div className="rounded border border-ink/10 bg-white p-4 shadow-sm">
           <p className="text-sm text-ink/55">Totale bundle</p>
           <p className="text-2xl font-semibold">{formatPrice(discountedTotal || 0)}</p>
           {total ? <p className="text-sm text-ink/40 line-through">{formatPrice(total)}</p> : null}
@@ -48,20 +48,20 @@ export function BundleBuilder() {
       </div>
       <div className="mt-8 grid gap-5 lg:grid-cols-3">
         {options.map((group) => (
-          <div key={group.label} className="rounded border border-ink/10 bg-white p-5">
-            <p className="font-serif text-3xl">{group.label}</p>
+          <div key={group.label} className="rounded border border-ink/10 bg-white p-5 shadow-sm">
+            <p className="font-serif text-2xl sm:text-3xl">{group.label}</p>
             <div className="mt-4 grid gap-3">
               {group.products.map((product) => (
-                <button key={product.id} className={`rounded border p-3 text-left ${selected[group.label] === product.id ? 'border-oud bg-oud/8' : 'border-ink/10 hover:bg-mist'}`} onClick={() => setSelected((current) => ({ ...current, [group.label]: product.id }))}>
+                <button key={product.id} className={`rounded border p-3 text-left transition ${selected[group.label] === product.id ? 'border-oud bg-oud/8' : 'border-ink/10 hover:bg-mist'}`} onClick={() => setSelected((current) => ({ ...current, [group.label]: product.id }))}>
                   <span className="block font-semibold">{product.name}</span>
-                  <span className="mt-1 block text-sm text-ink/55">{formatPrice(product.price)} · {product.intensity}</span>
+                  <span className="mt-1 block text-sm text-ink/55">{formatPrice(product.price)} - {product.intensity}</span>
                 </button>
               ))}
             </div>
           </div>
         ))}
       </div>
-      <button className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded bg-oud px-5 text-sm font-semibold text-white sm:w-auto" onClick={addBundle}>
+      <button className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded bg-oud px-5 text-sm font-semibold text-white transition hover:bg-bark sm:w-auto" onClick={addBundle}>
         <Plus size={18} /> Aggiungi bundle al carrello
       </button>
     </section>

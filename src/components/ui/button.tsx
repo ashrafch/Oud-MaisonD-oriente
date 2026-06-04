@@ -12,7 +12,7 @@ export function Button({ href, children, variant = 'primary', className }: Butto
   const classes = cn(
     'inline-flex min-h-11 items-center justify-center rounded px-5 text-sm font-semibold transition focus-ring',
     variant === 'primary' && 'bg-oud text-white hover:bg-bark',
-    variant === 'secondary' && 'border border-ink/15 bg-cream text-ink hover:bg-mist',
+    variant === 'secondary' && 'border border-ink/12 bg-white text-ink hover:bg-mist',
     variant === 'ghost' && 'text-ink hover:bg-mist',
     className
   );
