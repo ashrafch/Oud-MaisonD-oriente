@@ -22,7 +22,7 @@ export type Order = {
   discount: number;
   shipping: number;
   total: number;
-  status: 'new' | 'paid' | 'preparing' | 'shipped' | 'delivered' | 'cancelled';
+  status: 'new' | 'paid' | 'preparing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
   createdAt: string;
 };
 

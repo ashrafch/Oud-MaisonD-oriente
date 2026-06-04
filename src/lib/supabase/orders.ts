@@ -4,9 +4,20 @@ import { createSupabaseServiceClient } from '@/lib/supabase/server';
 import { getSupabaseProducts } from './catalog';
 import { getSupabaseCoupons } from './coupons';
 
-export type AdminOrder = Order & {
+export type AdminOrder = Omit<Order, 'items'> & {
   customerId?: string;
   customerValue?: number;
+  paymentStatus?: string;
+  fulfillmentStatus?: string;
+  shippingStatus?: string;
+  trackingCode?: string;
+  internalNotes?: string;
+  items: AdminOrderItem[];
+};
+
+export type AdminOrderItem = CartItem & {
+  productName?: string;
+  unitPrice?: number;
 };
 
 type OrderNotes = {
@@ -24,7 +35,11 @@ type OrderRow = {
   id: string;
   customer_id: string | null;
   status: Order['status'];
+  payment_status: string | null;
+  fulfillment_status: string | null;
+  shipping_status: string | null;
   total_amount: number | string;
+  tracking_code: string | null;
   internal_notes: string | null;
   created_at: string;
   customers?: {
@@ -153,6 +168,45 @@ export async function updateSupabaseOrderStatus(orderId: string, status: Order['
   if (error) throw error;
 }
 
+export async function updateSupabaseOrder(input: {
+  orderId: string;
+  status?: Order['status'];
+  paymentStatus?: string;
+  fulfillmentStatus?: string;
+  shippingStatus?: string;
+  trackingCode?: string;
+  internalNotes?: string;
+}) {
+  const supabase = createSupabaseServiceClient() as any;
+  if (!supabase) throw new Error('Supabase service client non configurato');
+
+  const update: Record<string, string | null> = { updated_at: new Date().toISOString() };
+  if (input.status) update.status = input.status;
+  if (input.paymentStatus !== undefined) update.payment_status = input.paymentStatus;
+  if (input.fulfillmentStatus !== undefined) update.fulfillment_status = input.fulfillmentStatus;
+  if (input.shippingStatus !== undefined) update.shipping_status = input.shippingStatus;
+  if (input.trackingCode !== undefined) update.tracking_code = input.trackingCode || null;
+
+  if (input.internalNotes !== undefined) {
+    const existing = await getOrderNotes(input.orderId);
+    update.internal_notes = JSON.stringify({ ...existing, notes: input.internalNotes });
+  }
+
+  const { error } = await supabase.from('orders').update(update).eq('id', input.orderId);
+  if (error) throw error;
+}
+
+async function getOrderNotes(orderId: string): Promise<OrderNotes> {
+  const supabase = createSupabaseServiceClient() as any;
+  if (!supabase) return {};
+  const { data } = await supabase
+    .from('orders')
+    .select('internal_notes')
+    .eq('id', orderId)
+    .single();
+  return parseNotes(data?.internal_notes ?? null);
+}
+
 function mapOrderRow(row: OrderRow): AdminOrder {
   const notes = parseNotes(row.internal_notes);
   return {
@@ -160,6 +214,11 @@ function mapOrderRow(row: OrderRow): AdminOrder {
     customerId: row.customer_id ?? undefined,
     createdAt: row.created_at,
     status: row.status,
+    paymentStatus: row.payment_status ?? undefined,
+    fulfillmentStatus: row.fulfillment_status ?? undefined,
+    shippingStatus: row.shipping_status ?? undefined,
+    trackingCode: row.tracking_code ?? undefined,
+    internalNotes: notes.notes,
     subtotal: notes.subtotal ?? Number(row.total_amount),
     discount: notes.discount ?? 0,
     shipping: notes.shipping ?? 0,
@@ -175,7 +234,9 @@ function mapOrderRow(row: OrderRow): AdminOrder {
     },
     items: (row.order_items ?? []).map((item) => ({
       productId: item.product_id ?? item.product_name,
-      quantity: item.quantity
+      productName: item.product_name,
+      quantity: item.quantity,
+      unitPrice: Number(item.unit_price)
     }))
   };
 }

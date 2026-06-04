@@ -1,6 +1,6 @@
 # Project checklist e quadro produzione
 
-Ultimo aggiornamento: 03/06/2026
+Ultimo aggiornamento: 04/06/2026
 
 Questo e il documento unico per capire lo stato del progetto OUDÉ Maison D'Oriente Ecommerce: cosa e completato, cosa e predisposto, cosa manca prima della produzione e cosa conviene sviluppare dopo.
 
@@ -27,7 +27,8 @@ Documenti collegati:
 - [x] Build Next.js verificata localmente.
 - [x] Vercel configurato con deployment Production Ready.
 - [ ] Stripe non ancora configurato.
-- [ ] Resend non ancora attivo con API key/dominio reale.
+- [x] Resend attivo in test con `onboarding@resend.dev`.
+- [ ] Resend non ancora attivo con dominio reale.
 - [ ] Dati fiscali reali attivita non ancora inseriti.
 
 ## Storefront pubblico
@@ -82,13 +83,14 @@ Documenti collegati:
 - [x] Salvataggio ordine, cliente e righe ordine su Supabase.
 - [x] Success page con numero richiesta ordine.
 - [x] Email cliente/proprietario predisposte con Resend.
-- [ ] Attivare Resend con `RESEND_API_KEY`.
+- [x] Attivare Resend con `RESEND_API_KEY`.
 - [ ] Verificare dominio mittente in Resend.
-- [ ] Fare test reale email cliente e interna.
+- [x] Fare test reale email cliente e interna.
 - [ ] Checkout Stripe reale.
 - [ ] Webhook Stripe per confermare pagamento.
 - [ ] Aggiornamento inventario solo dopo pagamento confermato.
 - [ ] Gestione rimborsi e annullamenti da webhook/admin.
+- [ ] Trigger post-Stripe: dopo configurazione e test pagamento riuscito in Preview, aggiornare tutti i testi storefront/email/checkout che oggi indicano pagamento manuale o pagamento online non attivo.
 
 ## Admin portal
 
@@ -121,6 +123,7 @@ Documenti collegati:
 - [x] Gestione collezioni.
 - [x] Creazione/modifica collezione in modale dedicata.
 - [x] Gestione ordini e cambio stato.
+- [x] Console ordini avanzata con code operative, metriche, ricerca, dettaglio cliente, tracking, note e stati separati pagamento/preparazione/spedizione.
 - [x] CRM clienti leggero.
 - [x] Gestione coupon.
 - [x] Creazione coupon in modale dedicata.
@@ -181,11 +184,11 @@ Documenti collegati:
 - [x] Supporto destinatari interni multipli separati da virgola.
 - [x] Invio email non blocca il salvataggio ordine.
 - [x] Env documentate in `.env.example` e `FUNCTIONAL_GUIDE`.
-- [ ] Creare API key Resend.
-- [ ] Aggiungere `RESEND_API_KEY` in locale e Vercel.
+- [x] Creare API key Resend.
+- [x] Aggiungere `RESEND_API_KEY` in locale e Vercel.
 - [ ] Verificare dominio mittente.
 - [ ] Sostituire `ORDER_EMAIL_FROM` con email dominio reale.
-- [ ] Test reale ordine + email.
+- [x] Test reale ordine + email.
 - [ ] Email cambio stato ordine.
 - [ ] Template email piu brandizzato.
 
@@ -287,6 +290,7 @@ Documenti collegati:
 4. Confermare pagamento via webhook.
 5. Aggiornare inventario via webhook.
 6. Testare pagamenti, cancellazioni e rimborsi.
+7. Trigger contenuti post-Stripe: rimuovere il messaggio "pagamento online non attivo" da checkout, success page, email cliente, FAQ e testi operativi solo dopo test Stripe completato.
 
 ### Crescita V2
 
