@@ -2,7 +2,7 @@
 
 ## Visione
 
-OUDÉ Maison D'Oriente deve sembrare una boutique reale: elegante, orientale, calda, premium ma accessibile. Evitare estetiche generiche e sovraccariche.
+OUDE Maison D'Oriente deve sembrare una boutique reale: elegante, orientale, calda, premium ma accessibile. Evitare estetiche generiche e sovraccariche.
 
 ## Regole sviluppo
 
@@ -11,12 +11,14 @@ OUDÉ Maison D'Oriente deve sembrare una boutique reale: elegante, orientale, ca
 - Non esporre mai chiavi segrete lato client.
 - Validare input critici con Zod e proteggere operazioni admin server-side.
 - Tenere il gestionale semplice per una persona non tecnica: card, badge, filtri comprensibili, empty state chiari.
-- Gli asset brand sono in `public/brand` e sono già puliti dai numeri slider.
+- Gli asset brand sono in `public/brand` e sono gia puliti dai numeri slider.
+- Workflow Vercel: ogni nuovo sviluppo va testato prima in Preview. Si pubblica/promuove in Production solo dopo validazione esplicita del funzionamento.
 
-## Priorità prossime
+## Priorita prossime
 
-1. Collegare Supabase con auth admin/staff/customer.
-2. Implementare CRUD prodotti reale.
-3. Collegare carrello a Zustand/localStorage e Stripe con prodotti dinamici.
-4. Scrivere policy RLS complete per ordini, clienti, wishlist e admin.
-5. Aggiungere test di smoke per pagine principali e webhook.
+1. Configurare Resend e testare email ordine cliente/proprietario.
+2. Inserire dati fiscali e contatti reali.
+3. Testare upload immagini e ordine manuale su Vercel Production.
+4. Configurare Stripe in Preview, validare checkout/webhook e poi promuovere in Production.
+5. Scrivere policy RLS piu complete per dati cliente e ordini prima degli account pubblici.
+6. Aggiungere test smoke per pagine principali, checkout e webhook.
