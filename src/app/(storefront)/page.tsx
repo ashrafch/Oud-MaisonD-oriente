@@ -45,18 +45,20 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="container py-12 sm:py-14">
+      <section className="container py-10 sm:py-12">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {benefits.map(({ icon: Icon, label }) => (
-            <div key={label} className="premium-card flex min-h-20 items-center gap-3 rounded border border-ink/10 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-saffron/45">
-              <Icon className="text-oud" size={22} />
-              <span className="text-sm font-semibold">{label}</span>
+            <div key={label} className="premium-card flex min-h-20 items-center gap-3 rounded border border-saffron/20 bg-[linear-gradient(135deg,#fffaf2_0%,#f4efe6_100%)] p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-saffron/50">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded bg-oud/9 text-oud">
+                <Icon size={21} />
+              </span>
+              <span className="text-sm font-semibold text-ink/82">{label}</span>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="container py-10 sm:py-12">
+      <section className="container py-9 sm:py-11">
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-oud">In evidenza</p>
@@ -69,7 +71,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-mist py-14 sm:py-16">
+      <section className="bg-mist py-12 sm:py-14">
         <div className="container grid gap-8 lg:grid-cols-[0.8fr_1fr]">
           <div className="soft-shine relative min-h-[260px] overflow-hidden rounded border border-ink/10 sm:min-h-80">
             <Image src="/brand/location-card.png" alt="OUDE Bologna" fill className="object-cover" />
@@ -85,7 +87,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="container py-14 sm:py-16">
+      <section className="container py-12 sm:py-14">
         <p className="text-sm font-semibold uppercase tracking-widest text-oud">Categorie</p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map((category) => (
@@ -102,7 +104,7 @@ export default async function HomePage() {
       <BundleBuilder />
       <RecentlyViewedProducts />
 
-      <section className="bg-white py-14 sm:py-16">
+      <section className="bg-white py-12 sm:py-14">
         <div className="container grid gap-10 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <p className="text-sm font-semibold uppercase tracking-widest text-oud">Storytelling</p>

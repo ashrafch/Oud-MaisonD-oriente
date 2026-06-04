@@ -23,17 +23,17 @@ export function Header() {
       className={cn(
         'sticky top-0 z-40 border-b transition-all duration-300',
         isScrolled
-          ? 'border-ink/12 bg-cream/96 shadow-[0_18px_45px_rgba(23,20,18,0.10)] backdrop-blur-xl'
-          : 'border-cream/18 bg-cream/78 backdrop-blur-md'
+          ? 'border-cream/18 bg-cream/64 shadow-[0_18px_45px_rgba(23,20,18,0.10)] backdrop-blur-xl'
+          : 'border-cream/18 bg-cream/82 backdrop-blur-md'
       )}
     >
       <div
         className={cn(
-          'overflow-hidden border-b border-ink/8 bg-oud text-cream transition-all duration-300',
+          'overflow-hidden border-b border-saffron/18 bg-[rgba(201,155,69,0.16)] text-ink transition-all duration-300',
           isScrolled ? 'max-h-0 opacity-0' : 'max-h-10 opacity-100'
         )}
       >
-        <div className="container flex min-h-9 items-center justify-center text-center text-[12px] font-semibold uppercase tracking-widest text-cream/86">
+        <div className="container flex min-h-9 items-center justify-center text-center text-[12px] font-semibold uppercase tracking-widest text-ink/66">
           Boutique profumi arabi a Bologna - ritiro in negozio e spedizione rapida
         </div>
       </div>
