@@ -31,6 +31,77 @@ a { color: inherit; text-decoration: none; }
 .focus-ring:focus-visible { outline: 2px solid #c99b45; outline-offset: 3px; }
 ::selection { background: #c99b45; color: #171412; }
 
+.nav-underline {
+  position: relative;
+}
+
+.nav-underline::after {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 1px;
+  background: currentColor;
+  content: "";
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 180ms ease;
+}
+
+.nav-underline:hover::after,
+.nav-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.premium-card {
+  position: relative;
+  isolation: isolate;
+}
+
+.premium-card::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(201, 155, 69, 0.18), transparent 34%, rgba(116, 29, 18, 0.12));
+  content: "";
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+.premium-card:hover::before {
+  opacity: 1;
+}
+
+.soft-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.soft-shine::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 0%, transparent 35%, rgba(255, 255, 255, 0.28) 48%, transparent 62%, transparent 100%);
+  content: "";
+  transform: translateX(-115%);
+  transition: transform 700ms ease;
+}
+
+.group:hover .soft-shine::after {
+  transform: translateX(115%);
+}
+
 @media (min-width: 768px) {
   .container { width: min(1200px, calc(100% - 56px)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

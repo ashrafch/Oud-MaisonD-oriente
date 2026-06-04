@@ -39,7 +39,7 @@ export default async function HomePage() {
               <Button href="/categories/set-regalo" variant="secondary" className="w-full border-cream/25 bg-cream/10 text-cream hover:bg-cream/18 sm:w-auto">Idee regalo</Button>
             </div>
           </div>
-          <div className="relative min-h-[320px] overflow-hidden rounded border border-cream/15 bg-cream shadow-soft sm:min-h-[440px]">
+          <div className="soft-shine relative min-h-[320px] overflow-hidden rounded border border-cream/15 bg-cream shadow-soft sm:min-h-[440px]">
             <Image src="/brand/botanical-identity.jpg" alt="Identita OUDE Maison D'Oriente" fill priority className="object-cover" />
           </div>
         </div>
@@ -48,7 +48,7 @@ export default async function HomePage() {
       <section className="container py-12 sm:py-14">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {benefits.map(({ icon: Icon, label }) => (
-            <div key={label} className="flex min-h-20 items-center gap-3 rounded border border-ink/10 bg-white p-4 shadow-sm">
+            <div key={label} className="premium-card flex min-h-20 items-center gap-3 rounded border border-ink/10 bg-white p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-saffron/45">
               <Icon className="text-oud" size={22} />
               <span className="text-sm font-semibold">{label}</span>
             </div>
@@ -71,7 +71,7 @@ export default async function HomePage() {
 
       <section className="bg-mist py-14 sm:py-16">
         <div className="container grid gap-8 lg:grid-cols-[0.8fr_1fr]">
-          <div className="relative min-h-[260px] overflow-hidden rounded border border-ink/10 sm:min-h-80">
+          <div className="soft-shine relative min-h-[260px] overflow-hidden rounded border border-ink/10 sm:min-h-80">
             <Image src="/brand/location-card.png" alt="OUDE Bologna" fill className="object-cover" />
           </div>
           <div className="self-center">
@@ -89,9 +89,10 @@ export default async function HomePage() {
         <p className="text-sm font-semibold uppercase tracking-widest text-oud">Categorie</p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map((category) => (
-            <a key={category.slug} href={`/categories/${category.slug}`} className="rounded border border-ink/10 bg-white p-5 transition hover:border-oud/40 hover:shadow-soft sm:p-6">
+            <a key={category.slug} href={`/categories/${category.slug}`} className="premium-card group rounded border border-ink/10 bg-white p-5 transition duration-300 hover:-translate-y-1 hover:border-oud/40 hover:shadow-soft sm:p-6">
               <h3 className="font-serif text-2xl sm:text-3xl">{category.name}</h3>
               <p className="mt-2 text-sm leading-6 text-ink/62">{category.description}</p>
+              <span className="mt-5 inline-flex text-xs font-semibold uppercase tracking-widest text-oud opacity-0 transition duration-300 group-hover:opacity-100">Esplora categoria</span>
             </a>
           ))}
         </div>
