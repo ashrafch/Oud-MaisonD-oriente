@@ -2,7 +2,9 @@
 
 import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Copy, ImagePlus, Pencil, Plus, Save, Trash2 } from 'lucide-react';
+import { Copy, EyeOff, ImagePlus, Pencil, Plus, Save } from 'lucide-react';
+import { ActionButton } from '@/components/admin/action-button';
+import { AdminModal } from '@/components/admin/admin-modal';
 import { categories, products as seedProducts } from '@/data/catalog';
 import { formatPrice, getStoredProducts, setStoredProducts, useCartStore } from '@/lib/cart/store';
 import type { Product } from '@/types/catalog';
@@ -20,7 +22,7 @@ const emptyDraft: ProductDraft = {
   id: '',
   slug: '',
   name: '',
-  brand: 'OUDÉ',
+  brand: 'OUDE',
   price: 0,
   compareAtPrice: undefined,
   category: 'oud',
@@ -89,6 +91,7 @@ export function ProductManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const editing = Boolean(draft.id);
   const visibleProducts = useMemo(() => products.filter((product) => [product.name, product.brand, product.category].join(' ').toLowerCase().includes(query.toLowerCase())), [products, query]);
 
@@ -116,6 +119,21 @@ export function ProductManager() {
     setStoredProducts(nextProducts);
   };
 
+  const openCreate = () => {
+    setDraft(emptyDraft);
+    setIsModalOpen(true);
+  };
+
+  const openEdit = (product: Product) => {
+    setDraft(draftFromProduct(product));
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setDraft(emptyDraft);
+    setIsModalOpen(false);
+  };
+
   const saveProduct = async () => {
     if (!draft.name || !draft.shortDescription || !draft.price) {
       notify({ title: 'Compila nome, descrizione e prezzo', tone: 'warning' });
@@ -131,13 +149,14 @@ export function ProductManager() {
       });
       if (!response.ok) throw new Error('Salvataggio Supabase fallito');
       await loadProducts();
-      setDraft(emptyDraft);
+      closeModal();
       notify({ title: editing ? 'Prodotto aggiornato su Supabase' : 'Prodotto creato su Supabase', description: product.name, tone: 'success' });
     } catch {
       const nextProducts = products.some((item) => item.id === product.id)
         ? products.map((item) => item.id === product.id ? product : item)
         : [product, ...products];
       persistProducts(nextProducts);
+      closeModal();
       notify({ title: 'Prodotto salvato in locale', description: 'Supabase non ha confermato il salvataggio.', tone: 'warning' });
     } finally {
       setIsSaving(false);
@@ -200,84 +219,95 @@ export function ProductManager() {
   };
 
   return (
-    <div className="grid gap-8 xl:grid-cols-[420px_1fr]">
-      <section className="h-fit rounded border border-ink/10 bg-white p-5">
-        <div className="flex items-center gap-2">
-          <Plus className="text-oud" size={20} />
-          <h2 className="font-serif text-3xl">{editing ? 'Modifica prodotto' : 'Nuovo prodotto'}</h2>
+    <section>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-widest text-oud">Catalogo admin</p>
+          <h1 className="font-serif text-4xl sm:text-5xl">Prodotti</h1>
+          <p className="mt-3 text-ink/60">Crea e modifica i prodotti da una finestra dedicata, senza perdere il contesto del catalogo.</p>
         </div>
-        <div className="mt-5 grid gap-4">
-          <Field label="Nome" value={draft.name} onChange={(value) => setDraft((current) => ({ ...current, name: value, slug: current.slug || slugify(value) }))} />
-          <Field label="Slug" value={draft.slug} onChange={(value) => setDraft((current) => ({ ...current, slug: slugify(value) }))} />
-          <Field label="Brand" value={draft.brand} onChange={(value) => setDraft((current) => ({ ...current, brand: value }))} />
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Prezzo" type="number" value={String(draft.price)} onChange={(value) => setDraft((current) => ({ ...current, price: Number(value) }))} />
-            <Field label="Stock" type="number" value={String(draft.stock)} onChange={(value) => setDraft((current) => ({ ...current, stock: Number(value) }))} />
-          </div>
-          <label className="grid gap-2">
-            <span className="text-sm font-semibold">Categoria</span>
-            <select value={draft.category} onChange={(event) => setDraft((current) => ({ ...current, category: event.target.value }))} className="min-h-11 rounded border border-ink/12 px-3 text-sm">
-              {categories.map((category) => <option key={category.slug} value={category.slug}>{category.name}</option>)}
-            </select>
-          </label>
-          <div className="relative h-48 overflow-hidden rounded border border-ink/10 bg-mist">
-            <Image src={draft.image} alt="Anteprima prodotto" fill className="object-cover" unoptimized={draft.image.startsWith('data:')} />
-          </div>
-          <label className="flex cursor-pointer items-center justify-center gap-2 rounded border border-dashed border-ink/20 p-3 text-sm font-semibold hover:bg-mist">
-            <ImagePlus size={18} /> Carica foto prodotto
-            <input type="file" accept="image/*" className="sr-only" onChange={(event) => void handleImage(event.target.files?.[0])} />
-            {isUploading ? <span className="text-xs text-ink/55">Upload...</span> : null}
-          </label>
-          <Field label="Intensità" value={draft.intensity} onChange={(value) => setDraft((current) => ({ ...current, intensity: value }))} />
-          <Field label="Durata" value={draft.duration} onChange={(value) => setDraft((current) => ({ ...current, duration: value }))} />
-          <Field label="Descrizione breve" value={draft.shortDescription} onChange={(value) => setDraft((current) => ({ ...current, shortDescription: value }))} />
-          <Field label="Note testa" value={draft.topNotes} onChange={(value) => setDraft((current) => ({ ...current, topNotes: value }))} />
-          <Field label="Note cuore" value={draft.heartNotes} onChange={(value) => setDraft((current) => ({ ...current, heartNotes: value }))} />
-          <Field label="Note fondo" value={draft.baseNotes} onChange={(value) => setDraft((current) => ({ ...current, baseNotes: value }))} />
-          <Field label="Tag marketing" value={draft.tags} onChange={(value) => setDraft((current) => ({ ...current, tags: value }))} />
-          <div className="rounded border border-ink/10 bg-cream p-4">
-            <p className="font-serif text-2xl">SEO prodotto</p>
-            <div className="mt-4 grid gap-4">
-              <Field label="SEO title" value={draft.seoTitle} onChange={(value) => setDraft((current) => ({ ...current, seoTitle: value }))} />
-              <Field label="SEO description" value={draft.seoDescription} onChange={(value) => setDraft((current) => ({ ...current, seoDescription: value }))} />
+        <button className="inline-flex min-h-11 items-center justify-center gap-2 rounded bg-oud px-4 text-sm font-semibold text-white" onClick={openCreate}>
+          <Plus size={17} /> Nuovo prodotto
+        </button>
+      </div>
+
+      <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cerca prodotto" className="mt-6 min-h-11 w-full rounded border border-ink/12 bg-white px-3 text-sm sm:max-w-sm" />
+
+      <div className="mt-6 grid gap-4">
+        {isLoading ? <div className="rounded border border-ink/10 bg-white p-5 text-sm text-ink/60">Caricamento catalogo da Supabase...</div> : null}
+        {visibleProducts.map((product) => (
+          <article key={product.id} className="grid gap-4 rounded border border-ink/10 bg-white p-4 md:grid-cols-[96px_1fr_auto] md:items-center">
+            <div className="relative h-28 overflow-hidden rounded bg-mist md:h-24">
+              <Image src={product.image} alt={product.name} fill className="object-cover" unoptimized={product.image.startsWith('data:')} />
+            </div>
+            <div>
+              <p className="font-serif text-2xl">{product.name}</p>
+              <p className="mt-1 text-sm text-ink/55">{product.category} - {formatPrice(product.price)} - {product.stock} pezzi</p>
+              <p className="mt-2 text-sm text-ink/65">{product.shortDescription}</p>
+            </div>
+            <div className="flex flex-wrap gap-2 md:justify-end">
+              <ActionButton label="Modifica" icon={<Pencil size={16} />} onClick={() => openEdit(product)} />
+              <ActionButton label="Duplica" icon={<Copy size={16} />} onClick={() => void duplicateProduct(product)} />
+              <ActionButton label="Nascondi" icon={<EyeOff size={16} />} tone="danger" onClick={() => void deleteProduct(product.id)} />
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <AdminModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        size="xl"
+        title={editing ? 'Modifica prodotto' : 'Nuovo prodotto'}
+        description="Compila dati prodotto, immagine, stock, note olfattive e SEO. Il salvataggio aggiorna Supabase quando disponibile."
+      >
+        <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
+          <div className="grid gap-4">
+            <Field label="Nome" value={draft.name} onChange={(value) => setDraft((current) => ({ ...current, name: value, slug: current.slug || slugify(value) }))} />
+            <Field label="Slug" value={draft.slug} onChange={(value) => setDraft((current) => ({ ...current, slug: slugify(value) }))} />
+            <Field label="Brand" value={draft.brand} onChange={(value) => setDraft((current) => ({ ...current, brand: value }))} />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Prezzo" type="number" value={String(draft.price)} onChange={(value) => setDraft((current) => ({ ...current, price: Number(value) }))} />
+              <Field label="Stock" type="number" value={String(draft.stock)} onChange={(value) => setDraft((current) => ({ ...current, stock: Number(value) }))} />
+            </div>
+            <label className="grid gap-2">
+              <span className="text-sm font-semibold">Categoria</span>
+              <select value={draft.category} onChange={(event) => setDraft((current) => ({ ...current, category: event.target.value }))} className="min-h-11 rounded border border-ink/12 px-3 text-sm">
+                {categories.map((category) => <option key={category.slug} value={category.slug}>{category.name}</option>)}
+              </select>
+            </label>
+            <Field label="Intensita" value={draft.intensity} onChange={(value) => setDraft((current) => ({ ...current, intensity: value }))} />
+            <Field label="Durata" value={draft.duration} onChange={(value) => setDraft((current) => ({ ...current, duration: value }))} />
+            <Field label="Descrizione breve" value={draft.shortDescription} onChange={(value) => setDraft((current) => ({ ...current, shortDescription: value }))} />
+            <Field label="Note testa" value={draft.topNotes} onChange={(value) => setDraft((current) => ({ ...current, topNotes: value }))} />
+            <Field label="Note cuore" value={draft.heartNotes} onChange={(value) => setDraft((current) => ({ ...current, heartNotes: value }))} />
+            <Field label="Note fondo" value={draft.baseNotes} onChange={(value) => setDraft((current) => ({ ...current, baseNotes: value }))} />
+            <Field label="Tag marketing" value={draft.tags} onChange={(value) => setDraft((current) => ({ ...current, tags: value }))} />
+            <div className="rounded border border-ink/10 bg-white p-4">
+              <p className="font-serif text-2xl">SEO prodotto</p>
+              <div className="mt-4 grid gap-4">
+                <Field label="SEO title" value={draft.seoTitle} onChange={(value) => setDraft((current) => ({ ...current, seoTitle: value }))} />
+                <Field label="SEO description" value={draft.seoDescription} onChange={(value) => setDraft((current) => ({ ...current, seoDescription: value }))} />
+              </div>
             </div>
           </div>
-          <div className="flex gap-3">
-            <button className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded bg-oud px-4 text-sm font-semibold text-white disabled:opacity-55" disabled={isSaving} onClick={() => void saveProduct()}><Save size={17} /> {isSaving ? 'Salvataggio...' : 'Salva'}</button>
-            <button className="min-h-11 rounded border border-ink/12 px-4 text-sm font-semibold" onClick={() => setDraft(emptyDraft)}>Reset</button>
-          </div>
+          <aside className="grid h-fit gap-4 rounded border border-ink/10 bg-white p-4">
+            <div className="relative h-56 overflow-hidden rounded border border-ink/10 bg-mist">
+              <Image src={draft.image} alt="Anteprima prodotto" fill className="object-cover" unoptimized={draft.image.startsWith('data:')} />
+            </div>
+            <label className="flex cursor-pointer items-center justify-center gap-2 rounded border border-dashed border-ink/20 p-3 text-sm font-semibold hover:bg-mist">
+              <ImagePlus size={18} /> Carica foto prodotto
+              <input type="file" accept="image/*" className="sr-only" onChange={(event) => void handleImage(event.target.files?.[0])} />
+            </label>
+            {isUploading ? <p className="text-xs text-ink/55">Upload in corso...</p> : null}
+          </aside>
         </div>
-      </section>
-      <section>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-widest text-oud">Catalogo admin</p>
-            <h1 className="font-serif text-4xl sm:text-5xl">Prodotti</h1>
-          </div>
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cerca prodotto" className="min-h-11 rounded border border-ink/12 bg-white px-3 text-sm" />
+        <div className="mt-6 flex flex-col-reverse gap-3 border-t border-ink/10 pt-5 sm:flex-row sm:justify-end">
+          <button className="min-h-11 rounded border border-ink/12 px-4 text-sm font-semibold" onClick={closeModal}>Annulla</button>
+          <button className="inline-flex min-h-11 items-center justify-center gap-2 rounded bg-oud px-4 text-sm font-semibold text-white disabled:opacity-55" disabled={isSaving} onClick={() => void saveProduct()}><Save size={17} /> {isSaving ? 'Salvataggio...' : 'Salva prodotto'}</button>
         </div>
-        <div className="mt-6 grid gap-4">
-          {isLoading ? <div className="rounded border border-ink/10 bg-white p-5 text-sm text-ink/60">Caricamento catalogo da Supabase...</div> : null}
-          {visibleProducts.map((product) => (
-            <article key={product.id} className="grid gap-4 rounded border border-ink/10 bg-white p-4 md:grid-cols-[96px_1fr_auto] md:items-center">
-              <div className="relative h-28 overflow-hidden rounded bg-mist md:h-24">
-                <Image src={product.image} alt={product.name} fill className="object-cover" unoptimized={product.image.startsWith('data:')} />
-              </div>
-              <div>
-                <p className="font-serif text-2xl">{product.name}</p>
-                <p className="mt-1 text-sm text-ink/55">{product.category} · {formatPrice(product.price)} · {product.stock} pezzi</p>
-                <p className="mt-2 text-sm text-ink/65">{product.shortDescription}</p>
-              </div>
-              <div className="flex flex-wrap gap-2 md:justify-end">
-                <button className="rounded border border-ink/10 p-2 hover:bg-mist" aria-label="Modifica" onClick={() => setDraft(draftFromProduct(product))}><Pencil size={17} /></button>
-                <button className="rounded border border-ink/10 p-2 hover:bg-mist" aria-label="Duplica" onClick={() => void duplicateProduct(product)}><Copy size={17} /></button>
-                <button className="rounded border border-ink/10 p-2 text-oud hover:bg-mist" aria-label="Elimina" onClick={() => void deleteProduct(product.id)}><Trash2 size={17} /></button>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-    </div>
+      </AdminModal>
+    </section>
   );
 }
 

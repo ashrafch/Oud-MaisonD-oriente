@@ -106,6 +106,7 @@ Documenti collegati:
 - [x] Gestione prodotti.
 - [x] Creazione prodotto.
 - [x] Modifica prodotto.
+- [x] Creazione/modifica prodotto in modale dedicata.
 - [x] Duplicazione prodotto.
 - [x] Soft delete prodotto.
 - [x] Upload immagine con preview e Supabase Storage.
@@ -115,10 +116,15 @@ Documenti collegati:
 - [x] Modifica stock.
 - [x] Tracciamento movimenti inventario.
 - [x] Gestione categorie.
+- [x] Creazione/modifica categoria in modale dedicata.
+- [x] Toggle categoria visibile/nascosta con azione chiara.
 - [x] Gestione collezioni.
+- [x] Creazione/modifica collezione in modale dedicata.
 - [x] Gestione ordini e cambio stato.
 - [x] CRM clienti leggero.
 - [x] Gestione coupon.
+- [x] Creazione coupon in modale dedicata.
+- [x] Azioni admin con icona e testo/tooltip leggibile.
 - [x] Gestione contenuti/pagine.
 - [x] Social/marketing: generatore caption e salvataggio post.
 - [x] Settings con checklist env.
