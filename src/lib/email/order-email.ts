@@ -20,15 +20,18 @@ export async function sendOrderEmails(input: OrderEmailInput) {
   if (!apiKey || ownerEmails.length === 0) return { skipped: true };
 
   const html = renderOrderHtml(input);
-  await Promise.allSettled([
+  const results = await Promise.allSettled([
     sendEmail({ apiKey, from, to: input.customer.email, subject: `Ordine ricevuto ${input.orderId}`, html }),
     sendEmail({ apiKey, from, to: ownerEmails, subject: `Nuovo ordine ${input.orderId}`, html })
   ]);
+  results.forEach((result) => {
+    if (result.status === 'rejected') console.error('Order email failed', result.reason);
+  });
   return { skipped: false };
 }
 
 function getOwnerEmails() {
-  const emails = [process.env.ORDER_NOTIFICATION_EMAIL, process.env.ADMIN_EMAILS]
+  const emails = [process.env.ORDER_NOTIFICATION_EMAIL]
     .flatMap((value) => value?.split(',') ?? [])
     .map((email) => email.trim())
     .filter(Boolean);

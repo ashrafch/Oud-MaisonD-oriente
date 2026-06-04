@@ -104,10 +104,10 @@ export async function createSupabaseOrder(input: {
   if (orderError) throw orderError;
 
   const orderItems = input.items.map((item) => {
-    const product = products.find((entry) => entry.id === item.productId);
+    const product = products.find((entry) => entry.id === item.productId || entry.slug === item.productId);
     return {
       order_id: order.id,
-      product_id: item.productId,
+      product_id: isUuid(item.productId) ? item.productId : product && isUuid(product.id) ? product.id : null,
       product_name: product?.name ?? item.productId,
       quantity: item.quantity,
       unit_price: product?.price ?? 0
@@ -187,4 +187,8 @@ function parseNotes(value: string | null): OrderNotes {
   } catch {
     return { notes: value };
   }
+}
+
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
