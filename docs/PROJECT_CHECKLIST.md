@@ -96,6 +96,7 @@ Documenti collegati:
 - [x] Ruolo `super_admin` per creatore progetto.
 - [x] Ruolo `admin` per proprietario negozio.
 - [x] Logout evidente dal portale admin.
+- [x] Link "Torna alla home" visibile nel portale admin.
 - [x] Navigazione admin differenziata per ruolo.
 - [x] Pagina configurazione tecnica riservata al `super_admin`.
 - [x] Protezione middleware per `/admin`.
