@@ -20,7 +20,7 @@ export function LogoutButton({ className = '' }: { className?: string }) {
   };
 
   return (
-    <button onClick={() => void logout()} disabled={isLoggingOut} className={`flex w-full items-center justify-center gap-2 rounded bg-ink px-3 py-3 text-xs font-semibold text-white transition hover:bg-bark disabled:cursor-wait disabled:opacity-70 ${className}`}>
+    <button onClick={() => void logout()} disabled={isLoggingOut} className={`inline-flex min-h-10 w-full items-center justify-center gap-2 rounded border border-oud bg-oud px-3 py-2 text-xs font-semibold text-white transition hover:bg-bark disabled:cursor-wait disabled:opacity-70 ${className}`}>
       <LogOut size={15} />
       {isLoggingOut ? 'Uscita...' : 'Esci dal portale'}
     </button>

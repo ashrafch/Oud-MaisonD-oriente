@@ -55,8 +55,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </div>
           ) : null}
         </div>
-        <div className="mt-auto grid gap-3 border-t border-ink/10 pt-5">
-          <Link href="/" className="flex items-center justify-center gap-2 rounded border border-ink/10 px-3 py-3 text-xs font-semibold hover:bg-mist"><Home size={15} />Torna alla home</Link>
+        <div className="mt-auto grid gap-2 border-t border-ink/10 pt-5">
+          <Link href="/" className="inline-flex min-h-10 items-center justify-center gap-2 rounded border border-ink/10 bg-cream px-3 py-2 text-xs font-semibold text-ink transition hover:border-oud/25 hover:bg-mist"><Home size={15} />Torna alla home</Link>
           <LogoutButton />
         </div>
       </aside>
@@ -68,7 +68,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <p className="text-xs uppercase tracking-widest text-ink/50">{roleLabels[admin.role]}</p>
             </div>
             <div className="grid grid-cols-2 gap-2 sm:min-w-80">
-              <Link href="/" className="flex items-center justify-center gap-2 rounded border border-ink/10 px-3 py-3 text-xs font-semibold hover:bg-mist"><Home size={15} />Home</Link>
+              <Link href="/" className="inline-flex min-h-10 items-center justify-center gap-2 rounded border border-ink/10 bg-cream px-3 py-2 text-xs font-semibold text-ink transition hover:border-oud/25 hover:bg-mist"><Home size={15} />Home</Link>
               <LogoutButton />
             </div>
           </div>
@@ -79,13 +79,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       </header>
       <main className="lg:pl-64">
         <div className="container py-8">
-          <div className="mb-6 hidden items-center justify-between gap-4 rounded border border-ink/10 bg-white px-4 py-3 lg:flex">
+          <div className="mb-6 hidden items-center justify-between gap-4 rounded border border-ink/10 bg-white px-4 py-3 shadow-sm lg:flex">
             <div>
               <p className="text-sm font-semibold">{admin.fullName ?? admin.email}</p>
               <p className="text-xs uppercase tracking-widest text-ink/45">{roleLabels[admin.role]}</p>
             </div>
             <div className="flex items-center gap-3">
-              <Link href="/" className="flex items-center gap-2 rounded border border-ink/10 px-4 py-3 text-xs font-semibold hover:bg-mist"><Home size={15} />Torna alla home</Link>
+              <Link href="/" className="inline-flex min-h-10 items-center gap-2 rounded border border-ink/10 bg-cream px-4 py-2 text-xs font-semibold text-ink transition hover:border-oud/25 hover:bg-mist"><Home size={15} />Torna alla home</Link>
               <LogoutButton className="w-auto px-5" />
             </div>
           </div>
