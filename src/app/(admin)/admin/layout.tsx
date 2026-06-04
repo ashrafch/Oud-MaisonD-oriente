@@ -56,7 +56,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           ) : null}
         </div>
         <div className="mt-auto grid gap-2 border-t border-ink/10 pt-5">
-          <Link href="/" className="inline-flex min-h-10 items-center justify-center gap-2 rounded border border-ink/10 bg-cream px-3 py-2 text-xs font-semibold text-ink transition hover:border-oud/25 hover:bg-mist"><Home size={15} />Torna alla home</Link>
+          <Link href="/" className="inline-flex min-h-10 items-center justify-center gap-2 rounded border border-ink/10 bg-cream px-3 py-2 text-xs font-semibold text-ink transition hover:border-oud/25 hover:bg-mist"><Home size={15} />Homepage</Link>
           <LogoutButton />
         </div>
       </aside>
@@ -85,7 +85,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <p className="text-xs uppercase tracking-widest text-ink/45">{roleLabels[admin.role]}</p>
             </div>
             <div className="flex items-center gap-3">
-              <Link href="/" className="inline-flex min-h-10 items-center gap-2 rounded border border-ink/10 bg-cream px-4 py-2 text-xs font-semibold text-ink transition hover:border-oud/25 hover:bg-mist"><Home size={15} />Torna alla home</Link>
+              <Link href="/" className="inline-flex min-h-10 items-center gap-2 rounded border border-ink/10 bg-cream px-3 py-2 text-xs font-semibold text-ink transition hover:border-oud/25 hover:bg-mist"><Home size={15} />Homepage</Link>
               <LogoutButton className="w-auto px-5" />
             </div>
           </div>
