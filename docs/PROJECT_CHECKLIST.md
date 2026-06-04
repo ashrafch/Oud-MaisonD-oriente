@@ -24,7 +24,7 @@ Documenti collegati:
 - [x] Email ordine/notifica proprietario predisposte con Resend.
 - [x] Pagine legali/informative complete in versione pre-produzione.
 - [x] Build Next.js verificata localmente.
-- [ ] Vercel non ancora configurato.
+- [x] Vercel configurato con deployment Production Ready.
 - [ ] Stripe non ancora configurato.
 - [ ] Resend non ancora attivo con API key/dominio reale.
 - [ ] Dati fiscali reali attivita non ancora inseriti.
@@ -142,7 +142,7 @@ Documenti collegati:
 - [x] Coupon da Supabase.
 - [x] Categorie/collezioni/contenuti/marketing da Supabase.
 - [x] Inventario e movimenti da Supabase.
-- [ ] Replicare tutte le env su Vercel.
+- [x] Replicare env principali su Vercel per Production e Preview.
 - [ ] Rafforzare RLS per dati personali cliente prima di account pubblici.
 - [ ] Ridurre fallback localStorage dopo monitoraggio produzione.
 - [ ] Backup/restore strategy.
@@ -183,14 +183,18 @@ Documenti collegati:
 - [x] Repository GitHub configurata.
 - [x] Codice pushato su `main`.
 - [x] Build locale Next.js verificata.
-- [ ] Importare repository in Vercel.
-- [ ] Impostare tutte le variabili da `.env.example`.
-- [ ] Impostare `NEXT_PUBLIC_SITE_URL` con dominio reale.
+- [x] Importare repository in Vercel.
+- [x] Impostare env principali per Production e Preview.
+- [x] Impostare `NEXT_PUBLIC_SITE_URL` con alias Vercel production.
+- [x] Deployment Production `Ready`.
+- [x] Smoke test storefront production: home, catalogo, carrello, checkout, pagine legali.
+- [x] Smoke test API pubblica coupon.
+- [x] Confermare protezione API admin non autenticata con `401`.
 - [ ] Collegare dominio custom.
 - [ ] Verificare DNS.
-- [ ] Deploy production.
-- [ ] Testare storefront online.
-- [ ] Testare admin online.
+- [x] Deploy production.
+- [x] Testare storefront online.
+- [x] Testare login admin online.
 - [ ] Testare upload immagini online.
 - [ ] Testare ordine manuale online.
 - [ ] Attivare Vercel Analytics/Speed Insights se desiderato.
@@ -258,11 +262,11 @@ Documenti collegati:
 
 ### Prima della produzione
 
-1. Configurare Vercel e replicare env.
-2. Configurare dominio e `NEXT_PUBLIC_SITE_URL`.
-3. Configurare Resend e test email ordine.
-4. Inserire dati fiscali e contatti reali.
-5. Fare smoke test completo online.
+1. Configurare Resend e test email ordine.
+2. Inserire dati fiscali e contatti reali.
+3. Testare upload immagini e ordine manuale online.
+4. Collegare dominio custom e aggiornare `NEXT_PUBLIC_SITE_URL`.
+5. Fare smoke test completo online sul dominio finale.
 
 ### Produzione pagamento
 
