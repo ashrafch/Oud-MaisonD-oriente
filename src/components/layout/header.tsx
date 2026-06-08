@@ -4,12 +4,14 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { categories } from '@/data/catalog';
 import { cn } from '@/lib/utils/cn';
 import { HeaderActions } from './header-actions';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const updateHeader = () => setIsScrolled(window.scrollY > 12);
@@ -58,13 +60,14 @@ export function Header() {
           </Link>
 
           <nav className="hidden items-center gap-6 text-[13px] font-semibold uppercase tracking-wide text-ink/68 xl:flex">
-            <NavLink href="/products">Catalogo</NavLink>
+            <NavLink href="/" active={pathname === '/'}>Maison</NavLink>
+            <NavLink href="/products" active={pathname === '/products' || pathname.startsWith('/products/')}>Catalogo</NavLink>
             {categories.slice(0, 5).map((category) => (
-              <NavLink key={category.slug} href={`/categories/${category.slug}`}>
+              <NavLink key={category.slug} href={`/categories/${category.slug}`} active={pathname === `/categories/${category.slug}`}>
                 {category.name}
               </NavLink>
             ))}
-            <NavLink href="/about">Boutique</NavLink>
+            <NavLink href="/about" active={pathname === '/about'}>Boutique</NavLink>
           </nav>
 
           <HeaderActions />
@@ -72,13 +75,14 @@ export function Header() {
 
         <nav aria-label="Navigazione mobile" className={cn('border-t border-ink/8 transition-all duration-300 xl:hidden', isScrolled ? 'bg-cream/76' : 'bg-cream/50')}>
           <div className="container flex gap-4 overflow-x-auto py-3 text-[13px] font-semibold text-ink/70 [scrollbar-width:none]">
-            <Link className="nav-underline shrink-0 transition hover:text-oud" href="/products">Catalogo</Link>
+            <MobileNavLink href="/" active={pathname === '/'}>Maison</MobileNavLink>
+            <MobileNavLink href="/products" active={pathname === '/products' || pathname.startsWith('/products/')}>Catalogo</MobileNavLink>
             {categories.slice(0, 6).map((category) => (
-              <Link className="nav-underline shrink-0 transition hover:text-oud" key={category.slug} href={`/categories/${category.slug}`}>
+              <MobileNavLink key={category.slug} href={`/categories/${category.slug}`} active={pathname === `/categories/${category.slug}`}>
                 {category.name}
-              </Link>
+              </MobileNavLink>
             ))}
-            <Link className="nav-underline shrink-0 transition hover:text-oud" href="/about">Boutique</Link>
+            <MobileNavLink href="/about" active={pathname === '/about'}>Boutique</MobileNavLink>
           </div>
         </nav>
       </header>
@@ -87,9 +91,17 @@ export function Header() {
   );
 }
 
-function NavLink({ href, children }: { href: string; children: ReactNode }) {
+function NavLink({ href, children, active = false }: { href: string; children: ReactNode; active?: boolean }) {
   return (
-    <Link className="nav-underline transition hover:text-oud" href={href}>
+    <Link className={cn('nav-underline transition hover:text-oud', active ? 'text-oud' : '')} href={href} aria-current={active ? 'page' : undefined}>
+      {children}
+    </Link>
+  );
+}
+
+function MobileNavLink({ href, children, active = false }: { href: string; children: ReactNode; active?: boolean }) {
+  return (
+    <Link className={cn('nav-underline shrink-0 transition hover:text-oud', active ? 'text-oud' : '')} href={href} aria-current={active ? 'page' : undefined}>
       {children}
     </Link>
   );
