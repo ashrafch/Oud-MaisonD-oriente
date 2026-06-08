@@ -95,8 +95,10 @@ function NavLink({ href, children, active = false }: { href: string; children: R
   return (
     <Link
       className={cn(
-        'nav-underline rounded-full px-2.5 py-1 transition hover:text-oud',
-        active ? 'bg-cream/82 text-ink shadow-[0_8px_22px_rgba(35,27,23,0.08)] ring-1 ring-ink/10' : ''
+        'nav-underline relative rounded-full px-2.5 py-1 transition hover:text-oud',
+        active
+          ? 'bg-[linear-gradient(135deg,rgba(255,250,242,0.92),rgba(234,220,200,0.58))] text-ink shadow-[0_12px_30px_rgba(35,27,23,0.12)] ring-1 ring-white/65 before:absolute before:inset-x-2 before:bottom-0 before:h-px before:bg-[linear-gradient(90deg,transparent,rgba(201,155,69,0.95),transparent)] before:content-[""]'
+          : ''
       )}
       href={href}
       aria-current={active ? 'page' : undefined}
@@ -110,8 +112,10 @@ function MobileNavLink({ href, children, active = false }: { href: string; child
   return (
     <Link
       className={cn(
-        'nav-underline shrink-0 rounded-full px-2.5 py-1 transition hover:text-oud',
-        active ? 'bg-cream/82 text-ink shadow-[0_8px_22px_rgba(35,27,23,0.08)] ring-1 ring-ink/10' : ''
+        'nav-underline relative shrink-0 rounded-full px-2.5 py-1 transition hover:text-oud',
+        active
+          ? 'bg-[linear-gradient(135deg,rgba(255,250,242,0.92),rgba(234,220,200,0.58))] text-ink shadow-[0_12px_30px_rgba(35,27,23,0.12)] ring-1 ring-white/65 before:absolute before:inset-x-2 before:bottom-0 before:h-px before:bg-[linear-gradient(90deg,transparent,rgba(201,155,69,0.95),transparent)] before:content-[""]'
+          : ''
       )}
       href={href}
       aria-current={active ? 'page' : undefined}
