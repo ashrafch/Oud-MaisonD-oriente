@@ -93,7 +93,14 @@ export function Header() {
 
 function NavLink({ href, children, active = false }: { href: string; children: ReactNode; active?: boolean }) {
   return (
-    <Link className={cn('nav-underline transition hover:text-oud', active ? 'text-oud' : '')} href={href} aria-current={active ? 'page' : undefined}>
+    <Link
+      className={cn(
+        'nav-underline rounded-full px-2.5 py-1 transition hover:text-oud',
+        active ? 'bg-cream/82 text-ink shadow-[0_8px_22px_rgba(35,27,23,0.08)] ring-1 ring-ink/10' : ''
+      )}
+      href={href}
+      aria-current={active ? 'page' : undefined}
+    >
       {children}
     </Link>
   );
@@ -101,7 +108,14 @@ function NavLink({ href, children, active = false }: { href: string; children: R
 
 function MobileNavLink({ href, children, active = false }: { href: string; children: ReactNode; active?: boolean }) {
   return (
-    <Link className={cn('nav-underline shrink-0 transition hover:text-oud', active ? 'text-oud' : '')} href={href} aria-current={active ? 'page' : undefined}>
+    <Link
+      className={cn(
+        'nav-underline shrink-0 rounded-full px-2.5 py-1 transition hover:text-oud',
+        active ? 'bg-cream/82 text-ink shadow-[0_8px_22px_rgba(35,27,23,0.08)] ring-1 ring-ink/10' : ''
+      )}
+      href={href}
+      aria-current={active ? 'page' : undefined}
+    >
       {children}
     </Link>
   );
