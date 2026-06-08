@@ -6,7 +6,7 @@ Base ecommerce professionale per profumi arabi, oud, musk, attar, bakhoor, gift 
 
 - Next.js App Router, TypeScript, React, Tailwind CSS
 - Supabase PostgreSQL/Auth/Storage predisposto
-- Stripe Checkout e webhook predisposti
+- Stripe Checkout, PayPal Checkout e webhook predisposti
 - Zod, Zustand, TanStack Table-ready, React Hook Form-ready
 - SEO con metadata, sitemap, robots e JSON-LD Product/Organization
 
@@ -22,9 +22,9 @@ npm run dev
 
 - `src/app/(storefront)`: pagine pubbliche ecommerce
 - `src/app/(admin)/admin`: gestionale negoziante
-- `src/app/api`: checkout Stripe e webhook
+- `src/app/api`: checkout, webhook Stripe e webhook PayPal
 - `src/components`: UI, layout, product card e storefront
-- `src/lib`: Supabase, Stripe, validazioni, SEO, carrello
+- `src/lib`: Supabase, Stripe, PayPal, validazioni, SEO, carrello
 - `src/data`: seed demo TypeScript per UI
 - `supabase/migrations`: schema PostgreSQL iniziale
 - `docs`: specifica originale e roadmap
@@ -41,7 +41,8 @@ npm run dev
 2. Crea progetto Supabase, applica `supabase/migrations/001_initial_schema.sql` e poi `supabase/seed.sql`.
 3. Configura le variabili in `.env.example` su Vercel.
 4. Configura Stripe Checkout e il webhook `/api/webhooks/stripe`.
-5. Aggiorna testi legali, policy spedizione/resi e numero WhatsApp.
+5. Configura PayPal Checkout e il webhook `/api/webhooks/paypal`.
+6. Aggiorna testi legali, policy spedizione/resi e numero WhatsApp.
 
 ## Roadmap e stato
 

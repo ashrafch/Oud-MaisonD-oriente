@@ -29,6 +29,8 @@ type OrderNotes = {
   discount?: number;
   shipping?: number;
   couponCode?: string;
+  paymentProvider?: 'manual' | 'stripe' | 'paypal';
+  paymentReference?: string;
 };
 
 type OrderRow = {
@@ -63,6 +65,12 @@ export async function createSupabaseOrder(input: {
   shipping: number;
   total: number;
   couponCode?: string;
+  status?: Order['status'];
+  paymentStatus?: string;
+  fulfillmentStatus?: string;
+  paymentProvider?: 'manual' | 'stripe' | 'paypal';
+  paymentReference?: string;
+  skipEmails?: boolean;
 }) {
   const supabase = createSupabaseServiceClient() as any;
   if (!supabase) throw new Error('Supabase service client non configurato');
@@ -83,7 +91,7 @@ export async function createSupabaseOrder(input: {
   const products = await getSupabaseProducts({ includeHidden: true });
   const coupons = await getSupabaseCoupons();
   const subtotal = input.items.reduce((sum, item) => {
-    const product = products.find((entry) => entry.id === item.productId);
+    const product = products.find((entry) => entry.id === item.productId || entry.slug === item.productId);
     return sum + (product ? product.price * item.quantity : 0);
   }, 0);
   const normalizedCoupon = input.couponCode?.trim().toUpperCase() ?? '';
@@ -100,16 +108,18 @@ export async function createSupabaseOrder(input: {
     subtotal,
     discount,
     shipping,
-    couponCode: normalizedCoupon
+    couponCode: normalizedCoupon,
+    paymentProvider: input.paymentProvider ?? 'manual',
+    paymentReference: input.paymentReference
   };
 
   const { data: order, error: orderError } = await supabase
     .from('orders')
     .insert({
       customer_id: customer.id,
-      status: 'new',
-      payment_status: 'manual_pending',
-      fulfillment_status: 'new',
+      status: input.status ?? 'new',
+      payment_status: input.paymentStatus ?? 'manual_pending',
+      fulfillment_status: input.fulfillmentStatus ?? 'new',
       total_amount: total,
       currency: 'EUR',
       internal_notes: JSON.stringify(notes)
@@ -132,16 +142,18 @@ export async function createSupabaseOrder(input: {
   const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
   if (itemsError) throw itemsError;
 
-  await sendOrderEmails({
-    orderId: order.id,
-    customer: input.customer,
-    items: input.items,
-    products,
-    subtotal,
-    discount,
-    shipping,
-    total
-  });
+  if (!input.skipEmails) {
+    await sendOrderEmails({
+      orderId: order.id,
+      customer: input.customer,
+      items: input.items,
+      products,
+      subtotal,
+      discount,
+      shipping,
+      total
+    });
+  }
 
   return { id: order.id as string, createdAt: order.created_at as string };
 }

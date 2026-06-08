@@ -4,6 +4,7 @@ const checklist = [
   ['Supabase URL e anon key', 'NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY'],
   ['Supabase service role solo server', 'SUPABASE_SERVICE_ROLE_KEY'],
   ['Stripe secret e webhook', 'STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET'],
+  ['PayPal Checkout e webhook', 'PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_WEBHOOK_ID, NEXT_PUBLIC_PAYPAL_CLIENT_ID'],
   ['Dominio produzione', 'NEXT_PUBLIC_SITE_URL'],
   ['Email transazionali', 'RESEND_API_KEY'],
   ['WhatsApp assistenza', 'NEXT_PUBLIC_WHATSAPP_NUMBER']

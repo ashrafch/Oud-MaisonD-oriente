@@ -27,6 +27,7 @@ Documenti collegati:
 - [x] Build Next.js verificata localmente.
 - [x] Vercel configurato con deployment Production Ready.
 - [ ] Stripe non ancora configurato.
+- [x] PayPal predisposto lato codice, API e checkout ma non ancora configurato con account.
 - [x] Resend attivo in test con `onboarding@resend.dev`.
 - [ ] Resend non ancora attivo con dominio reale.
 - [ ] Dati fiscali reali attivita non ancora inseriti.
@@ -88,9 +89,15 @@ Documenti collegati:
 - [x] Fare test reale email cliente e interna.
 - [ ] Checkout Stripe reale.
 - [ ] Webhook Stripe per confermare pagamento.
+- [x] Checkout PayPal predisposto e nascosto finche `NEXT_PUBLIC_PAYPAL_ENABLED=false`.
+- [x] API PayPal Orders v2 predisposte per create/capture.
+- [x] Webhook PayPal predisposto con verifica firma.
+- [ ] Account PayPal Business non ancora configurato.
+- [ ] Credenziali PayPal sandbox/live non ancora inserite.
+- [ ] Test PayPal in Preview non ancora eseguito.
 - [ ] Aggiornamento inventario solo dopo pagamento confermato.
 - [ ] Gestione rimborsi e annullamenti da webhook/admin.
-- [ ] Trigger post-Stripe: dopo configurazione e test pagamento riuscito in Preview, aggiornare tutti i testi storefront/email/checkout che oggi indicano pagamento manuale o pagamento online non attivo.
+- [ ] Trigger post-pagamenti: dopo configurazione e test riuscito di Stripe/PayPal in Preview, aggiornare tutti i testi storefront/email/checkout che oggi indicano pagamento manuale o pagamento online non attivo.
 
 ## Admin portal
 
@@ -176,6 +183,24 @@ Documenti collegati:
 - [ ] Aggiornare stock solo dopo pagamento.
 - [ ] Testare pagamento completato, cancellato, fallito, rimborso.
 
+## PayPal
+
+- [x] File server PayPal predisposti.
+- [x] API `/api/paypal/orders` per creare ordine PayPal predisposta.
+- [x] API `/api/paypal/orders/[paypalOrderId]/capture` per catturare pagamento predisposta.
+- [x] Webhook route `/api/webhooks/paypal` predisposta.
+- [x] Metodo PayPal nel checkout nascosto dietro `NEXT_PUBLIC_PAYPAL_ENABLED`.
+- [x] Aggancio con Supabase per ordine `pending` e aggiornamento a `paid`.
+- [ ] Creare account PayPal Business.
+- [ ] Creare app REST PayPal sandbox.
+- [ ] Aggiungere `PAYPAL_CLIENT_ID`.
+- [ ] Aggiungere `PAYPAL_CLIENT_SECRET`.
+- [ ] Aggiungere `NEXT_PUBLIC_PAYPAL_CLIENT_ID`.
+- [ ] Configurare webhook endpoint su dominio Vercel.
+- [ ] Aggiungere `PAYPAL_WEBHOOK_ID`.
+- [ ] Testare pagamento sandbox completato, annullato e negato.
+- [ ] Passare a credenziali live solo dopo validazione Preview.
+
 ## Resend email
 
 - [x] Codice email ordine predisposto.
@@ -223,7 +248,7 @@ Documenti collegati:
 - [x] Contatti pre-produzione.
 - [x] Chi siamo pre-produzione.
 - [x] Cookie banner coerente con soli cookie tecnici.
-- [x] Checkout manuale chiarito prima di Stripe.
+- [x] Checkout manuale chiarito prima di Stripe/PayPal.
 - [ ] Inserire ragione sociale reale.
 - [ ] Inserire P.IVA/codice fiscale attivita.
 - [ ] Inserire indirizzo legale/esercizio.
@@ -268,6 +293,7 @@ Documenti collegati:
 - [ ] Test automatici smoke principali.
 - [ ] Test checkout manuale.
 - [ ] Test webhook Stripe quando attivo.
+- [ ] Test webhook PayPal quando attivo.
 - [ ] Test admin CRUD.
 - [ ] Error monitoring produzione.
 - [ ] Rate limiting/API hardening per endpoint sensibili.
@@ -284,13 +310,13 @@ Documenti collegati:
 
 ### Produzione pagamento
 
-1. Configurare Stripe.
+1. Configurare Stripe e PayPal in Preview.
 2. Collegare checkout reale.
-3. Gestire ordine pending.
-4. Confermare pagamento via webhook.
+3. Gestire ordine pending per entrambi i provider.
+4. Confermare pagamento via webhook/capture.
 5. Aggiornare inventario via webhook.
 6. Testare pagamenti, cancellazioni e rimborsi.
-7. Trigger contenuti post-Stripe: rimuovere il messaggio "pagamento online non attivo" da checkout, success page, email cliente, FAQ e testi operativi solo dopo test Stripe completato.
+7. Trigger contenuti post-pagamenti: rimuovere il messaggio "pagamento online non attivo" da checkout, success page, email cliente, FAQ e testi operativi solo dopo test Stripe/PayPal completato.
 
 ### Crescita V2
 

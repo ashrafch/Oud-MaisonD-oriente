@@ -141,7 +141,7 @@ Campi richiesti:
 - Citta.
 - CAP.
 
-Nota: in questa fase il cliente non paga online. Il negozio verifica disponibilita e contatta il cliente per conferma e pagamento. Stripe resta il prossimo step.
+Nota: in questa fase il cliente non paga online. Il negozio verifica disponibilita e contatta il cliente per conferma e pagamento. Stripe e PayPal restano i prossimi step di pagamento online.
 
 ### Email ordine e notifica interna
 
@@ -342,6 +342,43 @@ Da completare:
 - Creazione ordine nel database.
 - Aggiornamento inventario.
 - Email conferma.
+
+### PayPal
+
+File:
+- `src/lib/paypal/server.ts`
+- `src/lib/paypal/checkout.ts`
+- `src/app/api/paypal/orders/route.ts`
+- `src/app/api/paypal/orders/[paypalOrderId]/capture/route.ts`
+- `src/app/api/webhooks/paypal/route.ts`
+
+Predisposto per:
+- PayPal Orders API v2 server-side.
+- Creazione ordine PayPal da carrello reale.
+- Creazione ordine interno Supabase in stato `pending`.
+- Capture PayPal dopo approvazione cliente.
+- Aggiornamento ordine admin a `paid`, `ready_to_prepare` e `not_ready`.
+- Webhook PayPal con verifica firma tramite `PAYPAL_WEBHOOK_ID`.
+
+Variabili da configurare in `.env.local` e poi su Vercel Preview/Production:
+
+```env
+PAYPAL_ENVIRONMENT=sandbox
+PAYPAL_CLIENT_ID=
+PAYPAL_CLIENT_SECRET=
+PAYPAL_WEBHOOK_ID=
+NEXT_PUBLIC_PAYPAL_CLIENT_ID=
+NEXT_PUBLIC_PAYPAL_ENABLED=false
+```
+
+Come completare:
+1. Crea account PayPal Business.
+2. Entra in PayPal Developer Dashboard.
+3. Crea una app REST in Sandbox.
+4. Copia Client ID e Secret in `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET` e il Client ID pubblico in `NEXT_PUBLIC_PAYPAL_CLIENT_ID`.
+5. Crea webhook verso `/api/webhooks/paypal` sul dominio Preview/Production e copia l'ID in `PAYPAL_WEBHOOK_ID`.
+6. Testa un pagamento in Preview con `NEXT_PUBLIC_PAYPAL_ENABLED=true`.
+7. Solo dopo test riuscito, passa a `PAYPAL_ENVIRONMENT=live` e aggiorna le credenziali live.
 
 ### SEO
 
