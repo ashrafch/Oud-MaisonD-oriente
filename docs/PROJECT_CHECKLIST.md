@@ -1,6 +1,6 @@
 # Project checklist e quadro produzione
 
-Ultimo aggiornamento: 04/06/2026
+Ultimo aggiornamento: 08/06/2026
 
 Questo e il documento unico per capire lo stato del progetto OUDÉ Maison D'Oriente Ecommerce: cosa e completato, cosa e predisposto, cosa manca prima della produzione e cosa conviene sviluppare dopo.
 
@@ -201,6 +201,32 @@ Documenti collegati:
 - [ ] Testare pagamento sandbox completato, annullato e negato.
 - [ ] Passare a credenziali live solo dopo validazione Preview.
 
+## Coda sviluppo post-configurazione pagamenti
+
+Questa sezione va avviata subito dopo aver configurato e testato Stripe e PayPal in Preview.
+
+### Pagamenti robusti
+
+- [ ] Stripe live/test completo collegato al carrello reale.
+- [ ] PayPal sandbox/live completo collegato al carrello reale.
+- [ ] Ordine `pending` creato prima del pagamento per Stripe e PayPal.
+- [ ] Ordine `paid` solo dopo conferma webhook/capture.
+- [ ] Gestione pagamenti falliti, annullati e scaduti.
+- [ ] Gestione rimborsi totali/parziali da admin o webhook.
+- [ ] Idempotenza per evitare doppi ordini, doppi pagamenti o doppio scarico stock.
+- [ ] Email transazionali per pagamento ricevuto, pagamento fallito, ordine in preparazione, spedizione e rimborso.
+- [ ] Aggiornamento contenuti checkout/email/success page quando il pagamento online sara attivo.
+
+### Inventario robusto
+
+- [ ] Scarico stock solo dopo pagamento confermato.
+- [ ] Blocco checkout se stock insufficiente.
+- [ ] Movimenti magazzino automatici per vendita, reso, rimborso, annullamento e correzione manuale.
+- [ ] Alert sotto scorta automatici in dashboard/admin.
+- [ ] Stato prodotto automatico `sold_out` quando lo stock arriva a zero.
+- [ ] Ripristino stock su annullamento o rimborso se applicabile.
+- [ ] Storico inventario completo e leggibile in admin.
+
 ## Resend email
 
 - [x] Codice email ordine predisposto.
@@ -311,12 +337,14 @@ Documenti collegati:
 ### Produzione pagamento
 
 1. Configurare Stripe e PayPal in Preview.
-2. Collegare checkout reale.
-3. Gestire ordine pending per entrambi i provider.
-4. Confermare pagamento via webhook/capture.
-5. Aggiornare inventario via webhook.
-6. Testare pagamenti, cancellazioni e rimborsi.
-7. Trigger contenuti post-pagamenti: rimuovere il messaggio "pagamento online non attivo" da checkout, success page, email cliente, FAQ e testi operativi solo dopo test Stripe/PayPal completato.
+2. Avviare subito la coda sviluppo "Pagamenti robusti".
+3. Avviare subito la coda sviluppo "Inventario robusto".
+4. Collegare checkout reale.
+5. Gestire ordine pending per entrambi i provider.
+6. Confermare pagamento via webhook/capture.
+7. Aggiornare inventario via webhook.
+8. Testare pagamenti, cancellazioni e rimborsi.
+9. Trigger contenuti post-pagamenti: rimuovere il messaggio "pagamento online non attivo" da checkout, success page, email cliente, FAQ e testi operativi solo dopo test Stripe/PayPal completato.
 
 ### Crescita V2
 
