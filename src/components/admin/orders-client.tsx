@@ -190,7 +190,7 @@ export function OrdersClient() {
           <p className="text-sm font-semibold uppercase tracking-widest text-oud">Gestione operativa</p>
           <h1 className="font-serif text-4xl sm:text-5xl">Ordini</h1>
           <p className="mt-3 max-w-3xl text-sm text-ink/60">
-            Controlla pagamento, preparazione e spedizione in fasi separate. La pagina e gia impostata per Stripe: quando il webhook sara attivo aggiornera automaticamente lo stato pagamento.
+            Controlla pagamento, preparazione e spedizione in fasi separate. Gli ordini pagati online con Stripe vengono aggiornati automaticamente dal webhook; le richieste assistite restano gestibili manualmente.
           </p>
           <p className="mt-2 text-xs font-semibold uppercase tracking-widest text-ink/45">
             {isLoading ? 'Aggiornamento ordini...' : lastUpdated ? `Aggiornata alle ${lastUpdated.toLocaleTimeString('it-IT')}` : 'Dati Supabase'}

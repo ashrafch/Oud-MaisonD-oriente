@@ -10,8 +10,8 @@ export default async function CheckoutSuccessPage({ searchParams }: { searchPara
         <h1 className="mt-3 font-serif text-5xl">{isPaid ? 'Ordine confermato' : 'Richiesta ordine inviata'}</h1>
         <p className="mt-4 text-ink/65">
           {isPaid
-            ? 'Grazie, il pagamento risulta completato. Il negozio vede l ordine nel pannello admin e procedera con preparazione e spedizione.'
-            : 'Grazie, il negozio vede la richiesta nel pannello admin. Verificheremo disponibilita e dati di spedizione, poi ti contatteremo per conferma e pagamento.'}
+            ? 'Grazie, il pagamento e stato completato. La boutique ha ricevuto l ordine e procedera con preparazione e spedizione secondo disponibilita e tempi operativi.'
+            : 'Grazie, il negozio vede la richiesta nel pannello admin. Verificheremo disponibilita e dati di spedizione, poi ti contatteremo per confermare i prossimi passaggi.'}
         </p>
         {order ? <p className="mt-5 rounded bg-mist p-3 text-sm font-semibold">Numero ordine: {order}</p> : null}
         <Button href="/products" className="mt-6">Continua lo shopping</Button>

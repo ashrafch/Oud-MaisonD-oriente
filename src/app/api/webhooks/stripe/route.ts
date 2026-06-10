@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { sendStripePaymentConfirmedEmails } from '@/lib/email/order-email';
 import { stripe } from '@/lib/stripe/server';
 import { decrementStockForPaidOrder } from '@/lib/supabase/fulfillment';
 import { updateSupabaseOrder } from '@/lib/supabase/orders';
@@ -32,6 +33,7 @@ export async function POST(request: Request) {
         internalNotes: `Pagamento Stripe confermato. Sessione: ${session.id}`
       });
       await decrementStockForPaidOrder(orderId);
+      await sendStripePaymentConfirmedEmails(orderId);
     }
   }
 

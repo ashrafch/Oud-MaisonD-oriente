@@ -119,7 +119,7 @@ Funzionalita:
 - Aggiunta al carrello da card.
 - Empty state.
 
-### Checkout manuale assistito
+### Checkout online e richiesta assistita
 
 Percorso: `/checkout`
 
@@ -141,7 +141,9 @@ Campi richiesti:
 - Citta.
 - CAP.
 
-Nota: in questa fase il cliente non paga online. Il negozio verifica disponibilita e contatta il cliente per conferma e pagamento. Stripe e PayPal restano i prossimi step di pagamento online.
+Il metodo principale e il pagamento online con carta tramite Stripe. Il checkout crea un ordine interno in stato `pending`, reindirizza il cliente su Stripe e conferma l ordine solo quando il webhook comunica il pagamento completato.
+
+La richiesta assistita resta disponibile per consulenze, verifiche di disponibilita o casi particolari. In quel caso il negozio ricontatta il cliente prima del pagamento e della preparazione.
 
 ### Email ordine e notifica interna
 
@@ -339,17 +341,17 @@ Predisposto per:
 - Aggiornamento ordine a `paid`.
 - Scarico stock dopo pagamento confermato.
 - Salvataggio ID sessione Stripe sull'ordine.
+- Email cliente/proprietario dopo pagamento confermato.
 - Success/cancel URL.
 
 Da completare:
-- Replicare env Stripe live su Vercel Production.
-- Configurare webhook Stripe live verso `/api/webhooks/stripe` Production.
-- Email conferma pagamento ricevuto.
+- Test pagamento reale Stripe live controllato.
 - Gestione rimborsi, cancellazioni e pagamenti falliti avanzata.
 
 Stato validazione:
 - Stripe test in Preview validato con carta sandbox.
 - Webhook Preview validato con risposta HTTP 200.
+- Stripe live configurato su Vercel Production.
 - Ordine Supabase aggiornato a `paid` solo via webhook.
 - Stock scalato dopo pagamento confermato e protetto da doppio webhook.
 

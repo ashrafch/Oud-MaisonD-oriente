@@ -1,6 +1,6 @@
 # Project checklist e quadro produzione
 
-Ultimo aggiornamento: 08/06/2026
+Ultimo aggiornamento: 10/06/2026
 
 Questo e il documento unico per capire lo stato del progetto OUDÉ Maison D'Oriente Ecommerce: cosa e completato, cosa e predisposto, cosa manca prima della produzione e cosa conviene sviluppare dopo.
 
@@ -16,18 +16,19 @@ Documenti collegati:
 - [x] Catalogo e schede prodotto collegate a Supabase con fallback locale.
 - [x] Carrello persistente funzionante con prodotti Supabase, drawer, pagina carrello e checkout.
 - [x] Wishlist, prodotti visti di recente, quick view, finder olfattivo e bundle builder.
-- [x] Checkout manuale assistito con salvataggio ordine su Supabase.
+- [x] Checkout online con Stripe e alternativa richiesta assistita.
 - [x] Coupon reali letti da Supabase in carrello/drawer/checkout.
 - [x] Admin protetto con Supabase Auth e ruoli `super_admin`/`admin`.
 - [x] Area configurazione tecnica separata e visibile solo al `super_admin`.
 - [x] Admin operativo per dashboard, prodotti, categorie, collezioni, ordini, clienti, inventario, coupon, contenuti e social.
 - [x] Upload immagini prodotto su Supabase Storage quando le env sono configurate.
 - [x] Email ordine/notifica proprietario predisposte con Resend.
-- [x] Pagine legali/informative complete in versione pre-produzione.
+- [x] Pagine legali/informative aggiornate per checkout Stripe attivo.
 - [x] Build Next.js verificata localmente.
 - [x] Vercel configurato con deployment Production Ready.
 - [x] Stripe configurato e validato in Preview con chiavi test.
-- [ ] Stripe Production live non ancora attivo su Vercel.
+- [x] Stripe Production live configurato su Vercel.
+- [ ] Test pagamento reale Stripe live non ancora eseguito.
 - [x] PayPal predisposto lato codice, API e checkout ma non ancora configurato con account.
 - [x] Resend attivo in test con `onboarding@resend.dev`.
 - [ ] Resend non ancora attivo con dominio reale.
@@ -81,15 +82,16 @@ Documenti collegati:
 - [x] Coupon form nel drawer e nella pagina carrello.
 - [x] Coupon validati contro Supabase.
 - [x] Calcolo subtotale, sconto, spedizione e totale.
-- [x] Checkout manuale assistito.
+- [x] Checkout Stripe con carta come metodo principale.
+- [x] Checkout assistito come alternativa manuale.
 - [x] Salvataggio ordine, cliente e righe ordine su Supabase.
-- [x] Success page con numero richiesta ordine.
+- [x] Success page differenziata per pagamento online e richiesta assistita.
 - [x] Email cliente/proprietario predisposte con Resend.
 - [x] Attivare Resend con `RESEND_API_KEY`.
 - [ ] Verificare dominio mittente in Resend.
 - [x] Fare test reale email cliente e interna.
 - [x] Checkout Stripe reale da carrello predisposto in Preview.
-- [x] Webhook Stripe per confermare pagamento predisposto.
+- [x] Webhook Stripe per confermare pagamento attivo.
 - [x] Checkout PayPal predisposto e nascosto finche `NEXT_PUBLIC_PAYPAL_ENABLED=false`.
 - [x] API PayPal Orders v2 predisposte per create/capture.
 - [x] Webhook PayPal predisposto con verifica firma.
@@ -98,7 +100,7 @@ Documenti collegati:
 - [ ] Test PayPal in Preview non ancora eseguito.
 - [x] Aggiornamento inventario solo dopo pagamento confermato predisposto per Stripe.
 - [ ] Gestione rimborsi e annullamenti da webhook/admin.
-- [ ] Trigger post-pagamenti: dopo configurazione e test riuscito di Stripe/PayPal in Production, aggiornare tutti i testi storefront/email/checkout che oggi indicano pagamento manuale o pagamento online non attivo.
+- [x] Trigger post-pagamenti eseguito: checkout, success page, FAQ, legali, admin ed email aggiornati per Stripe attivo.
 
 ## Admin portal
 
@@ -186,8 +188,9 @@ Documenti collegati:
 - [x] Testare checkout Stripe in Preview.
 - [x] Testare pagamento completato in Preview.
 - [x] Salvare ID sessione Stripe sull'ordine.
-- [ ] Replicare env Stripe live su Vercel Production.
-- [ ] Configurare webhook Stripe live verso `/api/webhooks/stripe` Production.
+- [x] Replicare env Stripe live su Vercel Production.
+- [x] Configurare webhook Stripe live verso `/api/webhooks/stripe` Production.
+- [ ] Testare pagamento reale Stripe live.
 - [ ] Testare cancellazione, fallimento e rimborso.
 
 ## PayPal
@@ -215,7 +218,8 @@ Questa sezione va avviata subito dopo aver configurato e testato Stripe e PayPal
 ### Pagamenti robusti
 
 - [x] Stripe test completo collegato al carrello reale in Preview.
-- [ ] Stripe live completo collegato al carrello reale in Production.
+- [x] Stripe live collegato al carrello reale in Production.
+- [ ] Stripe live da validare con pagamento reale controllato.
 - [ ] PayPal sandbox/live completo collegato al carrello reale.
 - [x] Ordine `pending` creato prima del pagamento Stripe.
 - [x] Ordine Stripe `paid` solo dopo conferma webhook.
@@ -224,8 +228,9 @@ Questa sezione va avviata subito dopo aver configurato e testato Stripe e PayPal
 - [ ] Gestione rimborsi totali/parziali da admin o webhook.
 - [x] Idempotenza scarico stock Stripe contro doppio webhook.
 - [ ] Idempotenza completa per doppi ordini, doppi pagamenti e rimborsi.
-- [ ] Email transazionali per pagamento ricevuto, pagamento fallito, ordine in preparazione, spedizione e rimborso.
-- [ ] Aggiornamento contenuti checkout/email/success page quando il pagamento online sara attivo.
+- [x] Email transazionale per pagamento Stripe ricevuto.
+- [ ] Email transazionali per pagamento fallito, ordine in preparazione, spedizione e rimborso.
+- [x] Aggiornamento contenuti checkout/email/success page per pagamento online attivo.
 
 ### Inventario robusto
 
@@ -354,7 +359,7 @@ Questa sezione va avviata subito dopo aver configurato e testato Stripe e PayPal
 6. Confermare pagamento via webhook/capture.
 7. Aggiornare inventario via webhook.
 8. Testare pagamenti, cancellazioni e rimborsi.
-9. Trigger contenuti post-pagamenti: rimuovere il messaggio "pagamento online non attivo" da checkout, success page, email cliente, FAQ e testi operativi solo dopo test Stripe/PayPal completato.
+9. Trigger contenuti post-pagamenti Stripe eseguito: checkout, success page, email cliente/proprietario, FAQ, legali e testi operativi sono aggiornati per pagamento online attivo.
 
 ### Crescita V2
 

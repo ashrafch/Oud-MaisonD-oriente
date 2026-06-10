@@ -34,7 +34,7 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
   const clearCart = useCartStore((state) => state.clearCart);
   const notify = useCartStore((state) => state.notify);
   const [customer, setCustomer] = useState(emptyCustomer);
-  const [paymentMethod, setPaymentMethod] = useState<'manual' | 'stripe' | 'paypal'>('manual');
+  const [paymentMethod, setPaymentMethod] = useState<'manual' | 'stripe' | 'paypal'>(stripeEnabled ? 'stripe' : 'manual');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paypalOrderId, setPaypalOrderId] = useState<string>();
   const paypalInternalOrderId = useRef<string | undefined>(undefined);
@@ -93,7 +93,7 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
         try {
           await capturePayPalOrder(data.orderID);
         } catch (error) {
-          notify({ title: 'Pagamento PayPal non completato', description: error instanceof Error ? error.message : 'Riprova o usa richiesta manuale.', tone: 'warning' });
+          notify({ title: 'Pagamento PayPal non completato', description: error instanceof Error ? error.message : 'Riprova con carta o usa la richiesta assistita.', tone: 'warning' });
         } finally {
           setIsSubmitting(false);
         }
@@ -140,7 +140,7 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
         window.location.href = payload.url;
       } catch (error) {
         setIsSubmitting(false);
-        notify({ title: 'Pagamento Stripe non avviato', description: error instanceof Error ? error.message : 'Riprova o usa richiesta manuale.', tone: 'warning' });
+        notify({ title: 'Pagamento Stripe non avviato', description: error instanceof Error ? error.message : 'Riprova o usa la richiesta assistita.', tone: 'warning' });
       }
       return;
     }
@@ -189,10 +189,10 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
     <section className="container py-12">
       <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
         <form onSubmit={submitOrder} className="rounded border border-ink/10 bg-white p-6 sm:p-8">
-          <p className="text-sm font-semibold uppercase tracking-widest text-oud">Richiesta ordine</p>
+          <p className="text-sm font-semibold uppercase tracking-widest text-oud">Checkout sicuro</p>
           <h1 className="mt-3 font-serif text-4xl sm:text-5xl">Dati cliente e spedizione</h1>
           <div className="mt-5 rounded border border-saffron/25 bg-saffron/10 p-4 text-sm leading-6 text-ink/70">
-            Puoi inviare una richiesta assistita oppure pagare online quando Stripe/PayPal sono configurati. Il negozio prepara l ordine solo dopo conferma.
+            Paga online in modo sicuro con carta tramite Stripe. Il negozio prepara l ordine dopo conferma del pagamento. Se preferisci assistenza prima dell acquisto, puoi inviare una richiesta ordine.
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <Field label="Nome e cognome" value={customer.fullName} onChange={(value) => updateField('fullName', value)} />
@@ -207,11 +207,11 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
             </label>
           </div>
           <button className="mt-8 min-h-12 w-full rounded bg-oud px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50" disabled={!isValid || isSubmitting || paymentMethod === 'paypal'}>
-            {paymentMethod === 'paypal' ? 'Completa dal bottone PayPal' : paymentMethod === 'stripe' ? isSubmitting ? 'Apertura Stripe...' : 'Paga con Stripe' : isSubmitting ? 'Invio richiesta...' : 'Invia richiesta ordine'}
+            {paymentMethod === 'paypal' ? 'Completa dal bottone PayPal' : paymentMethod === 'stripe' ? isSubmitting ? 'Apertura pagamento...' : 'Paga ora con carta' : isSubmitting ? 'Invio richiesta...' : 'Invia richiesta assistita'}
           </button>
         </form>
         <aside className="h-fit rounded border border-ink/10 bg-white p-6">
-          <div className="flex items-center gap-2 text-sage"><ShieldCheck size={20} /><span className="text-sm font-semibold">Ordine manuale assistito</span></div>
+          <div className="flex items-center gap-2 text-sage"><ShieldCheck size={20} /><span className="text-sm font-semibold">Pagamento protetto</span></div>
           <p className="mt-4 font-serif text-3xl">Riepilogo</p>
           <div className="mt-5 grid gap-3 text-sm">
             {items.map((item) => {
@@ -221,11 +221,11 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
             })}
             <div className="flex justify-between border-t border-ink/10 pt-3"><span>Sconto</span><span>-{formatPrice(totals.discount)}</span></div>
             <div className="flex justify-between"><span>Spedizione</span><span>{totals.shipping ? formatPrice(totals.shipping) : 'Gratis'}</span></div>
-            <div className="flex justify-between text-lg font-semibold"><span>Totale indicativo</span><span>{formatPrice(totals.total)}</span></div>
+            <div className="flex justify-between text-lg font-semibold"><span>Totale</span><span>{formatPrice(totals.total)}</span></div>
           </div>
           <div className="mt-5 rounded bg-mist p-3 text-xs leading-5 text-ink/60">
-            <p className="flex items-center gap-2 font-semibold text-ink"><MessageCircle size={15} /> Dopo l&apos;invio</p>
-            <p className="mt-1">Riceverai conferma dal negozio prima della preparazione. Con pagamento online l ordine viene lavorato dopo conferma Stripe/PayPal.</p>
+            <p className="flex items-center gap-2 font-semibold text-ink"><MessageCircle size={15} /> Dopo il pagamento</p>
+            <p className="mt-1">Riceverai conferma ordine via email. Il pannello admin registra il pagamento e l ordine passa alla preparazione.</p>
           </div>
 
           <div className="mt-5 rounded border border-ink/10 bg-white p-4">
@@ -233,20 +233,20 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
             <div className="mt-3 grid gap-2">
               <PaymentChoice
                 label="Richiesta ordine assistita"
-                description="Nessun pagamento online: il negozio conferma e contatta il cliente."
+                description="Per consulenza o disponibilita: il negozio ti ricontatta prima del pagamento."
                 checked={paymentMethod === 'manual'}
                 onChange={() => setPaymentMethod('manual')}
               />
               <PaymentChoice
                 label="Carta / Stripe"
-                description={stripeEnabled ? 'Pagamento online sicuro con carta.' : 'Pronto nel codice: mancano le chiavi Stripe.'}
+                description={stripeEnabled ? 'Pagamento online sicuro con carta, Apple Pay o metodi disponibili su Stripe.' : 'Metodo temporaneamente non disponibile.'}
                 checked={paymentMethod === 'stripe'}
                 disabled={!stripeEnabled}
                 onChange={() => setPaymentMethod('stripe')}
               />
               <PaymentChoice
                 label="PayPal"
-                description={paypalEnabled ? 'Pagamento online con PayPal Checkout.' : 'Pronto nel codice: manca configurazione account PayPal.'}
+                description={paypalEnabled ? 'Pagamento online con PayPal Checkout.' : 'In arrivo: PayPal sara attivato dopo configurazione account.'}
                 checked={paymentMethod === 'paypal'}
                 disabled={!paypalEnabled}
                 onChange={() => setPaymentMethod('paypal')}
