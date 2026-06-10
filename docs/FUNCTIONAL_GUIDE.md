@@ -338,13 +338,20 @@ Predisposto per:
 - Webhook `checkout.session.completed`.
 - Aggiornamento ordine a `paid`.
 - Scarico stock dopo pagamento confermato.
+- Salvataggio ID sessione Stripe sull'ordine.
 - Success/cancel URL.
 
 Da completare:
-- Replicare env Stripe su Vercel Preview/Production.
-- Test pagamento Stripe in Preview.
+- Replicare env Stripe live su Vercel Production.
+- Configurare webhook Stripe live verso `/api/webhooks/stripe` Production.
 - Email conferma pagamento ricevuto.
-- Gestione rimborsi avanzata.
+- Gestione rimborsi, cancellazioni e pagamenti falliti avanzata.
+
+Stato validazione:
+- Stripe test in Preview validato con carta sandbox.
+- Webhook Preview validato con risposta HTTP 200.
+- Ordine Supabase aggiornato a `paid` solo via webhook.
+- Stock scalato dopo pagamento confermato e protetto da doppio webhook.
 
 ### PayPal
 
