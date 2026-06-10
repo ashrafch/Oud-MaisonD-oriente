@@ -73,11 +73,11 @@ export async function createPayPalCheckoutOrder(input: PayPalCreateInput) {
           },
           amount: {
             currency_code: 'EUR',
-            value: paypalAmount(input.total),
+            value: paypalAmount(internalOrder.total),
             breakdown: {
-              item_total: { currency_code: 'EUR', value: paypalAmount(input.subtotal) },
-              discount: { currency_code: 'EUR', value: paypalAmount(input.discount) },
-              shipping: { currency_code: 'EUR', value: paypalAmount(input.shipping) }
+              item_total: { currency_code: 'EUR', value: paypalAmount(internalOrder.subtotal) },
+              discount: { currency_code: 'EUR', value: paypalAmount(internalOrder.discount) },
+              shipping: { currency_code: 'EUR', value: paypalAmount(internalOrder.shipping) }
             }
           },
           items: purchaseItems
