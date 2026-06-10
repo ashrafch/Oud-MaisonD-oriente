@@ -28,6 +28,7 @@ export async function POST(request: Request) {
         paymentStatus: 'paid',
         fulfillmentStatus: 'ready_to_prepare',
         shippingStatus: 'not_ready',
+        stripeCheckoutSessionId: session.id,
         internalNotes: `Pagamento Stripe confermato. Sessione: ${session.id}`
       });
       await decrementStockForPaidOrder(orderId);
@@ -43,6 +44,7 @@ export async function POST(request: Request) {
         status: 'cancelled',
         paymentStatus: 'failed',
         fulfillmentStatus: 'blocked',
+        stripeCheckoutSessionId: session.id,
         internalNotes: `Checkout Stripe scaduto. Sessione: ${session.id}`
       });
     }
