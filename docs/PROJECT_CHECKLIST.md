@@ -87,15 +87,15 @@ Documenti collegati:
 - [x] Attivare Resend con `RESEND_API_KEY`.
 - [ ] Verificare dominio mittente in Resend.
 - [x] Fare test reale email cliente e interna.
-- [ ] Checkout Stripe reale.
-- [ ] Webhook Stripe per confermare pagamento.
+- [x] Checkout Stripe reale da carrello predisposto in Preview.
+- [x] Webhook Stripe per confermare pagamento predisposto.
 - [x] Checkout PayPal predisposto e nascosto finche `NEXT_PUBLIC_PAYPAL_ENABLED=false`.
 - [x] API PayPal Orders v2 predisposte per create/capture.
 - [x] Webhook PayPal predisposto con verifica firma.
 - [ ] Account PayPal Business non ancora configurato.
 - [ ] Credenziali PayPal sandbox/live non ancora inserite.
 - [ ] Test PayPal in Preview non ancora eseguito.
-- [ ] Aggiornamento inventario solo dopo pagamento confermato.
+- [x] Aggiornamento inventario solo dopo pagamento confermato predisposto per Stripe.
 - [ ] Gestione rimborsi e annullamenti da webhook/admin.
 - [ ] Trigger post-pagamenti: dopo configurazione e test riuscito di Stripe/PayPal in Preview, aggiornare tutti i testi storefront/email/checkout che oggi indicano pagamento manuale o pagamento online non attivo.
 
@@ -173,14 +173,16 @@ Documenti collegati:
 - [x] File server Stripe predisposti.
 - [x] API checkout predisposta.
 - [x] Webhook route `/api/webhooks/stripe` predisposta.
-- [ ] Creare account/progetto Stripe.
-- [ ] Aggiungere `STRIPE_SECRET_KEY`.
-- [ ] Aggiungere `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`.
-- [ ] Configurare webhook endpoint su dominio Vercel.
-- [ ] Aggiungere `STRIPE_WEBHOOK_SECRET`.
-- [ ] Creare ordine pending prima del redirect Stripe.
-- [ ] Confermare ordine solo da webhook.
-- [ ] Aggiornare stock solo dopo pagamento.
+- [x] Creare account/progetto Stripe.
+- [x] Aggiungere `STRIPE_SECRET_KEY` in locale.
+- [x] Aggiungere `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` in locale.
+- [x] Configurare webhook endpoint su dominio Vercel.
+- [x] Aggiungere `STRIPE_WEBHOOK_SECRET` in locale.
+- [x] Creare ordine pending prima del redirect Stripe.
+- [x] Confermare ordine solo da webhook.
+- [x] Aggiornare stock solo dopo pagamento confermato.
+- [ ] Replicare env Stripe su Vercel Preview.
+- [ ] Testare checkout Stripe in Preview.
 - [ ] Testare pagamento completato, cancellato, fallito, rimborso.
 
 ## PayPal

@@ -155,7 +155,14 @@ export async function createSupabaseOrder(input: {
     });
   }
 
-  return { id: order.id as string, createdAt: order.created_at as string };
+  return {
+    id: order.id as string,
+    createdAt: order.created_at as string,
+    subtotal,
+    discount,
+    shipping,
+    total
+  };
 }
 
 export async function getSupabaseOrders(): Promise<AdminOrder[]> {

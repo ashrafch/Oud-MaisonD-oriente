@@ -9,6 +9,7 @@ import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
 import type { Product } from '@/types/catalog';
 
 const emptyCustomer: CustomerDraft = { fullName: '', email: '', phone: '', address: '', city: '', zip: '', notes: '' };
+const stripeEnabled = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 const paypalEnabled = process.env.NEXT_PUBLIC_PAYPAL_ENABLED === 'true' && Boolean(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
 
 declare global {
@@ -33,7 +34,7 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
   const clearCart = useCartStore((state) => state.clearCart);
   const notify = useCartStore((state) => state.notify);
   const [customer, setCustomer] = useState(emptyCustomer);
-  const [paymentMethod, setPaymentMethod] = useState<'manual' | 'paypal'>('manual');
+  const [paymentMethod, setPaymentMethod] = useState<'manual' | 'stripe' | 'paypal'>('manual');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paypalOrderId, setPaypalOrderId] = useState<string>();
   const paypalInternalOrderId = useRef<string | undefined>(undefined);
@@ -122,6 +123,27 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
 
   const submitOrder = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (paymentMethod === 'stripe') {
+      if (!isValid) {
+        notify({ title: 'Completa i dati richiesti', description: 'Servono contatti e spedizione prima del pagamento.', tone: 'warning' });
+        return;
+      }
+      setIsSubmitting(true);
+      try {
+        const response = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ mode: 'stripe_checkout', items, customer, couponCode, ...totals })
+        });
+        const payload = await response.json() as { url?: string; orderId?: string; error?: string };
+        if (!response.ok || !payload.url) throw new Error(payload.error ?? 'Checkout Stripe non creato');
+        window.location.href = payload.url;
+      } catch (error) {
+        setIsSubmitting(false);
+        notify({ title: 'Pagamento Stripe non avviato', description: error instanceof Error ? error.message : 'Riprova o usa richiesta manuale.', tone: 'warning' });
+      }
+      return;
+    }
     if (paymentMethod === 'paypal') {
       notify({ title: 'Usa il bottone PayPal', description: 'Il pagamento PayPal si conferma dal box riepilogo.', tone: 'info' });
       return;
@@ -170,7 +192,7 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
           <p className="text-sm font-semibold uppercase tracking-widest text-oud">Richiesta ordine</p>
           <h1 className="mt-3 font-serif text-4xl sm:text-5xl">Dati cliente e spedizione</h1>
           <div className="mt-5 rounded border border-saffron/25 bg-saffron/10 p-4 text-sm leading-6 text-ink/70">
-            In questa fase il pagamento online resta in preparazione. Puoi inviare una richiesta ordine assistita; PayPal apparira qui quando account e credenziali saranno attivati.
+            Puoi inviare una richiesta assistita oppure pagare online quando Stripe/PayPal sono configurati. Il negozio prepara l ordine solo dopo conferma.
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <Field label="Nome e cognome" value={customer.fullName} onChange={(value) => updateField('fullName', value)} />
@@ -185,7 +207,7 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
             </label>
           </div>
           <button className="mt-8 min-h-12 w-full rounded bg-oud px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50" disabled={!isValid || isSubmitting || paymentMethod === 'paypal'}>
-            {paymentMethod === 'paypal' ? 'Completa dal bottone PayPal' : isSubmitting ? 'Invio richiesta...' : 'Invia richiesta ordine'}
+            {paymentMethod === 'paypal' ? 'Completa dal bottone PayPal' : paymentMethod === 'stripe' ? isSubmitting ? 'Apertura Stripe...' : 'Paga con Stripe' : isSubmitting ? 'Invio richiesta...' : 'Invia richiesta ordine'}
           </button>
         </form>
         <aside className="h-fit rounded border border-ink/10 bg-white p-6">
@@ -203,7 +225,7 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
           </div>
           <div className="mt-5 rounded bg-mist p-3 text-xs leading-5 text-ink/60">
             <p className="flex items-center gap-2 font-semibold text-ink"><MessageCircle size={15} /> Dopo l&apos;invio</p>
-            <p className="mt-1">Riceverai conferma dal negozio prima della preparazione. Stripe e PayPal saranno attivati dopo configurazione account e test in Preview.</p>
+            <p className="mt-1">Riceverai conferma dal negozio prima della preparazione. Con pagamento online l ordine viene lavorato dopo conferma Stripe/PayPal.</p>
           </div>
 
           <div className="mt-5 rounded border border-ink/10 bg-white p-4">
@@ -214,6 +236,13 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
                 description="Nessun pagamento online: il negozio conferma e contatta il cliente."
                 checked={paymentMethod === 'manual'}
                 onChange={() => setPaymentMethod('manual')}
+              />
+              <PaymentChoice
+                label="Carta / Stripe"
+                description={stripeEnabled ? 'Pagamento online sicuro con carta.' : 'Pronto nel codice: mancano le chiavi Stripe.'}
+                checked={paymentMethod === 'stripe'}
+                disabled={!stripeEnabled}
+                onChange={() => setPaymentMethod('stripe')}
               />
               <PaymentChoice
                 label="PayPal"

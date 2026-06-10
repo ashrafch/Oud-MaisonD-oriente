@@ -333,15 +333,18 @@ File:
 - `src/app/api/webhooks/stripe/route.ts`
 
 Predisposto per:
-- Creazione checkout session.
+- Creazione checkout session da carrello reale.
+- Creazione ordine interno Supabase in stato `pending`.
 - Webhook `checkout.session.completed`.
+- Aggiornamento ordine a `paid`.
+- Scarico stock dopo pagamento confermato.
 - Success/cancel URL.
 
 Da completare:
-- Passaggio dinamico carrello reale.
-- Creazione ordine nel database.
-- Aggiornamento inventario.
-- Email conferma.
+- Replicare env Stripe su Vercel Preview/Production.
+- Test pagamento Stripe in Preview.
+- Email conferma pagamento ricevuto.
+- Gestione rimborsi avanzata.
 
 ### PayPal
 
