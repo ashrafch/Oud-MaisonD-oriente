@@ -155,7 +155,14 @@ export async function createSupabaseOrder(input: {
     });
   }
 
-  return { id: order.id as string, createdAt: order.created_at as string };
+  return {
+    id: order.id as string,
+    createdAt: order.created_at as string,
+    subtotal,
+    discount,
+    shipping,
+    total
+  };
 }
 
 export async function getSupabaseOrders(): Promise<AdminOrder[]> {
@@ -187,6 +194,7 @@ export async function updateSupabaseOrder(input: {
   fulfillmentStatus?: string;
   shippingStatus?: string;
   trackingCode?: string;
+  stripeCheckoutSessionId?: string;
   internalNotes?: string;
 }) {
   const supabase = createSupabaseServiceClient() as any;
@@ -198,6 +206,9 @@ export async function updateSupabaseOrder(input: {
   if (input.fulfillmentStatus !== undefined) update.fulfillment_status = input.fulfillmentStatus;
   if (input.shippingStatus !== undefined) update.shipping_status = input.shippingStatus;
   if (input.trackingCode !== undefined) update.tracking_code = input.trackingCode || null;
+  if (input.stripeCheckoutSessionId !== undefined) {
+    update.stripe_checkout_session_id = input.stripeCheckoutSessionId || null;
+  }
 
   if (input.internalNotes !== undefined) {
     const existing = await getOrderNotes(input.orderId);

@@ -26,7 +26,8 @@ Documenti collegati:
 - [x] Pagine legali/informative complete in versione pre-produzione.
 - [x] Build Next.js verificata localmente.
 - [x] Vercel configurato con deployment Production Ready.
-- [ ] Stripe non ancora configurato.
+- [x] Stripe configurato e validato in Preview con chiavi test.
+- [ ] Stripe Production live non ancora attivo su Vercel.
 - [x] PayPal predisposto lato codice, API e checkout ma non ancora configurato con account.
 - [x] Resend attivo in test con `onboarding@resend.dev`.
 - [ ] Resend non ancora attivo con dominio reale.
@@ -87,17 +88,17 @@ Documenti collegati:
 - [x] Attivare Resend con `RESEND_API_KEY`.
 - [ ] Verificare dominio mittente in Resend.
 - [x] Fare test reale email cliente e interna.
-- [ ] Checkout Stripe reale.
-- [ ] Webhook Stripe per confermare pagamento.
+- [x] Checkout Stripe reale da carrello predisposto in Preview.
+- [x] Webhook Stripe per confermare pagamento predisposto.
 - [x] Checkout PayPal predisposto e nascosto finche `NEXT_PUBLIC_PAYPAL_ENABLED=false`.
 - [x] API PayPal Orders v2 predisposte per create/capture.
 - [x] Webhook PayPal predisposto con verifica firma.
 - [ ] Account PayPal Business non ancora configurato.
 - [ ] Credenziali PayPal sandbox/live non ancora inserite.
 - [ ] Test PayPal in Preview non ancora eseguito.
-- [ ] Aggiornamento inventario solo dopo pagamento confermato.
+- [x] Aggiornamento inventario solo dopo pagamento confermato predisposto per Stripe.
 - [ ] Gestione rimborsi e annullamenti da webhook/admin.
-- [ ] Trigger post-pagamenti: dopo configurazione e test riuscito di Stripe/PayPal in Preview, aggiornare tutti i testi storefront/email/checkout che oggi indicano pagamento manuale o pagamento online non attivo.
+- [ ] Trigger post-pagamenti: dopo configurazione e test riuscito di Stripe/PayPal in Production, aggiornare tutti i testi storefront/email/checkout che oggi indicano pagamento manuale o pagamento online non attivo.
 
 ## Admin portal
 
@@ -173,15 +174,21 @@ Documenti collegati:
 - [x] File server Stripe predisposti.
 - [x] API checkout predisposta.
 - [x] Webhook route `/api/webhooks/stripe` predisposta.
-- [ ] Creare account/progetto Stripe.
-- [ ] Aggiungere `STRIPE_SECRET_KEY`.
-- [ ] Aggiungere `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`.
-- [ ] Configurare webhook endpoint su dominio Vercel.
-- [ ] Aggiungere `STRIPE_WEBHOOK_SECRET`.
-- [ ] Creare ordine pending prima del redirect Stripe.
-- [ ] Confermare ordine solo da webhook.
-- [ ] Aggiornare stock solo dopo pagamento.
-- [ ] Testare pagamento completato, cancellato, fallito, rimborso.
+- [x] Creare account/progetto Stripe.
+- [x] Aggiungere `STRIPE_SECRET_KEY` in locale.
+- [x] Aggiungere `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` in locale.
+- [x] Configurare webhook endpoint su dominio Vercel.
+- [x] Aggiungere `STRIPE_WEBHOOK_SECRET` in locale.
+- [x] Creare ordine pending prima del redirect Stripe.
+- [x] Confermare ordine solo da webhook.
+- [x] Aggiornare stock solo dopo pagamento confermato.
+- [x] Replicare env Stripe test su Vercel Preview per branch `feat/stripe-real-checkout`.
+- [x] Testare checkout Stripe in Preview.
+- [x] Testare pagamento completato in Preview.
+- [x] Salvare ID sessione Stripe sull'ordine.
+- [ ] Replicare env Stripe live su Vercel Production.
+- [ ] Configurare webhook Stripe live verso `/api/webhooks/stripe` Production.
+- [ ] Testare cancellazione, fallimento e rimborso.
 
 ## PayPal
 
@@ -207,19 +214,22 @@ Questa sezione va avviata subito dopo aver configurato e testato Stripe e PayPal
 
 ### Pagamenti robusti
 
-- [ ] Stripe live/test completo collegato al carrello reale.
+- [x] Stripe test completo collegato al carrello reale in Preview.
+- [ ] Stripe live completo collegato al carrello reale in Production.
 - [ ] PayPal sandbox/live completo collegato al carrello reale.
-- [ ] Ordine `pending` creato prima del pagamento per Stripe e PayPal.
-- [ ] Ordine `paid` solo dopo conferma webhook/capture.
+- [x] Ordine `pending` creato prima del pagamento Stripe.
+- [x] Ordine Stripe `paid` solo dopo conferma webhook.
+- [ ] Ordine PayPal `pending`/`paid` da validare in sandbox.
 - [ ] Gestione pagamenti falliti, annullati e scaduti.
 - [ ] Gestione rimborsi totali/parziali da admin o webhook.
-- [ ] Idempotenza per evitare doppi ordini, doppi pagamenti o doppio scarico stock.
+- [x] Idempotenza scarico stock Stripe contro doppio webhook.
+- [ ] Idempotenza completa per doppi ordini, doppi pagamenti e rimborsi.
 - [ ] Email transazionali per pagamento ricevuto, pagamento fallito, ordine in preparazione, spedizione e rimborso.
 - [ ] Aggiornamento contenuti checkout/email/success page quando il pagamento online sara attivo.
 
 ### Inventario robusto
 
-- [ ] Scarico stock solo dopo pagamento confermato.
+- [x] Scarico stock Stripe solo dopo pagamento confermato.
 - [ ] Blocco checkout se stock insufficiente.
 - [ ] Movimenti magazzino automatici per vendita, reso, rimborso, annullamento e correzione manuale.
 - [ ] Alert sotto scorta automatici in dashboard/admin.
