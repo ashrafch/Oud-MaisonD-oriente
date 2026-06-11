@@ -217,11 +217,12 @@ export function ProductManager() {
       const payload = await response.json() as { url: string };
       setDraft((current) => ({ ...current, image: payload.url }));
       notify({ title: 'Immagine caricata su Supabase', tone: 'success' });
-    } catch {
-      const reader = new FileReader();
-      reader.onload = () => setDraft((current) => ({ ...current, image: String(reader.result) }));
-      reader.readAsDataURL(file);
-      notify({ title: 'Anteprima locale caricata', description: 'Supabase Storage non ha confermato upload.', tone: 'warning' });
+    } catch (err) {
+      notify({
+        title: 'Upload immagine fallito',
+        description: err instanceof Error ? err.message : 'Controlla che Supabase Storage sia configurato su Vercel.',
+        tone: 'warning'
+      });
     } finally {
       setIsUploading(false);
     }

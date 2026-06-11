@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation';
 import { ProductCard } from '@/components/product/product-card';
 import { getSupabaseCategories, getSupabaseProducts } from '@/lib/supabase/catalog';
 
+export const revalidate = 60;
+
 export async function generateStaticParams() {
   const categories = await getSupabaseCategories();
   return categories.map((category) => ({ slug: category.slug }));
