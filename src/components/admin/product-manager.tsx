@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Copy, EyeOff, ImagePlus, Pencil, Plus, Save } from 'lucide-react';
+import { AlertCircle, Copy, EyeOff, ImagePlus, Pencil, Plus, Save } from 'lucide-react';
 import { ActionButton } from '@/components/admin/action-button';
 import { AdminModal } from '@/components/admin/admin-modal';
 import { categories, products as seedProducts } from '@/data/catalog';
@@ -92,6 +92,7 @@ export function ProductManager() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const editing = Boolean(draft.id);
   const visibleProducts = useMemo(() => products.filter((product) => [product.name, product.brand, product.category].join(' ').toLowerCase().includes(query.toLowerCase())), [products, query]);
 
@@ -129,16 +130,24 @@ export function ProductManager() {
     setIsModalOpen(true);
   };
 
+  const clearError = (field: string) => setFormErrors((e) => { const n = { ...e }; delete n[field]; return n; });
+
   const closeModal = () => {
     setDraft(emptyDraft);
+    setFormErrors({});
     setIsModalOpen(false);
   };
 
   const saveProduct = async () => {
-    if (!draft.name || !draft.shortDescription || !draft.price) {
-      notify({ title: 'Compila nome, descrizione e prezzo', tone: 'warning' });
+    const errors: Record<string, string> = {};
+    if (!draft.name.trim()) errors.name = 'Il nome è obbligatorio';
+    if (!draft.shortDescription.trim()) errors.shortDescription = 'La descrizione breve è obbligatoria';
+    if (!draft.price || Number(draft.price) <= 0) errors.price = 'Il prezzo deve essere maggiore di 0';
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
       return;
     }
+    setFormErrors({});
     setIsSaving(true);
     const product = productFromDraft({ ...draft, slug: draft.slug || slugify(draft.name) });
     try {
@@ -261,13 +270,24 @@ export function ProductManager() {
         title={editing ? 'Modifica prodotto' : 'Nuovo prodotto'}
         description="Compila dati prodotto, immagine, stock, note olfattive e SEO. Il salvataggio aggiorna Supabase quando disponibile."
       >
+        {Object.keys(formErrors).length > 0 ? (
+          <div className="flex items-start gap-3 rounded border border-oud/25 bg-oud/8 px-4 py-3 text-sm text-oud">
+            <AlertCircle size={16} className="mt-0.5 shrink-0" />
+            <div>
+              <p className="font-semibold">Campi obbligatori mancanti:</p>
+              <ul className="mt-1 list-disc pl-4">
+                {Object.values(formErrors).map((msg) => <li key={msg}>{msg}</li>)}
+              </ul>
+            </div>
+          </div>
+        ) : null}
         <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
           <div className="grid gap-4">
-            <Field label="Nome" value={draft.name} onChange={(value) => setDraft((current) => ({ ...current, name: value, slug: current.slug || slugify(value) }))} />
+            <Field label="Nome" required error={formErrors.name} value={draft.name} onChange={(value) => { setDraft((current) => ({ ...current, name: value, slug: current.slug || slugify(value) })); if (value.trim()) clearError('name'); }} />
             <Field label="Slug" value={draft.slug} onChange={(value) => setDraft((current) => ({ ...current, slug: slugify(value) }))} />
             <Field label="Brand" value={draft.brand} onChange={(value) => setDraft((current) => ({ ...current, brand: value }))} />
             <div className="grid gap-3 sm:grid-cols-2">
-              <Field label="Prezzo" type="number" value={String(draft.price)} onChange={(value) => setDraft((current) => ({ ...current, price: Number(value) }))} />
+              <Field label="Prezzo" required type="number" error={formErrors.price} value={String(draft.price)} onChange={(value) => { setDraft((current) => ({ ...current, price: Number(value) })); if (Number(value) > 0) clearError('price'); }} />
               <Field label="Stock" type="number" value={String(draft.stock)} onChange={(value) => setDraft((current) => ({ ...current, stock: Number(value) }))} />
             </div>
             <label className="grid gap-2">
@@ -278,7 +298,7 @@ export function ProductManager() {
             </label>
             <Field label="Intensita" value={draft.intensity} onChange={(value) => setDraft((current) => ({ ...current, intensity: value }))} />
             <Field label="Durata" value={draft.duration} onChange={(value) => setDraft((current) => ({ ...current, duration: value }))} />
-            <Field label="Descrizione breve" value={draft.shortDescription} onChange={(value) => setDraft((current) => ({ ...current, shortDescription: value }))} />
+            <Field label="Descrizione breve" required error={formErrors.shortDescription} value={draft.shortDescription} onChange={(value) => { setDraft((current) => ({ ...current, shortDescription: value })); if (value.trim()) clearError('shortDescription'); }} />
             <Field label="Note testa" value={draft.topNotes} onChange={(value) => setDraft((current) => ({ ...current, topNotes: value }))} />
             <Field label="Note cuore" value={draft.heartNotes} onChange={(value) => setDraft((current) => ({ ...current, heartNotes: value }))} />
             <Field label="Note fondo" value={draft.baseNotes} onChange={(value) => setDraft((current) => ({ ...current, baseNotes: value }))} />
@@ -311,11 +331,20 @@ export function ProductManager() {
   );
 }
 
-function Field({ label, value, onChange, type = 'text' }: { label: string; value: string; onChange: (value: string) => void; type?: string }) {
+function Field({ label, value, onChange, type = 'text', error, required }: { label: string; value: string; onChange: (value: string) => void; type?: string; error?: string; required?: boolean }) {
   return (
     <label className="grid gap-2">
-      <span className="text-sm font-semibold">{label}</span>
-      <input type={type} value={value} onChange={(event) => onChange(event.target.value)} className="min-h-11 rounded border border-ink/12 px-3 text-sm" />
+      <span className="text-sm font-semibold">
+        {label}
+        {required ? <span className="ml-0.5 text-oud" aria-hidden>*</span> : null}
+      </span>
+      <input
+        type={type}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className={`min-h-11 rounded border px-3 text-sm transition-colors ${error ? 'border-oud bg-oud/5 focus:outline-none focus:ring-1 focus:ring-oud/40' : 'border-ink/12'}`}
+      />
+      {error ? <p className="text-xs font-medium text-oud">{error}</p> : null}
     </label>
   );
 }

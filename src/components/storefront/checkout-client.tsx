@@ -6,6 +6,7 @@ import { CreditCard, MessageCircle, ShieldCheck } from 'lucide-react';
 import { products as seedProducts } from '@/data/catalog';
 import { calculateCart, formatPrice, getStoredProducts, mergeProducts, type CustomerDraft, useCartStore } from '@/lib/cart/store';
 import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
+import { useShippingConfig } from '@/lib/cart/use-shipping-config';
 import type { Product } from '@/types/catalog';
 
 const emptyCustomer: CustomerDraft = { fullName: '', email: '', phone: '', address: '', city: '', zip: '', notes: '' };
@@ -39,8 +40,9 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
   const [paypalOrderId, setPaypalOrderId] = useState<string>();
   const paypalInternalOrderId = useRef<string | undefined>(undefined);
   const coupons = useActiveCoupons();
+  const shippingConfig = useShippingConfig();
   const products = useMemo(() => mergeProducts(catalogProducts, initialProducts, getStoredProducts(seedProducts)), [catalogProducts, initialProducts]);
-  const totals = useMemo(() => calculateCart(items, products, couponCode, coupons), [couponCode, coupons, items, products]);
+  const totals = useMemo(() => calculateCart(items, products, couponCode, coupons, shippingConfig), [couponCode, coupons, items, products, shippingConfig]);
   const isValid = customer.fullName && customer.email.includes('@') && customer.phone && customer.address && customer.city && customer.zip && items.length;
 
   const updateField = (field: keyof CustomerDraft, value: string) => setCustomer((current) => ({ ...current, [field]: value }));

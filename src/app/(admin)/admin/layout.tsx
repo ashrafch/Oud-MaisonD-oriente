@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BadgePercent, BarChart3, Boxes, ClipboardList, FileText, Home, Layers3, Megaphone, Package, Settings, ShieldCheck, Tag, UsersRound } from 'lucide-react';
+import { BadgePercent, BarChart3, Boxes, ClipboardList, FileText, Home, Layers3, Megaphone, Package, Settings, ShieldCheck, Tag, Truck, UsersRound } from 'lucide-react';
 import { LogoutButton } from '@/components/admin/logout-button';
 import { isAdminAuthEnabled, requireAdminSession, type AdminRole } from '@/lib/admin/auth';
 
@@ -14,6 +14,7 @@ const operationalNav = [
   { href: '/admin/categories', label: 'Categorie', icon: Tag },
   { href: '/admin/collections', label: 'Collezioni', icon: Layers3 },
   { href: '/admin/discounts', label: 'Coupon', icon: BadgePercent },
+  { href: '/admin/shipping', label: 'Spedizione', icon: Truck },
   { href: '/admin/content', label: 'Contenuti', icon: FileText },
   { href: '/admin/social', label: 'Social', icon: Megaphone }
 ];

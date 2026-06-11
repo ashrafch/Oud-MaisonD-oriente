@@ -97,7 +97,15 @@ export async function createSupabaseOrder(input: {
   const normalizedCoupon = input.couponCode?.trim().toUpperCase() ?? '';
   const coupon = coupons.find((entry) => entry.active && entry.code.toUpperCase() === normalizedCoupon);
   const discount = coupon?.type === 'percent' ? subtotal * (coupon.value / 100) : coupon?.type === 'fixed' ? coupon.value : 0;
-  const shipping = subtotal - discount >= 79 || subtotal === 0 ? 0 : 6.9;
+  let shippingCfg = { baseCost: 6.9, freeThreshold: 79 };
+  try {
+    const { data: shippingRow } = await supabase.from('site_settings').select('value').eq('key', 'shipping').single();
+    if (shippingRow?.value && typeof (shippingRow.value as Record<string, unknown>).baseCost === 'number') {
+      shippingCfg = shippingRow.value as typeof shippingCfg;
+    }
+  } catch { /* site_settings not yet created, use defaults */ }
+  const isFreeByThreshold = shippingCfg.freeThreshold > 0 && subtotal - discount >= shippingCfg.freeThreshold;
+  const shipping = subtotal === 0 || isFreeByThreshold ? 0 : shippingCfg.baseCost;
   const total = Math.max(0, subtotal - discount + shipping);
 
   const notes: OrderNotes = {

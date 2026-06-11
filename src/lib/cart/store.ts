@@ -61,7 +61,9 @@ export function mergeProducts(...productSets: Product[][]): Product[] {
   return [...products.values()];
 }
 
-export const calculateCart = (items: CartItem[], products: Product[], couponCode = '', coupons?: Coupon[]) => {
+export type ShippingConfig = { baseCost: number; freeThreshold: number };
+
+export const calculateCart = (items: CartItem[], products: Product[], couponCode = '', coupons?: Coupon[], shippingConfig?: ShippingConfig) => {
   const subtotal = items.reduce((sum, item) => {
     const product = products.find((entry) => entry.id === item.productId);
     return sum + (product ? product.price * item.quantity : 0);
@@ -73,7 +75,9 @@ export const calculateCart = (items: CartItem[], products: Product[], couponCode
   ];
   const coupon = availableCoupons.find((entry) => entry.active && entry.code.toUpperCase() === normalizedCoupon);
   const discount = coupon?.type === 'percent' ? subtotal * (coupon.value / 100) : coupon?.type === 'fixed' ? coupon.value : 0;
-  const shipping = subtotal - discount >= 79 || subtotal === 0 ? 0 : 6.9;
+  const cfg = shippingConfig ?? { baseCost: 6.9, freeThreshold: 79 };
+  const isFreeByThreshold = cfg.freeThreshold > 0 && subtotal - discount >= cfg.freeThreshold;
+  const shipping = subtotal === 0 || isFreeByThreshold ? 0 : cfg.baseCost;
   return { subtotal, discount, shipping, total: Math.max(0, subtotal - discount + shipping) };
 };
 
