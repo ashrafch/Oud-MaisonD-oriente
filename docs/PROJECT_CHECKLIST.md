@@ -1,6 +1,6 @@
 # Project checklist e quadro produzione
 
-Ultimo aggiornamento: 10/06/2026
+Ultimo aggiornamento: 11/06/2026
 
 Questo e il documento unico per capire lo stato del progetto OUDÉ Maison D'Oriente Ecommerce: cosa e completato, cosa e predisposto, cosa manca prima della produzione e cosa conviene sviluppare dopo.
 
@@ -191,8 +191,13 @@ Documenti collegati:
 - [x] Salvare ID sessione Stripe sull'ordine.
 - [x] Replicare env Stripe live su Vercel Production.
 - [x] Configurare webhook Stripe live verso `/api/webhooks/stripe` Production.
+- [x] Handler `checkout.session.completed` attivo (pagamento confermato).
+- [x] Handler `checkout.session.expired` attivo (ordine annullato).
+- [x] Handler `payment_intent.payment_failed` attivo (pagamento fallito).
+- [x] Handler `charge.refunded` attivo (rimborso da pannello Stripe o admin).
+- [ ] Aggiungere evento `charge.refunded` nella lista eventi del webhook su dashboard Stripe.
 - [ ] Testare pagamento reale Stripe live.
-- [ ] Testare cancellazione, fallimento e rimborso.
+- [ ] Testare cancellazione, fallimento e rimborso in produzione.
 
 ## PayPal
 
@@ -225,19 +230,29 @@ Questa sezione va avviata subito dopo aver configurato e testato Stripe e PayPal
 - [x] Ordine `pending` creato prima del pagamento Stripe.
 - [x] Ordine Stripe `paid` solo dopo conferma webhook.
 - [ ] Ordine PayPal `pending`/`paid` da validare in sandbox.
-- [ ] Gestione pagamenti falliti, annullati e scaduti.
-- [ ] Gestione rimborsi totali/parziali da admin o webhook.
-- [x] Idempotenza scarico stock Stripe contro doppio webhook.
-- [ ] Idempotenza completa per doppi ordini, doppi pagamenti e rimborsi.
+- [x] Gestione checkout scaduto (`checkout.session.expired` → ordine `cancelled`).
+- [x] Gestione pagamento fallito (`payment_intent.payment_failed` → `payment_status: failed`).
+- [x] Gestione rimborso totale da admin (Stripe refund + stock restore + email cliente/proprietario).
+- [x] Gestione rimborso da webhook Stripe `charge.refunded` (idempotente, aggiorna ordine + stock + email).
+- [ ] Gestione rimborsi parziali (solo rimborso totale implementato).
+- [ ] Email cliente per pagamento fallito o scaduto (notifica proattiva non ancora implementata).
+- [x] Idempotenza scarico stock Stripe contro doppio webhook (guard su `vendita` movement).
+- [x] Idempotenza rimborso stock contro doppio webhook (guard su `rimborso` movement).
+- [ ] Idempotenza completa per doppi ordini e doppi pagamenti.
 - [x] Email transazionale per pagamento Stripe ricevuto.
-- [ ] Email transazionali per pagamento fallito, ordine in preparazione, spedizione e rimborso.
+- [x] Email stato `in preparazione` triggherata da PATCH admin (`status → preparing`).
+- [x] Email stato `spedito` con tracking code triggherata da PATCH admin (`status → shipped`).
+- [x] Email rimborso cliente + proprietario con idempotenza (`refundEmailSentAt` in internal_notes).
+- [ ] Email per pagamento fallito/scaduto (notifica proattiva al cliente).
 - [x] Aggiornamento contenuti checkout/email/success page per pagamento online attivo.
 
 ### Inventario robusto
 
 - [x] Scarico stock Stripe solo dopo pagamento confermato.
 - [x] Blocco checkout se stock insufficiente (409 server-side con lista prodotti).
-- [ ] Movimenti magazzino automatici per vendita, reso, rimborso, annullamento e correzione manuale.
+- [x] Movimento magazzino `vendita` creato dopo pagamento Stripe confermato.
+- [x] Movimento magazzino `rimborso` creato dopo rimborso Stripe (da admin o webhook).
+- [ ] Movimenti magazzino per PayPal, annullamento manuale e correzione admin.
 - [ ] Alert sotto scorta automatici in dashboard/admin.
 - [x] Stato prodotto automatico `sold_out` quando lo stock arriva a zero.
 - [x] Ripristino stock su rimborso con guard idempotente e riattivazione `active`.
