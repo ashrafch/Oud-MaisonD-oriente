@@ -44,25 +44,40 @@ export async function upsertAdminProduct(product: Product) {
   if (error) throw error;
 
   const productId = data.id as string;
-  const { data: category } = await supabase
+
+  const { data: category, error: categoryError } = await supabase
     .from('categories')
     .select('id')
     .eq('slug', product.category)
     .single();
 
-  if (category?.id) {
-    await supabase.from('product_categories').delete().eq('product_id', productId);
-    await supabase.from('product_categories').insert({ product_id: productId, category_id: category.id });
+  if (categoryError) {
+    console.error(`[upsertAdminProduct] category lookup failed for slug="${product.category}":`, categoryError.message);
   }
 
-  if (product.image) {
-    await supabase.from('product_images').delete().eq('product_id', productId);
-    await supabase.from('product_images').insert({
+  if (category?.id) {
+    const { error: catDeleteError } = await supabase.from('product_categories').delete().eq('product_id', productId);
+    if (catDeleteError) console.error('[upsertAdminProduct] product_categories delete failed:', catDeleteError.message);
+
+    const { error: catInsertError } = await supabase.from('product_categories').insert({ product_id: productId, category_id: category.id });
+    if (catInsertError) console.error('[upsertAdminProduct] product_categories insert failed:', catInsertError.message);
+  } else {
+    console.warn(`[upsertAdminProduct] category not found for slug="${product.category}" — product saved without category link`);
+  }
+
+  // Skip base64 data URLs — they cannot be stored reliably in Supabase and break storefront rendering
+  const imageUrl = product.image && !product.image.startsWith('data:') ? product.image : null;
+  if (imageUrl) {
+    const { error: imgDeleteError } = await supabase.from('product_images').delete().eq('product_id', productId);
+    if (imgDeleteError) console.error('[upsertAdminProduct] product_images delete failed:', imgDeleteError.message);
+
+    const { error: imgInsertError } = await supabase.from('product_images').insert({
       product_id: productId,
-      url: product.image,
+      url: imageUrl,
       alt: product.name,
       sort_order: 0
     });
+    if (imgInsertError) console.error('[upsertAdminProduct] product_images insert failed:', imgInsertError.message);
   }
 
   return productId;
