@@ -99,7 +99,8 @@ Documenti collegati:
 - [ ] Credenziali PayPal sandbox/live non ancora inserite.
 - [ ] Test PayPal in Preview non ancora eseguito.
 - [x] Aggiornamento inventario solo dopo pagamento confermato predisposto per Stripe.
-- [ ] Gestione rimborsi e annullamenti da webhook/admin.
+- [x] Rimborso da admin: Stripe refund + stock restore + email (pannello ordini → Dettaglio → Rimborsa).
+- [x] Rimborso da webhook Stripe `charge.refunded`: aggiorna ordine + stock + email (idempotente).
 - [x] Trigger post-pagamenti eseguito: checkout, success page, FAQ, legali, admin ed email aggiornati per Stripe attivo.
 
 ## Admin portal
@@ -235,11 +236,11 @@ Questa sezione va avviata subito dopo aver configurato e testato Stripe e PayPal
 ### Inventario robusto
 
 - [x] Scarico stock Stripe solo dopo pagamento confermato.
-- [ ] Blocco checkout se stock insufficiente.
+- [x] Blocco checkout se stock insufficiente (409 server-side con lista prodotti).
 - [ ] Movimenti magazzino automatici per vendita, reso, rimborso, annullamento e correzione manuale.
 - [ ] Alert sotto scorta automatici in dashboard/admin.
-- [ ] Stato prodotto automatico `sold_out` quando lo stock arriva a zero.
-- [ ] Ripristino stock su annullamento o rimborso se applicabile.
+- [x] Stato prodotto automatico `sold_out` quando lo stock arriva a zero.
+- [x] Ripristino stock su rimborso con guard idempotente e riattivazione `active`.
 - [ ] Storico inventario completo e leggibile in admin.
 
 ## Resend email
@@ -255,7 +256,8 @@ Questa sezione va avviata subito dopo aver configurato e testato Stripe e PayPal
 - [ ] Verificare dominio mittente.
 - [ ] Sostituire `ORDER_EMAIL_FROM` con email dominio reale.
 - [x] Test reale ordine + email.
-- [ ] Email cambio stato ordine.
+- [x] Email cambio stato: in preparazione (`status → preparing`) e spedito (`status → shipped`) triggerate dal PATCH admin.
+- [x] Email rimborso: cliente + proprietario con idempotenza (flag `refundEmailSentAt` in notes).
 - [ ] Template email piu brandizzato.
 
 ## Vercel e deploy
