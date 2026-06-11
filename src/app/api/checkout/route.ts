@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createCheckoutSession } from '@/lib/stripe/checkout';
+import { checkStockAvailability } from '@/lib/supabase/fulfillment';
 import { createSupabaseOrder } from '@/lib/supabase/orders';
 
 const checkoutSchema = z.object({
@@ -28,6 +29,14 @@ const checkoutSchema = z.object({
 export async function POST(request: Request) {
   const body = checkoutSchema.safeParse(await request.json().catch(() => null));
   if (!body.success) return NextResponse.json({ error: 'Dati checkout non validi' }, { status: 400 });
+
+  const outOfStock = await checkStockAvailability(body.data.items);
+  if (outOfStock) {
+    return NextResponse.json(
+      { error: `Disponibilita insufficiente: ${outOfStock.join(', ')}`, outOfStock },
+      { status: 409 }
+    );
+  }
 
   if (body.data.mode === 'manual_order') {
     try {

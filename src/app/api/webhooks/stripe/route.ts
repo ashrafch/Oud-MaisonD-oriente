@@ -1,9 +1,9 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { sendStripePaymentConfirmedEmails } from '@/lib/email/order-email';
+import { sendOrderRefundedEmail, sendStripePaymentConfirmedEmails } from '@/lib/email/order-email';
 import { stripe } from '@/lib/stripe/server';
-import { decrementStockForPaidOrder } from '@/lib/supabase/fulfillment';
+import { decrementStockForPaidOrder, restoreStockForRefundedOrder } from '@/lib/supabase/fulfillment';
 import { updateSupabaseOrder } from '@/lib/supabase/orders';
 
 export async function POST(request: Request) {
@@ -62,6 +62,30 @@ export async function POST(request: Request) {
         fulfillmentStatus: 'blocked',
         internalNotes: `Pagamento Stripe fallito. PaymentIntent: ${paymentIntent.id}`
       });
+    }
+  }
+
+  if (event.type === 'charge.refunded') {
+    const charge = event.data.object as Stripe.Charge;
+    const paymentIntentId = typeof charge.payment_intent === 'string' ? charge.payment_intent : null;
+    if (paymentIntentId && stripe) {
+      try {
+        const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+        const orderId = pi.metadata?.orderId;
+        if (orderId) {
+          await updateSupabaseOrder({
+            orderId,
+            status: 'refunded',
+            paymentStatus: 'refunded',
+            fulfillmentStatus: 'blocked',
+            internalNotes: `Rimborso Stripe elaborato. Charge: ${charge.id}`
+          });
+          await restoreStockForRefundedOrder(orderId);
+          await sendOrderRefundedEmail(orderId);
+        }
+      } catch (err) {
+        console.error('charge.refunded handling failed', err);
+      }
     }
   }
 

@@ -42,6 +42,9 @@ type StoredOrderNotes = {
   paymentProvider?: string;
   paymentReference?: string;
   stripePaymentEmailSentAt?: string;
+  preparingEmailSentAt?: string;
+  shippedEmailSentAt?: string;
+  refundEmailSentAt?: string;
 };
 
 export async function sendOrderEmails(input: OrderEmailInput) {
@@ -268,4 +271,178 @@ function parseStoredOrderNotes(value: string | null): StoredOrderNotes {
   } catch {
     return { notes: value };
   }
+}
+
+async function fetchOrderForEmail(orderId: string) {
+  const supabase = createSupabaseServiceClient() as any;
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from('orders')
+    .select('id, total_amount, internal_notes, tracking_code, customers(email, full_name, phone), order_items(product_name, quantity, unit_price)')
+    .eq('id', orderId)
+    .single();
+  if (error || !data) return null;
+  return data as PaidOrderRow & { tracking_code?: string | null };
+}
+
+async function markEmailSent(supabase: any, orderId: string, notes: StoredOrderNotes, flag: keyof StoredOrderNotes, timestamp: string) {
+  await supabase
+    .from('orders')
+    .update({ internal_notes: JSON.stringify({ ...notes, [flag]: timestamp }), updated_at: timestamp })
+    .eq('id', orderId);
+}
+
+export async function sendOrderPreparingEmail(orderId: string) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.ORDER_EMAIL_FROM || 'OUDE Maison D Oriente <ordini@oude.example>';
+  if (!apiKey) return { skipped: true };
+
+  const supabase = createSupabaseServiceClient() as any;
+  if (!supabase) return { skipped: true };
+
+  const order = await fetchOrderForEmail(orderId);
+  if (!order || !order.customers?.email) return { skipped: true };
+
+  const notes = parseStoredOrderNotes(order.internal_notes);
+  if (notes.preparingEmailSentAt) return { skipped: true };
+
+  const html = renderPreparingHtml(order, notes);
+  try {
+    await sendEmail({ apiKey, from, to: order.customers.email, subject: `Il tuo ordine è in preparazione — ${order.id}`, html });
+    const sentAt = new Date().toISOString();
+    await markEmailSent(supabase, orderId, notes, 'preparingEmailSentAt', sentAt);
+  } catch (err) {
+    console.error('Preparing email failed', err);
+  }
+  return { skipped: false };
+}
+
+export async function sendOrderShippedEmail(orderId: string) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.ORDER_EMAIL_FROM || 'OUDE Maison D Oriente <ordini@oude.example>';
+  if (!apiKey) return { skipped: true };
+
+  const supabase = createSupabaseServiceClient() as any;
+  if (!supabase) return { skipped: true };
+
+  const order = await fetchOrderForEmail(orderId);
+  if (!order || !order.customers?.email) return { skipped: true };
+
+  const notes = parseStoredOrderNotes(order.internal_notes);
+  if (notes.shippedEmailSentAt) return { skipped: true };
+
+  const trackingCode = order.tracking_code ?? undefined;
+  const html = renderShippedHtml(order, notes, trackingCode);
+  try {
+    await sendEmail({ apiKey, from, to: order.customers.email, subject: `Il tuo ordine è stato spedito — ${order.id}`, html });
+    const sentAt = new Date().toISOString();
+    await markEmailSent(supabase, orderId, notes, 'shippedEmailSentAt', sentAt);
+  } catch (err) {
+    console.error('Shipped email failed', err);
+  }
+  return { skipped: false };
+}
+
+export async function sendOrderRefundedEmail(orderId: string) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.ORDER_EMAIL_FROM || 'OUDE Maison D Oriente <ordini@oude.example>';
+  const ownerEmails = getOwnerEmails();
+  if (!apiKey) return { skipped: true };
+
+  const supabase = createSupabaseServiceClient() as any;
+  if (!supabase) return { skipped: true };
+
+  const order = await fetchOrderForEmail(orderId);
+  if (!order || !order.customers?.email) return { skipped: true };
+
+  const notes = parseStoredOrderNotes(order.internal_notes);
+  if (notes.refundEmailSentAt) return { skipped: true };
+
+  const customerHtml = renderRefundedCustomerHtml(order, notes);
+  const ownerHtml = renderRefundedOwnerHtml(order);
+  const sends: Promise<void>[] = [
+    sendEmail({ apiKey, from, to: order.customers.email, subject: `Rimborso elaborato — ordine ${order.id}`, html: customerHtml })
+  ];
+  if (ownerEmails.length) {
+    sends.push(sendEmail({ apiKey, from, to: ownerEmails, subject: `Ordine rimborsato ${order.id}`, html: ownerHtml }));
+  }
+  await Promise.allSettled(sends);
+  const sentAt = new Date().toISOString();
+  await markEmailSent(supabase, orderId, notes, 'refundEmailSentAt', sentAt);
+  return { skipped: false };
+}
+
+function renderPreparingHtml(order: PaidOrderRow, notes: StoredOrderNotes) {
+  const customerName = order.customers?.full_name || 'cliente';
+  const rows = (order.order_items ?? []).map((item) => (
+    `<tr><td style="padding:8px 0;border-bottom:1px solid #eee;">${escapeHtml(item.product_name)} x ${item.quantity}</td><td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right;">${formatPrice(Number(item.unit_price) * item.quantity)}</td></tr>`
+  )).join('');
+  return `
+    <div style="margin:0;background:#fbf5ec;padding:28px 16px;font-family:Arial,sans-serif;color:#231b17;line-height:1.6;">
+      <div style="max-width:620px;margin:0 auto;background:#fffaf2;border:1px solid #eadcc8;padding:28px;">
+        <p style="margin:0 0 12px;text-transform:uppercase;letter-spacing:2px;font-size:12px;color:#741d12;font-weight:700;">OUDE Maison D Oriente</p>
+        <h1 style="margin:0 0 18px;font-family:Georgia,serif;font-size:32px;line-height:1.1;">Il tuo ordine è in preparazione</h1>
+        <p>Ciao ${escapeHtml(customerName)}, la boutique ha avviato la preparazione del tuo ordine.</p>
+        <p><strong>Numero ordine:</strong> ${escapeHtml(order.id)}</p>
+        <h2 style="font-family:Georgia,serif;font-size:22px;">Riepilogo</h2>
+        <table style="width:100%;border-collapse:collapse;">${rows}</table>
+        <p style="margin-top:16px;">Spedizione: ${notes.shipping ? formatPrice(notes.shipping) : 'Gratis'}<br/><strong>Totale: ${formatPrice(Number(order.total_amount))}</strong></p>
+        <p style="margin-top:24px;color:#6b5a52;font-size:14px;">Riceverai un'altra email quando il pacco sarà spedito con il codice di tracciamento.</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderShippedHtml(order: PaidOrderRow, notes: StoredOrderNotes, trackingCode?: string) {
+  const customerName = order.customers?.full_name || 'cliente';
+  const trackingBlock = trackingCode
+    ? `<p style="margin-top:16px;padding:14px;background:#fbf5ec;border:1px solid #eadcc8;"><strong>Codice di tracciamento:</strong><br/>${escapeHtml(trackingCode)}</p>`
+    : '';
+  return `
+    <div style="margin:0;background:#fbf5ec;padding:28px 16px;font-family:Arial,sans-serif;color:#231b17;line-height:1.6;">
+      <div style="max-width:620px;margin:0 auto;background:#fffaf2;border:1px solid #eadcc8;padding:28px;">
+        <p style="margin:0 0 12px;text-transform:uppercase;letter-spacing:2px;font-size:12px;color:#741d12;font-weight:700;">OUDE Maison D Oriente</p>
+        <h1 style="margin:0 0 18px;font-family:Georgia,serif;font-size:32px;line-height:1.1;">Il tuo ordine è in arrivo</h1>
+        <p>Ciao ${escapeHtml(customerName)}, il tuo ordine è stato spedito.</p>
+        <p><strong>Numero ordine:</strong> ${escapeHtml(order.id)}</p>
+        <p><strong>Indirizzo di consegna:</strong><br/>${escapeHtml(notes.address ?? '')}, ${escapeHtml(notes.zip ?? '')} ${escapeHtml(notes.city ?? '')}</p>
+        ${trackingBlock}
+        <p style="margin-top:24px;color:#6b5a52;font-size:14px;">Per assistenza sulla spedizione rispondi a questa email indicando il numero ordine.</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderRefundedCustomerHtml(order: PaidOrderRow, notes: StoredOrderNotes) {
+  const customerName = order.customers?.full_name || 'cliente';
+  const rows = (order.order_items ?? []).map((item) => (
+    `<tr><td style="padding:8px 0;border-bottom:1px solid #eee;">${escapeHtml(item.product_name)} x ${item.quantity}</td><td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right;">${formatPrice(Number(item.unit_price) * item.quantity)}</td></tr>`
+  )).join('');
+  return `
+    <div style="margin:0;background:#fbf5ec;padding:28px 16px;font-family:Arial,sans-serif;color:#231b17;line-height:1.6;">
+      <div style="max-width:620px;margin:0 auto;background:#fffaf2;border:1px solid #eadcc8;padding:28px;">
+        <p style="margin:0 0 12px;text-transform:uppercase;letter-spacing:2px;font-size:12px;color:#741d12;font-weight:700;">OUDE Maison D Oriente</p>
+        <h1 style="margin:0 0 18px;font-family:Georgia,serif;font-size:32px;line-height:1.1;">Rimborso elaborato</h1>
+        <p>Ciao ${escapeHtml(customerName)}, il rimborso per il tuo ordine è stato elaborato.</p>
+        <p><strong>Numero ordine:</strong> ${escapeHtml(order.id)}</p>
+        <h2 style="font-family:Georgia,serif;font-size:22px;">Riepilogo ordine rimborsato</h2>
+        <table style="width:100%;border-collapse:collapse;">${rows}</table>
+        <p style="margin-top:16px;"><strong>Totale rimborsato: ${formatPrice(Number(order.total_amount))}</strong></p>
+        <p style="margin-top:24px;color:#6b5a52;font-size:14px;">I tempi di accredito dipendono dal metodo di pagamento (di solito 3-5 giorni lavorativi). Per assistenza rispondi a questa email indicando il numero ordine.</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderRefundedOwnerHtml(order: PaidOrderRow) {
+  return `
+    <div style="font-family:Arial,sans-serif;color:#231b17;line-height:1.6;">
+      <h1 style="font-family:Georgia,serif;">Ordine rimborsato</h1>
+      <p><strong>Numero ordine:</strong> ${escapeHtml(order.id)}</p>
+      <p><strong>Cliente:</strong> ${escapeHtml(order.customers?.full_name ?? '')}<br/>
+      <strong>Email:</strong> ${escapeHtml(order.customers?.email ?? '')}</p>
+      <p><strong>Totale rimborsato:</strong> ${formatPrice(Number(order.total_amount))}</p>
+      <p>Lo stock è stato ripristinato automaticamente. Controlla il pannello admin per i dettagli.</p>
+    </div>
+  `;
 }

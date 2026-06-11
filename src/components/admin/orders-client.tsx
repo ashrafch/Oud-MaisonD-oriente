@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, ChevronLeft, ChevronRight, Clock3, CreditCard, Eye, PackageCheck, RefreshCw, Search, Send, Truck, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, Clock3, CreditCard, Eye, PackageCheck, RefreshCw, RotateCcw, Search, Send, Truck, XCircle } from 'lucide-react';
 import { formatPrice, type Order, useCartStore } from '@/lib/cart/store';
 import type { AdminOrder } from '@/lib/supabase/orders';
 import { AdminModal } from './admin-modal';
@@ -138,6 +138,26 @@ export function OrdersClient() {
   const safePage = Math.min(currentPage, totalPages);
   const paginatedOrders = filteredOrders.slice((safePage - 1) * pageSize, safePage * pageSize);
   const detailOrder = orders.find((order) => order.id === detailOrderId);
+
+  const handleRefund = async (orderId: string) => {
+    setIsSaving(true);
+    try {
+      const response = await fetch('/api/admin/orders', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action: 'refund', orderId })
+      });
+      const payload = await response.json() as { error?: string };
+      if (!response.ok) throw new Error(payload.error ?? 'Rimborso non elaborato');
+      notify({ title: 'Rimborso elaborato', description: 'Stock ripristinato e email cliente inviata.', tone: 'success' });
+      setDetailOrderId(undefined);
+      void loadOrders();
+    } catch (error) {
+      notify({ title: 'Rimborso non riuscito', description: error instanceof Error ? error.message : 'Controlla il pannello Stripe.', tone: 'warning' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const patchOrder = async (orderId: string, patch: Partial<AdminOrder>) => {
     setIsSaving(true);
@@ -298,6 +318,7 @@ export function OrdersClient() {
           order={detailOrder}
           disabled={isSaving || !detailOrder}
           onPatch={(patch) => detailOrder ? void patchOrder(detailOrder.id, patch) : undefined}
+          onRefund={(orderId) => void handleRefund(orderId)}
         />
       </AdminModal>
     </section>
@@ -394,13 +415,20 @@ function OrderCard({
   );
 }
 
-function OrderDetail({ order, disabled, onPatch }: { order?: AdminOrder; disabled: boolean; onPatch: (patch: Partial<AdminOrder>) => void }) {
+function OrderDetail({ order, disabled, onPatch, onRefund }: {
+  order?: AdminOrder;
+  disabled: boolean;
+  onPatch: (patch: Partial<AdminOrder>) => void;
+  onRefund: (orderId: string) => void;
+}) {
   const [trackingCode, setTrackingCode] = useState('');
   const [internalNotes, setInternalNotes] = useState('');
+  const [isRefundConfirm, setIsRefundConfirm] = useState(false);
 
   useEffect(() => {
     setTrackingCode(order?.trackingCode ?? '');
     setInternalNotes(order?.internalNotes ?? order?.customer.notes ?? '');
+    setIsRefundConfirm(false);
   }, [order]);
 
   if (!order) {
@@ -493,6 +521,51 @@ function OrderDetail({ order, disabled, onPatch }: { order?: AdminOrder; disable
             Salva tracking e note
           </button>
         </section>
+
+        {normalizePaymentStatus(order.paymentStatus) === 'paid' && !['refunded', 'cancelled'].includes(order.status) ? (
+          <section className="rounded border border-oud/25 bg-white p-4">
+            <h3 className="font-serif text-2xl text-oud">Rimborso</h3>
+            <p className="mt-2 text-sm text-ink/60">
+              Elabora il rimborso tramite Stripe, ripristina lo stock e notifica il cliente. Operazione irreversibile.
+            </p>
+            {isRefundConfirm ? (
+              <div className="mt-3 grid gap-2">
+                <div className="flex items-start gap-2 rounded bg-oud/8 p-3 text-sm text-oud">
+                  <AlertTriangle size={16} className="mt-0.5 shrink-0" />
+                  <span>Stai per rimborsare <strong>{order.customer.fullName}</strong> per <strong>{formatPrice(order.total)}</strong>. Questa azione è irreversibile.</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsRefundConfirm(false)}
+                    className="inline-flex min-h-10 items-center justify-center gap-2 rounded border border-ink/15 bg-white px-3 text-sm font-semibold transition hover:bg-mist"
+                  >
+                    Annulla
+                  </button>
+                  <button
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => { setIsRefundConfirm(false); onRefund(order.id); }}
+                    className="inline-flex min-h-10 items-center justify-center gap-2 rounded bg-oud px-3 text-sm font-semibold text-white transition hover:bg-oud/90 disabled:cursor-not-allowed disabled:opacity-55"
+                  >
+                    <RotateCcw size={15} />
+                    Conferma rimborso
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                disabled={disabled}
+                onClick={() => setIsRefundConfirm(true)}
+                className="mt-3 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded border border-oud/30 bg-white px-4 text-sm font-semibold text-oud transition hover:bg-oud/8 disabled:cursor-not-allowed disabled:opacity-55"
+              >
+                <RotateCcw size={16} />
+                Rimborsa ordine
+              </button>
+            )}
+          </section>
+        ) : null}
       </div>
     </div>
   );
