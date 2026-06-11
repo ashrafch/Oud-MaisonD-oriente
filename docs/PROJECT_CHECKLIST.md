@@ -196,7 +196,7 @@ Documenti collegati:
 - [x] Handler `payment_intent.payment_failed` attivo (pagamento fallito).
 - [x] Handler `charge.refunded` attivo (rimborso da pannello Stripe o admin).
 - [x] Evento `charge.refunded` aggiunto alla lista eventi del webhook su dashboard Stripe.
-- [ ] Testare pagamento reale Stripe live.
+- [x] Testare pagamento reale Stripe live (€0,60 — ordine 95e6e824, email cliente + proprietario ricevute, stock scalato).
 - [ ] Testare cancellazione, fallimento e rimborso in produzione.
 
 ## PayPal
@@ -225,7 +225,7 @@ Questa sezione va avviata subito dopo aver configurato e testato Stripe e PayPal
 
 - [x] Stripe test completo collegato al carrello reale in Preview.
 - [x] Stripe live collegato al carrello reale in Production.
-- [ ] Stripe live da validare con pagamento reale controllato.
+- [x] Stripe live validato con pagamento reale (€0,60 — flusso completo: checkout → webhook → ordine paid → email → stock).
 - [ ] PayPal sandbox/live completo collegato al carrello reale.
 - [x] Ordine `pending` creato prima del pagamento Stripe.
 - [x] Ordine Stripe `paid` solo dopo conferma webhook.
