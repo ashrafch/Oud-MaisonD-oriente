@@ -195,7 +195,7 @@ Documenti collegati:
 - [x] Handler `checkout.session.expired` attivo (ordine annullato).
 - [x] Handler `payment_intent.payment_failed` attivo (pagamento fallito).
 - [x] Handler `charge.refunded` attivo (rimborso da pannello Stripe o admin).
-- [ ] Aggiungere evento `charge.refunded` nella lista eventi del webhook su dashboard Stripe.
+- [x] Evento `charge.refunded` aggiunto alla lista eventi del webhook su dashboard Stripe.
 - [ ] Testare pagamento reale Stripe live.
 - [ ] Testare cancellazione, fallimento e rimborso in produzione.
 
