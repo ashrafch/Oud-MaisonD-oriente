@@ -4,7 +4,7 @@ import { sendOrderPreparingEmail, sendOrderRefundedEmail, sendOrderShippedEmail 
 import { stripe } from '@/lib/stripe/server';
 import { requireAdminApiSession } from '@/lib/admin/auth';
 import { restoreStockForRefundedOrder } from '@/lib/supabase/fulfillment';
-import { getSupabaseOrders, updateSupabaseOrder } from '@/lib/supabase/orders';
+import { createSupabaseOrder, getSupabaseOrders, updateSupabaseOrder } from '@/lib/supabase/orders';
 import { createSupabaseServiceClient } from '@/lib/supabase/server';
 import type { Order } from '@/lib/cart/store';
 
@@ -26,6 +26,27 @@ const updateOrderSchema = z.object({
 const refundActionSchema = z.object({
   orderId: z.string().min(1),
   action: z.literal('refund')
+});
+
+const createOrderSchema = z.object({
+  action: z.literal('create'),
+  customer: z.object({
+    fullName: z.string().min(1),
+    email: z.string().email(),
+    phone: z.string().default(''),
+    address: z.string().default(''),
+    zip: z.string().default(''),
+    city: z.string().default(''),
+    notes: z.string().default('')
+  }),
+  items: z.array(z.object({
+    productId: z.string().min(1),
+    quantity: z.number().int().min(1)
+  })).min(1),
+  paymentMethod: z.enum(['manual', 'cash', 'bank_transfer']).default('manual'),
+  paymentStatus: z.enum(['manual_pending', 'paid']).default('manual_pending'),
+  internalNotes: z.string().optional(),
+  sendEmail: z.boolean().default(true)
 });
 
 export async function GET() {
@@ -70,7 +91,32 @@ export async function POST(request: Request) {
     const admin = await requireAdminApiSession();
     if (!admin) return unauthorized();
 
-    const payload = refundActionSchema.safeParse(await request.json());
+    const body = await request.json() as Record<string, unknown>;
+
+    if (body.action === 'create') {
+      const parsed = createOrderSchema.safeParse(body);
+      if (!parsed.success) return NextResponse.json({ error: 'Dati ordine non validi' }, { status: 400 });
+      const { customer, items, paymentMethod, paymentStatus, internalNotes, sendEmail } = parsed.data;
+      const paymentLabel = { manual: 'Manuale', cash: 'Contanti', bank_transfer: 'Bonifico' }[paymentMethod];
+      const noteText = internalNotes ? `Metodo: ${paymentLabel}. ${internalNotes}` : `Metodo: ${paymentLabel}`;
+      const result = await createSupabaseOrder({
+        items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
+        customer,
+        subtotal: 0,
+        discount: 0,
+        shipping: 0,
+        total: 0,
+        paymentProvider: 'manual',
+        paymentStatus,
+        status: paymentStatus === 'paid' ? 'paid' : 'new',
+        fulfillmentStatus: paymentStatus === 'paid' ? 'ready_to_prepare' : 'new',
+        skipEmails: !sendEmail
+      });
+      await updateSupabaseOrder({ orderId: result.id, internalNotes: noteText });
+      return NextResponse.json({ ok: true, orderId: result.id });
+    }
+
+    const payload = refundActionSchema.safeParse(body);
     if (!payload.success) return NextResponse.json({ error: 'Parametri non validi' }, { status: 400 });
 
     const { orderId } = payload.data;

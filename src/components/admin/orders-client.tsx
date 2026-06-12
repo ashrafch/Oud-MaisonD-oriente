@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, Clock3, CreditCard, Eye, PackageCheck, RefreshCw, RotateCcw, Search, Send, Truck, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, Clock3, CreditCard, Eye, Minus, PackageCheck, Plus, RefreshCw, RotateCcw, Search, Send, Truck, XCircle } from 'lucide-react';
 import { formatPrice, type Order, useCartStore } from '@/lib/cart/store';
 import type { AdminOrder } from '@/lib/supabase/orders';
 import { AdminModal } from './admin-modal';
@@ -70,6 +70,7 @@ export function OrdersClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [showCreateOrder, setShowCreateOrder] = useState(false);
 
   const loadOrders = useCallback(async () => {
     setIsLoading(true);
@@ -197,7 +198,7 @@ export function OrdersClient() {
       return;
     }
     if (shippingStatus === 'waiting_courier' || fulfillmentStatus === 'packed') {
-      void patchOrder(order.id, { status: 'shipped', shippingStatus: 'shipped' } as Partial<AdminOrder>);
+      void patchOrder(order.id, { status: 'shipped', shippingStatus: 'shipped', fulfillmentStatus: 'completed' } as Partial<AdminOrder>);
       return;
     }
     void patchOrder(order.id, { status: 'delivered', fulfillmentStatus: 'completed', shippingStatus: 'delivered' } as Partial<AdminOrder>);
@@ -233,6 +234,14 @@ export function OrdersClient() {
           >
             <RefreshCw size={17} className={isLoading ? 'animate-spin' : ''} />
             Aggiorna
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowCreateOrder(true)}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded bg-oud px-4 text-sm font-semibold text-white transition hover:bg-oud/90"
+          >
+            <Plus size={17} />
+            Crea ordine
           </button>
         </div>
       </div>
@@ -321,6 +330,19 @@ export function OrdersClient() {
           onRefund={(orderId) => void handleRefund(orderId)}
         />
       </AdminModal>
+
+      <AdminModal
+        title="Crea ordine manuale"
+        description="Registra un ordine telefonico, WhatsApp o in negozio. Lo stock viene scalato automaticamente."
+        isOpen={showCreateOrder}
+        onClose={() => setShowCreateOrder(false)}
+        size="xl"
+      >
+        <CreateOrderModal
+          onClose={() => setShowCreateOrder(false)}
+          onCreated={() => void loadOrders()}
+        />
+      </AdminModal>
     </section>
   );
 }
@@ -368,11 +390,7 @@ function OrderCard({
           </div>
           <p className="mt-2 truncate text-sm text-ink/55">{new Date(order.createdAt).toLocaleString('it-IT')} - {order.customer.fullName}</p>
           <p className="mt-2 truncate text-sm text-ink/70">{order.customer.city || 'Citta non indicata'} - {order.customer.email}</p>
-          <div className="mt-4 grid gap-3 rounded bg-mist/70 p-3 text-sm md:grid-cols-3">
-            <FlowStep label="Pagamento" value={getLabel(paymentStatuses, normalizePaymentStatus(order.paymentStatus))} active={normalizePaymentStatus(order.paymentStatus) === 'paid'} />
-            <FlowStep label="Preparazione" value={getLabel(fulfillmentStatuses, normalizeFulfillmentStatus(order.fulfillmentStatus))} active={['preparing', 'packed', 'completed'].includes(normalizeFulfillmentStatus(order.fulfillmentStatus))} />
-            <FlowStep label="Spedizione" value={getLabel(shippingStatuses, normalizeShippingStatus(order.shippingStatus))} active={['shipped', 'delivered'].includes(normalizeShippingStatus(order.shippingStatus))} />
-          </div>
+          <OrderFlowStepper order={order} />
         </div>
         <div className="flex flex-col justify-between gap-3 xl:items-end">
           <div className="text-left xl:text-right">
@@ -599,11 +617,36 @@ function SelectRow({
   );
 }
 
-function FlowStep({ label, value, active }: { label: string; value: string; active: boolean }) {
+function OrderFlowStepper({ order }: { order: AdminOrder }) {
+  const payment = normalizePaymentStatus(order.paymentStatus);
+  const fulfillment = normalizeFulfillmentStatus(order.fulfillmentStatus);
+  const shipping = normalizeShippingStatus(order.shippingStatus);
+
+  const paymentDone = payment === 'paid';
+  const prepDone = ['packed', 'completed'].includes(fulfillment);
+  const prepActive = paymentDone && !prepDone;
+  const shipDone = order.status === 'delivered' || order.status === 'shipped' || ['shipped', 'delivered'].includes(shipping);
+  const shipActive = prepDone && !shipDone;
+
+  const steps = [
+    { label: 'Pagamento', value: getLabel(paymentStatuses, payment), done: paymentDone, active: !paymentDone && payment !== 'failed' && payment !== 'refunded' },
+    { label: 'Preparazione', value: getLabel(fulfillmentStatuses, fulfillment), done: prepDone, active: prepActive },
+    { label: 'Spedizione', value: getLabel(shippingStatuses, shipping), done: shipDone, active: shipActive }
+  ];
+
   return (
-    <div>
-      <p className="text-xs uppercase tracking-widest text-ink/45">{label}</p>
-      <p className={`mt-1 font-semibold ${active ? 'text-sage' : 'text-ink'}`}>{value}</p>
+    <div className="mt-4 flex overflow-hidden rounded border border-ink/8 bg-mist/60 text-xs">
+      {steps.map((step, i) => (
+        <div key={step.label} className={`flex flex-1 items-center gap-2 px-3 py-2.5 ${i < steps.length - 1 ? 'border-r border-ink/8' : ''}`}>
+          <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${step.done ? 'bg-sage text-white' : step.active ? 'bg-oud text-white' : 'bg-ink/10 text-ink/35'}`}>
+            {step.done ? '✓' : i + 1}
+          </div>
+          <div className="min-w-0">
+            <p className={`font-semibold uppercase tracking-widest ${step.done ? 'text-sage' : step.active ? 'text-oud' : 'text-ink/40'}`}>{step.label}</p>
+            <p className="truncate text-ink/65">{step.value}</p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -654,11 +697,14 @@ function isToPrepare(order: AdminOrder) {
 function isToShip(order: AdminOrder) {
   const fulfillmentStatus = normalizeFulfillmentStatus(order.fulfillmentStatus);
   const shippingStatus = normalizeShippingStatus(order.shippingStatus);
-  return ['packed', 'completed'].includes(fulfillmentStatus) || ['pickup_ready', 'waiting_courier', 'shipped'].includes(shippingStatus);
+  return fulfillmentStatus === 'packed' || ['pickup_ready', 'waiting_courier'].includes(shippingStatus);
 }
 
 function isCompleted(order: AdminOrder) {
-  return order.status === 'delivered' || normalizeShippingStatus(order.shippingStatus) === 'delivered' || normalizeFulfillmentStatus(order.fulfillmentStatus) === 'completed';
+  return order.status === 'delivered'
+    || order.status === 'shipped'
+    || normalizeShippingStatus(order.shippingStatus) === 'delivered'
+    || normalizeFulfillmentStatus(order.fulfillmentStatus) === 'completed';
 }
 
 function hasIssue(order: AdminOrder) {
@@ -691,6 +737,258 @@ function getNextAction(order: AdminOrder) {
   if (paymentStatus !== 'paid') return 'Segna pagato';
   if (fulfillmentStatus === 'new' || fulfillmentStatus === 'ready_to_prepare') return 'Avvia preparazione';
   if (fulfillmentStatus === 'preparing') return 'Segna pacco pronto';
-  if (shippingStatus === 'waiting_courier' || fulfillmentStatus === 'packed') return 'Segna spedito';
+  if (fulfillmentStatus === 'packed' || shippingStatus === 'waiting_courier') return 'Segna spedito';
+  if (order.status === 'shipped' || shippingStatus === 'shipped') return 'Segna consegnato';
   return 'Segna consegnato';
+}
+
+type OrderProductLine = { productId: string; productName: string; quantity: number; unitPrice: number };
+type SlimProduct = { id: string; name: string; price: number; stock: number };
+
+function CreateOrderModal({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
+  const notify = useCartStore((state) => state.notify);
+  const [products, setProducts] = useState<SlimProduct[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [search, setSearch] = useState('');
+  const [lines, setLines] = useState<OrderProductLine[]>([]);
+  const [customer, setCustomer] = useState({ fullName: '', email: '', phone: '', address: '', zip: '', city: '', notes: '' });
+  const [paymentMethod, setPaymentMethod] = useState<'manual' | 'cash' | 'bank_transfer'>('manual');
+  const [alreadyPaid, setAlreadyPaid] = useState(false);
+  const [adminNote, setAdminNote] = useState('');
+  const [sendEmail, setSendEmail] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const res = await fetch('/api/admin/products');
+        if (res.ok) {
+          const data = await res.json() as { products: SlimProduct[] };
+          setProducts(data.products);
+        }
+      } finally {
+        setLoadingProducts(false);
+      }
+    })();
+  }, []);
+
+  const filteredProducts = search.trim()
+    ? products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()))
+    : products;
+
+  const addLine = (product: SlimProduct) => {
+    setErrors((e) => ({ ...e, items: '' }));
+    setLines((prev) => {
+      const existing = prev.find((l) => l.productId === product.id);
+      if (existing) return prev.map((l) => l.productId === product.id ? { ...l, quantity: l.quantity + 1 } : l);
+      return [...prev, { productId: product.id, productName: product.name, quantity: 1, unitPrice: product.price }];
+    });
+  };
+
+  const updateQty = (productId: string, delta: number) => {
+    setLines((prev) => prev
+      .map((l) => l.productId === productId ? { ...l, quantity: Math.max(0, l.quantity + delta) } : l)
+      .filter((l) => l.quantity > 0)
+    );
+  };
+
+  const setField = (field: keyof typeof customer, value: string) => {
+    setCustomer((c) => ({ ...c, [field]: value }));
+    setErrors((e) => ({ ...e, [field]: '' }));
+  };
+
+  const subtotal = lines.reduce((sum, l) => sum + l.unitPrice * l.quantity, 0);
+
+  const validate = () => {
+    const errs: Record<string, string> = {};
+    if (!customer.fullName.trim()) errs.fullName = 'Nome obbligatorio';
+    if (!customer.email.trim()) errs.email = 'Email obbligatoria';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email)) errs.email = 'Email non valida';
+    if (lines.length === 0) errs.items = 'Aggiungi almeno un prodotto';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validate()) return;
+    setIsSubmitting(true);
+    try {
+      const res = await fetch('/api/admin/orders', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          action: 'create',
+          customer,
+          items: lines.map((l) => ({ productId: l.productId, quantity: l.quantity })),
+          paymentMethod,
+          paymentStatus: alreadyPaid ? 'paid' : 'manual_pending',
+          internalNotes: adminNote || undefined,
+          sendEmail
+        })
+      });
+      const data = await res.json() as { error?: string };
+      if (!res.ok) throw new Error(data.error ?? 'Errore durante la creazione');
+      notify({ title: 'Ordine creato', description: 'L\'ordine è stato registrato con successo.', tone: 'success' });
+      onCreated();
+      onClose();
+    } catch (error) {
+      notify({ title: 'Errore', description: error instanceof Error ? error.message : 'Controlla la connessione.', tone: 'warning' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const inputCls = (field: string) =>
+    `min-h-10 w-full rounded border px-3 text-sm outline-none focus:border-oud/40 ${errors[field] ? 'border-oud/50 bg-oud/5' : 'border-ink/12'}`;
+
+  const paymentMethods: { value: 'manual' | 'cash' | 'bank_transfer'; label: string }[] = [
+    { value: 'manual', label: 'Pagamento manuale (WhatsApp / telefono)' },
+    { value: 'cash', label: 'Contanti' },
+    { value: 'bank_transfer', label: 'Bonifico bancario' }
+  ];
+
+  return (
+    <div className="grid gap-6 xl:grid-cols-2">
+      <div className="grid content-start gap-4">
+        <section className="rounded border border-ink/10 bg-white p-4">
+          <h3 className="font-serif text-2xl">Cliente</h3>
+          <div className="mt-3 grid gap-3">
+            <label className="grid gap-1 text-sm font-semibold">
+              Nome completo <span className="text-oud">*</span>
+              <input value={customer.fullName} onChange={(e) => setField('fullName', e.target.value)} className={inputCls('fullName')} placeholder="Mario Rossi" />
+              {errors.fullName && <span className="text-xs font-normal text-oud">{errors.fullName}</span>}
+            </label>
+            <label className="grid gap-1 text-sm font-semibold">
+              Email <span className="text-oud">*</span>
+              <input type="email" value={customer.email} onChange={(e) => setField('email', e.target.value)} className={inputCls('email')} placeholder="cliente@email.com" />
+              {errors.email && <span className="text-xs font-normal text-oud">{errors.email}</span>}
+            </label>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="grid gap-1 text-sm font-semibold">
+                Telefono
+                <input value={customer.phone} onChange={(e) => setField('phone', e.target.value)} className={inputCls('phone')} placeholder="+39 ..." />
+              </label>
+              <label className="grid gap-1 text-sm font-semibold">
+                CAP
+                <input value={customer.zip} onChange={(e) => setField('zip', e.target.value)} className={inputCls('zip')} placeholder="00100" />
+              </label>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="grid gap-1 text-sm font-semibold">
+                Indirizzo
+                <input value={customer.address} onChange={(e) => setField('address', e.target.value)} className={inputCls('address')} placeholder="Via Roma 1" />
+              </label>
+              <label className="grid gap-1 text-sm font-semibold">
+                Città
+                <input value={customer.city} onChange={(e) => setField('city', e.target.value)} className={inputCls('city')} placeholder="Roma" />
+              </label>
+            </div>
+            <label className="grid gap-1 text-sm font-semibold">
+              Note cliente
+              <textarea value={customer.notes} onChange={(e) => setField('notes', e.target.value)} rows={2} className={`${inputCls('notes')} py-2`} placeholder="Richieste particolari..." />
+            </label>
+          </div>
+        </section>
+
+        <section className="rounded border border-ink/10 bg-white p-4">
+          <h3 className="font-serif text-2xl">Pagamento</h3>
+          <div className="mt-3 grid gap-2">
+            {paymentMethods.map((method) => (
+              <label key={method.value} className="flex cursor-pointer items-center gap-3 rounded border border-ink/10 p-3 transition hover:bg-mist has-[:checked]:border-oud/40 has-[:checked]:bg-oud/5">
+                <input type="radio" name="paymentMethod" value={method.value} checked={paymentMethod === method.value} onChange={() => setPaymentMethod(method.value)} className="accent-oud" />
+                <span className="text-sm">{method.label}</span>
+              </label>
+            ))}
+          </div>
+          <label className="mt-3 flex cursor-pointer items-center gap-3 rounded border border-ink/10 p-3 transition hover:bg-mist has-[:checked]:border-sage/40 has-[:checked]:bg-sage/5">
+            <input type="checkbox" checked={alreadyPaid} onChange={(e) => setAlreadyPaid(e.target.checked)} className="accent-sage" />
+            <span className="text-sm font-semibold">Pagamento già ricevuto</span>
+          </label>
+          <label className="mt-2 flex cursor-pointer items-center gap-3 rounded border border-ink/10 p-3 transition hover:bg-mist has-[:checked]:border-ink/25 has-[:checked]:bg-mist">
+            <input type="checkbox" checked={sendEmail} onChange={(e) => setSendEmail(e.target.checked)} className="accent-ink" />
+            <span className="text-sm">Invia email di conferma al cliente</span>
+          </label>
+          <label className="mt-3 grid gap-1 text-sm font-semibold">
+            Nota interna (opzionale)
+            <textarea value={adminNote} onChange={(e) => setAdminNote(e.target.value)} rows={2} className="min-h-10 w-full rounded border border-ink/12 p-3 text-sm font-normal outline-none focus:border-oud/40" placeholder="Provenienza ordine, accordi particolari..." />
+          </label>
+        </section>
+      </div>
+
+      <div className="grid content-start gap-4">
+        <section className="rounded border border-ink/10 bg-white p-4">
+          <h3 className="font-serif text-2xl">Prodotti</h3>
+          {errors.items && <p className="mt-2 text-xs font-semibold text-oud">{errors.items}</p>}
+          <label className="relative mt-3 block">
+            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/35" size={15} />
+            <input value={search} onChange={(e) => setSearch(e.target.value)} className="min-h-10 w-full rounded border border-ink/12 pl-9 pr-3 text-sm outline-none focus:border-oud/40" placeholder="Cerca prodotto..." />
+          </label>
+          <div className="mt-3 max-h-56 overflow-y-auto rounded border border-ink/8">
+            {loadingProducts ? (
+              <p className="p-4 text-sm text-ink/50">Caricamento prodotti...</p>
+            ) : filteredProducts.length === 0 ? (
+              <p className="p-4 text-sm text-ink/50">Nessun prodotto trovato.</p>
+            ) : filteredProducts.map((product) => (
+              <button
+                key={product.id}
+                type="button"
+                onClick={() => addLine(product)}
+                className="flex w-full items-center justify-between gap-3 border-b border-ink/6 px-3 py-2.5 text-left text-sm transition last:border-0 hover:bg-mist"
+              >
+                <span className="min-w-0">
+                  <span className="block truncate font-semibold">{product.name}</span>
+                  <span className="text-xs text-ink/50">Stock: {product.stock} — {formatPrice(product.price)}</span>
+                </span>
+                <Plus size={14} className="shrink-0 text-oud" />
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {lines.length > 0 && (
+          <section className="rounded border border-ink/10 bg-white p-4">
+            <h3 className="font-serif text-2xl">Riepilogo</h3>
+            <div className="mt-3 grid gap-2">
+              {lines.map((line) => (
+                <div key={line.productId} className="flex items-center gap-2 rounded border border-ink/8 bg-mist/30 p-2 text-sm">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-semibold">{line.productName}</p>
+                    <p className="text-xs text-ink/50">{formatPrice(line.unitPrice)} cad.</p>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button type="button" onClick={() => updateQty(line.productId, -1)} className="flex h-7 w-7 items-center justify-center rounded border border-ink/12 transition hover:bg-mist">
+                      <Minus size={11} />
+                    </button>
+                    <span className="w-6 text-center text-sm font-semibold">{line.quantity}</span>
+                    <button type="button" onClick={() => updateQty(line.productId, 1)} className="flex h-7 w-7 items-center justify-center rounded border border-ink/12 transition hover:bg-mist">
+                      <Plus size={11} />
+                    </button>
+                  </div>
+                  <p className="w-16 text-right font-semibold">{formatPrice(line.unitPrice * line.quantity)}</p>
+                  <button type="button" onClick={() => updateQty(line.productId, -line.quantity)} className="ml-1 text-ink/25 transition hover:text-oud">
+                    <XCircle size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 rounded bg-mist p-3 text-sm">
+              <p className="flex justify-between"><span className="text-ink/60">Subtotale prodotti</span><span className="font-semibold">{formatPrice(subtotal)}</span></p>
+              <p className="mt-1 text-xs text-ink/45">Spedizione calcolata al salvataggio in base alla configurazione attiva</p>
+            </div>
+          </section>
+        )}
+
+        <button
+          type="button"
+          disabled={isSubmitting}
+          onClick={() => void handleSubmit()}
+          className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded bg-oud px-4 text-sm font-semibold text-white transition hover:bg-oud/90 disabled:cursor-not-allowed disabled:opacity-55"
+        >
+          <Plus size={17} />
+          {isSubmitting ? 'Creazione in corso...' : 'Crea ordine'}
+        </button>
+      </div>
+    </div>
+  );
 }
