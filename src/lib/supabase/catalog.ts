@@ -38,7 +38,11 @@ function inferCategory(row: Pick<SupabaseProductRow, 'slug' | 'tags'>) {
 }
 
 function mapProduct(row: SupabaseProductRow): Product {
-  const category = row.product_categories?.find((entry) => entry.categories)?.categories?.slug ?? inferCategory(row);
+  const allCategories = (row.product_categories ?? [])
+    .map((entry) => entry.categories?.slug)
+    .filter((slug): slug is string => Boolean(slug));
+  const category = allCategories[0] ?? inferCategory(row);
+  const categories = allCategories.length > 0 ? allCategories : [category];
   const image = row.product_images?.sort((a, b) => a.sort_order - b.sort_order)[0]?.url ?? '/brand/oude-logo.jpg';
 
   return {
@@ -49,6 +53,7 @@ function mapProduct(row: SupabaseProductRow): Product {
     price: Number(row.price),
     compareAtPrice: row.compare_at_price ? Number(row.compare_at_price) : undefined,
     category,
+    categories,
     image,
     stock: row.stock,
     intensity: row.intensity ?? 'Medio',

@@ -19,7 +19,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   ]);
   const category = categories.find((item) => item.slug === slug);
   if (!category) notFound();
-  const items = products.filter((product) => product.category === category.slug);
+  const items = products.filter((product) => product.categories.includes(category.slug));
   return (
     <section className="container py-12">
       <p className="text-sm font-semibold uppercase tracking-widest text-oud">Categoria</p>

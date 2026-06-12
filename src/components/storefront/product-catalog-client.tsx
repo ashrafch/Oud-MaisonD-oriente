@@ -27,7 +27,7 @@ export function ProductCatalogClient({ initialProducts, initialCategories }: Pro
     const normalizedQuery = query.trim().toLowerCase();
     const filtered = products.filter((product) => {
       const matchesQuery = !normalizedQuery || [product.name, product.brand, product.shortDescription, product.notes.top.join(' '), product.notes.heart.join(' '), product.notes.base.join(' ')].join(' ').toLowerCase().includes(normalizedQuery);
-      const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(product.category);
+      const matchesCategory = selectedCategories.length === 0 || selectedCategories.some((cat) => product.categories.includes(cat));
       return matchesQuery && matchesCategory;
     });
 
