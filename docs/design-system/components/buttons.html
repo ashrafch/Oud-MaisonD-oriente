@@ -1,0 +1,144 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OUDÉ — Buttons</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink: 'rgb(23 20 18 / <alpha-value>)',
+        oud: 'rgb(116 29 18 / <alpha-value>)',
+        saffron: 'rgb(201 155 69 / <alpha-value>)',
+        cream: 'rgb(251 245 236 / <alpha-value>)',
+        mist: 'rgb(244 239 230 / <alpha-value>)',
+        bark: 'rgb(78 52 39 / <alpha-value>)',
+        sage: 'rgb(120 134 107 / <alpha-value>)'
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+      },
+      boxShadow: {
+        soft: '0 24px 70px rgba(23, 20, 18, 0.12)'
+      }
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-cream font-sans p-8 min-h-screen">
+  <p class="text-xs font-semibold uppercase tracking-widest text-oud mb-1">Components</p>
+  <h1 class="font-serif text-4xl text-ink mb-8">Bottoni</h1>
+
+  <div class="grid gap-10">
+
+    <!-- Primary -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Primary — bg-oud</p>
+      <div class="bg-white border border-ink/10 rounded-lg p-6 flex flex-wrap gap-4 items-center">
+        <button class="min-h-11 px-8 bg-oud text-white text-sm font-semibold rounded hover:bg-bark transition-colors">
+          Aggiungi al carrello
+        </button>
+        <button class="min-h-11 px-8 bg-oud text-white text-sm font-semibold rounded hover:bg-bark transition-colors flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-10H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          Con icona
+        </button>
+        <button disabled class="min-h-11 px-8 bg-oud/40 text-white text-sm font-semibold rounded cursor-not-allowed">
+          Disabilitato
+        </button>
+        <button class="min-h-11 px-4 bg-oud text-white text-sm font-semibold rounded hover:bg-bark transition-colors">
+          Compatto
+        </button>
+      </div>
+      <p class="mt-2 text-xs font-mono text-ink/40">min-h-11 px-8 bg-oud text-white text-sm font-semibold rounded hover:bg-bark transition-colors</p>
+    </section>
+
+    <!-- Secondary / Ghost -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Secondary / Ghost — bordo ink</p>
+      <div class="bg-white border border-ink/10 rounded-lg p-6 flex flex-wrap gap-4 items-center">
+        <button class="min-h-11 px-8 border border-ink/20 text-ink text-sm font-semibold rounded hover:bg-mist transition-colors">
+          Sfoglia catalogo
+        </button>
+        <button class="min-h-11 px-8 border border-ink/20 text-ink text-sm font-medium rounded hover:bg-mist transition-colors flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          Indietro
+        </button>
+        <button class="min-h-11 px-8 border border-oud/30 text-oud text-sm font-semibold rounded hover:bg-oud/5 transition-colors">
+          Outline oud
+        </button>
+      </div>
+      <p class="mt-2 text-xs font-mono text-ink/40">min-h-11 px-8 border border-ink/20 text-ink rounded hover:bg-mist transition-colors</p>
+    </section>
+
+    <!-- Danger -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Danger — eliminazione, rimborso</p>
+      <div class="bg-white border border-ink/10 rounded-lg p-6 flex flex-wrap gap-4 items-center">
+        <button class="min-h-11 px-8 bg-oud text-white text-sm font-semibold rounded hover:bg-bark transition-colors">
+          Elimina prodotto
+        </button>
+        <button class="min-h-11 px-8 border border-oud/30 text-oud text-sm font-semibold rounded hover:bg-oud/8 transition-colors">
+          Rimborsa ordine
+        </button>
+        <button class="min-h-9 px-3 text-oud text-sm hover:bg-oud/8 rounded transition-colors">
+          Rimuovi
+        </button>
+      </div>
+    </section>
+
+    <!-- Icon-only / small -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Icon-only e piccoli</p>
+      <div class="bg-white border border-ink/10 rounded-lg p-6 flex flex-wrap gap-4 items-center">
+        <button class="w-10 h-10 flex items-center justify-center rounded border border-ink/12 hover:bg-mist text-ink transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+        </button>
+        <button class="w-10 h-10 flex items-center justify-center rounded border border-ink/12 hover:bg-mist text-ink transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+        </button>
+        <button class="w-10 h-10 flex items-center justify-center rounded border border-ink/12 hover:bg-oud/10 text-oud transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
+        <button class="min-h-9 px-3 py-1 text-xs font-semibold bg-oud text-white rounded hover:bg-bark transition-colors">
+          Salva
+        </button>
+        <button class="min-h-9 px-3 py-1 text-xs font-semibold border border-ink/20 text-ink rounded hover:bg-mist transition-colors">
+          Annulla
+        </button>
+      </div>
+    </section>
+
+    <!-- Cart quantity -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Quantità carrello</p>
+      <div class="bg-white border border-ink/10 rounded-lg p-6 flex flex-wrap gap-4 items-center">
+        <div class="flex items-center border border-ink/15 rounded overflow-hidden">
+          <button class="w-9 h-9 flex items-center justify-center hover:bg-mist transition-colors text-ink font-semibold">−</button>
+          <span class="w-10 text-center text-sm font-semibold text-ink">2</span>
+          <button class="w-9 h-9 flex items-center justify-center hover:bg-mist transition-colors text-ink font-semibold">+</button>
+        </div>
+        <p class="text-xs font-mono text-ink/40">border border-ink/15 rounded — w-9 h-9 flex items-center justify-center</p>
+      </div>
+    </section>
+
+    <!-- States focus ring -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Focus ring — saffron</p>
+      <div class="bg-white border border-ink/10 rounded-lg p-6 flex flex-wrap gap-4 items-center">
+        <button style="outline: 2px solid rgb(201 155 69); outline-offset: 2px;" class="min-h-11 px-8 bg-oud text-white text-sm font-semibold rounded">
+          Focus state
+        </button>
+        <p class="text-xs font-mono text-ink/40">focus-visible:outline-2 focus-visible:outline-saffron focus-visible:outline-offset-2</p>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

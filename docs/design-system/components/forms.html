@@ -1,0 +1,135 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OUDÉ — Forms</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink: 'rgb(23 20 18 / <alpha-value>)',
+        oud: 'rgb(116 29 18 / <alpha-value>)',
+        saffron: 'rgb(201 155 69 / <alpha-value>)',
+        cream: 'rgb(251 245 236 / <alpha-value>)',
+        mist: 'rgb(244 239 230 / <alpha-value>)',
+      },
+      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], serif: ['"Cormorant Garamond"', 'Georgia', 'serif'] }
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-cream font-sans p-8 min-h-screen">
+  <p class="text-xs font-semibold uppercase tracking-widest text-oud mb-1">Components</p>
+  <h1 class="font-serif text-4xl text-ink mb-8">Form Elements</h1>
+
+  <div class="grid gap-10">
+
+    <!-- Text inputs -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Input testo</p>
+      <div class="bg-white border border-ink/10 rounded-lg p-6 grid gap-4 max-w-md">
+        <div>
+          <label class="block text-sm font-medium text-ink mb-1.5">Nome</label>
+          <input type="text" placeholder="Mario" class="w-full min-h-11 px-4 rounded border border-ink/15 bg-white text-sm text-ink placeholder:text-ink/35 focus:outline-2 focus:outline-saffron focus:outline-offset-1 transition-colors" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-ink mb-1.5">Email</label>
+          <input type="email" value="mario@esempio.it" class="w-full min-h-11 px-4 rounded border border-ink/15 bg-white text-sm text-ink focus:outline-2 focus:outline-saffron focus:outline-offset-1" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-ink mb-1.5">Prezzo <span class="text-ink/40 font-normal">(€)</span></label>
+          <input type="number" placeholder="89" class="w-full min-h-11 px-4 rounded border border-ink/15 bg-white text-sm text-ink placeholder:text-ink/35 focus:outline-2 focus:outline-saffron focus:outline-offset-1" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-ink mb-1.5">Descrizione breve</label>
+          <textarea rows="3" placeholder="Oud caldo e regale…" class="w-full px-4 py-3 rounded border border-ink/15 bg-white text-sm text-ink placeholder:text-ink/35 focus:outline-2 focus:outline-saffron focus:outline-offset-1 resize-none"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-oud mb-1.5">Stato errore</label>
+          <input type="text" value="mario@" class="w-full min-h-11 px-4 rounded border border-oud/50 bg-oud/5 text-sm text-ink focus:outline-2 focus:outline-oud focus:outline-offset-1" />
+          <p class="mt-1 text-xs text-oud">Email non valida</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-ink/40 mb-1.5">Disabilitato</label>
+          <input type="text" disabled value="Non modificabile" class="w-full min-h-11 px-4 rounded border border-ink/10 bg-mist text-sm text-ink/40 cursor-not-allowed" />
+        </div>
+      </div>
+      <p class="mt-2 text-xs font-mono text-ink/40">min-h-11 px-4 rounded border border-ink/15 bg-white text-sm focus:outline-2 focus:outline-saffron</p>
+    </section>
+
+    <!-- Select -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Select</p>
+      <div class="bg-white border border-ink/10 rounded-lg p-6 grid gap-4 max-w-md">
+        <div>
+          <label class="block text-sm font-medium text-ink mb-1.5">Categoria</label>
+          <select class="w-full min-h-11 px-4 rounded border border-ink/15 bg-white text-sm text-ink focus:outline-2 focus:outline-saffron focus:outline-offset-1">
+            <option>Oud</option>
+            <option>Musk</option>
+            <option>Attar</option>
+            <option>Bakhoor</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-ink mb-1.5">Ordina per</label>
+          <select class="w-full min-h-11 px-3 rounded border border-ink/12 bg-cream text-sm">
+            <option>Consigliati</option>
+            <option>Prezzo crescente</option>
+            <option>Nuovi arrivi</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Checkbox & Radio -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Checkbox &amp; Radio</p>
+      <div class="bg-white border border-ink/10 rounded-lg p-6 grid gap-4 max-w-md">
+        <div class="space-y-3">
+          <label class="flex items-center gap-2 cursor-pointer text-sm text-ink">
+            <input type="checkbox" checked class="accent-oud w-4 h-4" /> Oud
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer text-sm text-ink">
+            <input type="checkbox" class="accent-oud w-4 h-4" /> Musk
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer text-sm text-ink">
+            <input type="checkbox" class="accent-oud w-4 h-4" /> Attar
+          </label>
+        </div>
+        <hr class="border-ink/8" />
+        <div class="space-y-3">
+          <label class="flex items-center gap-2 cursor-pointer text-sm text-ink">
+            <input type="radio" name="gender" checked class="accent-oud w-4 h-4" /> Unisex
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer text-sm text-ink">
+            <input type="radio" name="gender" class="accent-oud w-4 h-4" /> Donna
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer text-sm text-ink">
+            <input type="radio" name="gender" class="accent-oud w-4 h-4" /> Uomo
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search with icon -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Search input</p>
+      <div class="bg-white border border-ink/10 rounded-lg p-6 max-w-md">
+        <div class="relative">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink/35" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input type="search" placeholder="Cerca per nome, note o brand" class="w-full min-h-11 pl-9 pr-4 rounded border border-ink/12 bg-white text-sm text-ink placeholder:text-ink/35 focus:outline-2 focus:outline-saffron focus:outline-offset-1" />
+        </div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OUDÉ — Toast Notifications</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink: 'rgb(23 20 18 / <alpha-value>)',
+        oud: 'rgb(116 29 18 / <alpha-value>)',
+        saffron: 'rgb(201 155 69 / <alpha-value>)',
+        cream: 'rgb(251 245 236 / <alpha-value>)',
+        mist: 'rgb(244 239 230 / <alpha-value>)',
+        sage: 'rgb(120 134 107 / <alpha-value>)'
+      },
+      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], serif: ['"Cormorant Garamond"', 'Georgia', 'serif'] },
+      boxShadow: { soft: '0 24px 70px rgba(23, 20, 18, 0.12)' }
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-cream font-sans p-8 min-h-screen">
+  <p class="text-xs font-semibold uppercase tracking-widest text-oud mb-1">Components</p>
+  <h1 class="font-serif text-4xl text-ink mb-8">Toast Notifications</h1>
+
+  <div class="grid gap-8 max-w-sm">
+
+    <!-- Success -->
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-3">Successo</p>
+      <div class="flex items-start gap-3 rounded-xl border border-sage/25 bg-white px-4 py-3 shadow-soft">
+        <svg class="w-5 h-5 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div class="flex-1">
+          <p class="text-sm font-semibold text-ink">Aggiunto al carrello</p>
+          <p class="text-xs text-ink/55 mt-0.5">Oud Sultan — 30ml</p>
+        </div>
+        <button class="text-ink/30 hover:text-ink text-lg leading-none">×</button>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-3">Errore</p>
+      <div class="flex items-start gap-3 rounded-xl border border-oud/20 bg-white px-4 py-3 shadow-soft">
+        <svg class="w-5 h-5 text-oud shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div class="flex-1">
+          <p class="text-sm font-semibold text-ink">Pagamento fallito</p>
+          <p class="text-xs text-ink/55 mt-0.5">Verifica i dati della carta e riprova.</p>
+        </div>
+        <button class="text-ink/30 hover:text-ink text-lg leading-none">×</button>
+      </div>
+    </div>
+
+    <!-- Warning -->
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-3">Avviso</p>
+      <div class="flex items-start gap-3 rounded-xl border border-saffron/30 bg-white px-4 py-3 shadow-soft">
+        <svg class="w-5 h-5 text-saffron shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div class="flex-1">
+          <p class="text-sm font-semibold text-ink">Stock limitato</p>
+          <p class="text-xs text-ink/55 mt-0.5">Solo 2 pezzi disponibili di Musk Al Tahara.</p>
+        </div>
+        <button class="text-ink/30 hover:text-ink text-lg leading-none">×</button>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-3">Info</p>
+      <div class="flex items-start gap-3 rounded-xl border border-ink/12 bg-white px-4 py-3 shadow-soft">
+        <svg class="w-5 h-5 text-ink/50 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div class="flex-1">
+          <p class="text-sm font-semibold text-ink">Ordine aggiornato</p>
+          <p class="text-xs text-ink/55 mt-0.5">Lo stato è cambiato a "In spedizione".</p>
+        </div>
+        <button class="text-ink/30 hover:text-ink text-lg leading-none">×</button>
+      </div>
+    </div>
+
+    <!-- Position note -->
+    <div class="bg-white border border-ink/10 rounded-lg p-4">
+      <p class="text-xs font-semibold text-ink/40 uppercase tracking-wider mb-2">Posizionamento</p>
+      <p class="text-xs font-mono text-ink/60">fixed bottom-4 right-4 z-50<br/>max-w-sm w-full<br/>animate-in slide-in-from-bottom-2</p>
+    </div>
+
+  </div>
+</body>
+</html>

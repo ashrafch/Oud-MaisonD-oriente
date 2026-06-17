@@ -1,0 +1,221 @@
+<!-- @dsCard group="Tokens" -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OUDÉ — Color Tokens</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink: 'rgb(23 20 18 / <alpha-value>)',
+        oud: 'rgb(116 29 18 / <alpha-value>)',
+        saffron: 'rgb(201 155 69 / <alpha-value>)',
+        cream: 'rgb(251 245 236 / <alpha-value>)',
+        mist: 'rgb(244 239 230 / <alpha-value>)',
+        bark: 'rgb(78 52 39 / <alpha-value>)',
+        sage: 'rgb(120 134 107 / <alpha-value>)'
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+      }
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-cream font-sans p-8 min-h-screen">
+  <p class="text-xs font-semibold uppercase tracking-widest text-oud mb-1">Design Tokens</p>
+  <h1 class="font-serif text-4xl text-ink mb-8">Palette colori</h1>
+
+  <div class="grid gap-8">
+
+    <!-- Brand Primary -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-3">Brand primari</p>
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div>
+          <div class="h-20 rounded-lg bg-oud mb-2 shadow-sm"></div>
+          <p class="font-semibold text-sm text-ink">oud</p>
+          <p class="text-xs text-ink/50 font-mono">#741d12</p>
+          <p class="text-xs text-ink/40">Bottoni, accent, brand</p>
+        </div>
+        <div>
+          <div class="h-20 rounded-lg bg-saffron mb-2 shadow-sm"></div>
+          <p class="font-semibold text-sm text-ink">saffron</p>
+          <p class="text-xs text-ink/50 font-mono">#c99b45</p>
+          <p class="text-xs text-ink/40">Focus ring, accento lusso</p>
+        </div>
+        <div>
+          <div class="h-20 rounded-lg bg-bark mb-2 shadow-sm"></div>
+          <p class="font-semibold text-sm text-ink">bark</p>
+          <p class="text-xs text-ink/50 font-mono">#4e3427</p>
+          <p class="text-xs text-ink/40">Hover bottoni, scuro</p>
+        </div>
+        <div>
+          <div class="h-20 rounded-lg bg-sage mb-2 shadow-sm"></div>
+          <p class="font-semibold text-sm text-ink">sage</p>
+          <p class="text-xs text-ink/50 font-mono">#78866b</p>
+          <p class="text-xs text-ink/40">Successo, completato</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Neutrals -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-3">Neutri e superfici</p>
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div>
+          <div class="h-20 rounded-lg bg-ink mb-2"></div>
+          <p class="font-semibold text-sm text-ink">ink</p>
+          <p class="text-xs text-ink/50 font-mono">#171412</p>
+          <p class="text-xs text-ink/40">Testo primario, bordi</p>
+        </div>
+        <div>
+          <div class="h-20 rounded-lg bg-cream border border-ink/8 mb-2"></div>
+          <p class="font-semibold text-sm text-ink">cream</p>
+          <p class="text-xs text-ink/50 font-mono">#fbf5ec</p>
+          <p class="text-xs text-ink/40">Background primario</p>
+        </div>
+        <div>
+          <div class="h-20 rounded-lg bg-mist border border-ink/8 mb-2"></div>
+          <p class="font-semibold text-sm text-ink">mist</p>
+          <p class="text-xs text-ink/50 font-mono">#f4efe6</p>
+          <p class="text-xs text-ink/40">Hover, secondary bg</p>
+        </div>
+        <div>
+          <div class="h-20 rounded-lg bg-white border border-ink/10 mb-2"></div>
+          <p class="font-semibold text-sm text-ink">white</p>
+          <p class="text-xs text-ink/50 font-mono">#ffffff</p>
+          <p class="text-xs text-ink/40">Card, modal, input</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Opacity scale -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-3">Scala opacità — ink</p>
+      <div class="flex gap-2 flex-wrap">
+        {['100','70','55','45','30','20','12','10','8'].map ? null : ''}
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-ink"></div>
+          <span class="text-xs text-ink/40">100%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-ink/70"></div>
+          <span class="text-xs text-ink/40">70%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-ink/55"></div>
+          <span class="text-xs text-ink/40">55%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-ink/45"></div>
+          <span class="text-xs text-ink/40">45%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-ink/30"></div>
+          <span class="text-xs text-ink/40">30%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-ink/20"></div>
+          <span class="text-xs text-ink/40">20%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-ink/12"></div>
+          <span class="text-xs text-ink/40">12%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-ink/10"></div>
+          <span class="text-xs text-ink/40">10%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-ink/8"></div>
+          <span class="text-xs text-ink/40">8%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Opacity scale oud -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-3">Scala opacità — oud</p>
+      <div class="flex gap-2 flex-wrap">
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-oud"></div>
+          <span class="text-xs text-ink/40">100%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-oud/80"></div>
+          <span class="text-xs text-ink/40">80%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-oud/55"></div>
+          <span class="text-xs text-ink/40">55%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-oud/40"></div>
+          <span class="text-xs text-ink/40">40%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-oud/25"></div>
+          <span class="text-xs text-ink/40">25%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-oud/15"></div>
+          <span class="text-xs text-ink/40">15%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-oud/10"></div>
+          <span class="text-xs text-ink/40">10%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-oud/8"></div>
+          <span class="text-xs text-ink/40">8%</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <div class="w-12 h-12 rounded bg-oud/5"></div>
+          <span class="text-xs text-ink/40">5%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Semantic usage -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-3">Uso semantico</p>
+      <div class="grid gap-2 text-sm">
+        <div class="flex items-center gap-3 rounded border border-ink/10 bg-white p-3">
+          <div class="w-4 h-4 rounded-full bg-oud"></div>
+          <span class="font-semibold text-ink w-32">Azione primaria</span>
+          <code class="text-ink/50 text-xs">bg-oud text-white</code>
+        </div>
+        <div class="flex items-center gap-3 rounded border border-ink/10 bg-white p-3">
+          <div class="w-4 h-4 rounded-full bg-sage"></div>
+          <span class="font-semibold text-ink w-32">Successo / Evaso</span>
+          <code class="text-ink/50 text-xs">text-sage bg-sage/12</code>
+        </div>
+        <div class="flex items-center gap-3 rounded border border-ink/10 bg-white p-3">
+          <div class="w-4 h-4 rounded-full bg-saffron"></div>
+          <span class="font-semibold text-ink w-32">Attenzione</span>
+          <code class="text-ink/50 text-xs">bg-saffron/18 text-ink</code>
+        </div>
+        <div class="flex items-center gap-3 rounded border border-ink/10 bg-white p-3">
+          <div class="w-4 h-4 rounded-full bg-oud/25"></div>
+          <span class="font-semibold text-ink w-32">Pericolo / Errore</span>
+          <code class="text-ink/50 text-xs">bg-oud/10 text-oud</code>
+        </div>
+        <div class="flex items-center gap-3 rounded border border-ink/10 bg-white p-3">
+          <div class="w-4 h-4 rounded-full bg-mist border border-ink/10"></div>
+          <span class="font-semibold text-ink w-32">Neutro</span>
+          <code class="text-ink/50 text-xs">bg-mist text-ink</code>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!-- @dsCard group="Tokens" -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OUDÉ — Typography Tokens</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink: 'rgb(23 20 18 / <alpha-value>)',
+        oud: 'rgb(116 29 18 / <alpha-value>)',
+        saffron: 'rgb(201 155 69 / <alpha-value>)',
+        cream: 'rgb(251 245 236 / <alpha-value>)',
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+      }
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-cream font-sans p-8 min-h-screen">
+  <p class="text-xs font-semibold uppercase tracking-widest text-oud mb-1">Design Tokens</p>
+  <h1 class="font-serif text-4xl text-ink mb-8">Tipografia</h1>
+
+  <div class="grid gap-10">
+
+    <!-- Fonts -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Font families</p>
+      <div class="grid gap-4">
+        <div class="bg-white border border-ink/10 rounded-lg p-6">
+          <p class="text-xs text-ink/40 mb-2 font-sans">font-serif — Cormorant Garamond</p>
+          <p class="font-serif text-5xl text-ink">L'eleganza dell'Oriente</p>
+          <p class="font-serif italic text-3xl text-ink/60 mt-1">Maison D'Oriente</p>
+          <p class="mt-4 text-xs text-ink/40 font-mono">Pesi: 400, 500, 600 — usato per titoli, h1–h3, hero, card title</p>
+        </div>
+        <div class="bg-white border border-ink/10 rounded-lg p-6">
+          <p class="text-xs text-ink/40 mb-2 font-sans">font-sans — Inter</p>
+          <p class="font-sans text-2xl font-semibold text-ink">Body text, UI elements</p>
+          <p class="font-sans text-base text-ink/65 mt-1">Testo di corpo, etichette, pulsanti, navigazione e micro-copy.</p>
+          <p class="mt-4 text-xs text-ink/40 font-mono">Pesi: 400, 500, 600, 700 — usato per tutto il resto</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Scale -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Scala tipografica</p>
+      <div class="grid gap-3 bg-white border border-ink/10 rounded-lg p-6">
+        <div class="flex items-baseline gap-4 pb-3 border-b border-ink/6">
+          <span class="text-xs text-ink/35 w-24 shrink-0 font-mono">text-5xl / serif</span>
+          <p class="font-serif text-5xl text-ink">Profumi d'Oriente</p>
+        </div>
+        <div class="flex items-baseline gap-4 pb-3 border-b border-ink/6">
+          <span class="text-xs text-ink/35 w-24 shrink-0 font-mono">text-4xl / serif</span>
+          <p class="font-serif text-4xl text-ink">Collezione estiva</p>
+        </div>
+        <div class="flex items-baseline gap-4 pb-3 border-b border-ink/6">
+          <span class="text-xs text-ink/35 w-24 shrink-0 font-mono">text-3xl / serif</span>
+          <p class="font-serif text-3xl text-ink">Oud Sultan</p>
+        </div>
+        <div class="flex items-baseline gap-4 pb-3 border-b border-ink/6">
+          <span class="text-xs text-ink/35 w-24 shrink-0 font-mono">text-2xl / serif</span>
+          <p class="font-serif text-2xl text-ink">Note olfattive</p>
+        </div>
+        <div class="flex items-baseline gap-4 pb-3 border-b border-ink/6">
+          <span class="text-xs text-ink/35 w-24 shrink-0 font-mono">text-xl / sans 600</span>
+          <p class="font-sans text-xl font-semibold text-ink">Aggiungi al carrello</p>
+        </div>
+        <div class="flex items-baseline gap-4 pb-3 border-b border-ink/6">
+          <span class="text-xs text-ink/35 w-24 shrink-0 font-mono">text-base / sans</span>
+          <p class="font-sans text-base text-ink/80">Oud caldo e regale con ambra, spezie scure e legno levigato. Una composizione intensa e profonda.</p>
+        </div>
+        <div class="flex items-baseline gap-4 pb-3 border-b border-ink/6">
+          <span class="text-xs text-ink/35 w-24 shrink-0 font-mono">text-sm / sans</span>
+          <p class="font-sans text-sm text-ink/65">Disponibile in 30ml, 50ml, 100ml — spedizione gratuita sopra €80.</p>
+        </div>
+        <div class="flex items-baseline gap-4">
+          <span class="text-xs text-ink/35 w-24 shrink-0 font-mono">text-xs / sans</span>
+          <p class="font-sans text-xs font-semibold uppercase tracking-widest text-oud">Categoria / Label</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Overline pattern -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Pattern — Overline + Titolo</p>
+      <div class="bg-white border border-ink/10 rounded-lg p-6">
+        <p class="text-xs font-semibold text-ink/40">Usato in ogni sezione del sito per stabilire gerarchia visiva.</p>
+        <div class="mt-4 grid gap-6">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-widest text-oud">Categoria</p>
+            <h2 class="mt-1 font-serif text-4xl text-ink">Oud</h2>
+          </div>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-widest text-ink/40">Sezione</p>
+            <h2 class="mt-1 font-serif text-4xl text-ink">Le nostre creazioni</h2>
+          </div>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-widest text-oud">Ordine #1234</p>
+            <h2 class="mt-1 font-sans text-2xl font-semibold text-ink">Mario Rossi</h2>
+          </div>
+        </div>
+        <p class="mt-4 text-xs font-mono text-ink/40">text-xs font-semibold uppercase tracking-widest → font-serif text-4xl</p>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

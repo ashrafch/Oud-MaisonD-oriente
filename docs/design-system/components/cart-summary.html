@@ -1,0 +1,143 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OUDÉ — Cart Summary</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink: 'rgb(23 20 18 / <alpha-value>)',
+        oud: 'rgb(116 29 18 / <alpha-value>)',
+        saffron: 'rgb(201 155 69 / <alpha-value>)',
+        cream: 'rgb(251 245 236 / <alpha-value>)',
+        mist: 'rgb(244 239 230 / <alpha-value>)',
+        bark: 'rgb(78 52 39 / <alpha-value>)',
+        sage: 'rgb(120 134 107 / <alpha-value>)'
+      },
+      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], serif: ['"Cormorant Garamond"', 'Georgia', 'serif'] },
+      boxShadow: { soft: '0 24px 70px rgba(23, 20, 18, 0.12)' }
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-cream font-sans p-8 min-h-screen">
+  <p class="text-xs font-semibold uppercase tracking-widest text-oud mb-1">Components</p>
+  <h1 class="font-serif text-4xl text-ink mb-8">Cart &amp; Checkout</h1>
+
+  <div class="grid gap-10 lg:grid-cols-2 items-start">
+
+    <!-- Cart sidebar / drawer -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Cart drawer</p>
+      <div class="bg-white border border-ink/10 rounded-xl shadow-soft overflow-hidden">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-5 py-4 border-b border-ink/8">
+          <h3 class="font-semibold text-ink">Il tuo carrello <span class="text-ink/40 font-normal">(2)</span></h3>
+          <button class="text-ink/30 hover:text-ink text-xl">×</button>
+        </div>
+        <!-- Items -->
+        <div class="divide-y divide-ink/6">
+          <div class="flex gap-3 p-4">
+            <div class="w-16 h-16 rounded-lg bg-mist shrink-0 flex items-center justify-center">
+              <span class="font-serif text-xs text-ink/30">img</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-ink truncate">Oud Sultan</p>
+              <p class="text-xs text-ink/50">30ml · OUDÉ Selection</p>
+              <div class="mt-2 flex items-center justify-between">
+                <div class="flex items-center border border-ink/15 rounded overflow-hidden">
+                  <button class="w-7 h-7 text-xs hover:bg-mist transition-colors">−</button>
+                  <span class="w-8 text-center text-xs font-semibold">1</span>
+                  <button class="w-7 h-7 text-xs hover:bg-mist transition-colors">+</button>
+                </div>
+                <span class="text-sm font-semibold text-ink">€89,00</span>
+              </div>
+            </div>
+            <button class="text-ink/25 hover:text-oud self-start text-lg">×</button>
+          </div>
+          <div class="flex gap-3 p-4">
+            <div class="w-16 h-16 rounded-lg bg-mist shrink-0 flex items-center justify-center">
+              <span class="font-serif text-xs text-ink/30">img</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-ink truncate">Musk Al Tahara</p>
+              <p class="text-xs text-ink/50">50ml · Maison D'Oriente</p>
+              <div class="mt-2 flex items-center justify-between">
+                <div class="flex items-center border border-ink/15 rounded overflow-hidden">
+                  <button class="w-7 h-7 text-xs hover:bg-mist transition-colors">−</button>
+                  <span class="w-8 text-center text-xs font-semibold">2</span>
+                  <button class="w-7 h-7 text-xs hover:bg-mist transition-colors">+</button>
+                </div>
+                <span class="text-sm font-semibold text-ink">€68,00</span>
+              </div>
+            </div>
+            <button class="text-ink/25 hover:text-oud self-start text-lg">×</button>
+          </div>
+        </div>
+        <!-- Totals -->
+        <div class="p-5 border-t border-ink/8 space-y-2 text-sm">
+          <div class="flex justify-between text-ink/60">
+            <span>Subtotale</span><span>€157,00</span>
+          </div>
+          <div class="flex justify-between text-ink/60">
+            <span>Spedizione</span><span class="text-sage">Gratuita</span>
+          </div>
+          <div class="flex justify-between font-semibold text-ink pt-2 border-t border-ink/8">
+            <span>Totale</span>
+            <span class="font-serif text-xl">€157,00</span>
+          </div>
+          <button class="mt-3 w-full min-h-11 bg-oud text-white font-semibold rounded hover:bg-bark transition-colors">
+            Procedi al pagamento
+          </button>
+          <p class="text-center text-xs text-ink/40">Pagamento sicuro via Stripe</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Checkout order summary sidebar -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Riepilogo checkout</p>
+      <div class="bg-white border border-ink/10 rounded-xl p-5 space-y-4">
+        <h3 class="font-semibold text-ink">Riepilogo ordine</h3>
+        <div class="space-y-3">
+          <div class="flex justify-between text-sm">
+            <span class="text-ink/70">Oud Sultan × 1</span>
+            <span class="font-medium text-ink">€89,00</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-ink/70">Musk Al Tahara × 2</span>
+            <span class="font-medium text-ink">€68,00</span>
+          </div>
+        </div>
+        <div class="border-t border-ink/8 pt-3 space-y-2 text-sm">
+          <div class="flex justify-between text-ink/60">
+            <span>Subtotale</span><span>€157,00</span>
+          </div>
+          <div class="flex justify-between text-ink/60">
+            <span>Spedizione standard</span><span>€5,90</span>
+          </div>
+          <div class="flex justify-between text-sm text-sage">
+            <span>Spedizione gratuita (sopra €80)</span><span>−€5,90</span>
+          </div>
+        </div>
+        <div class="border-t border-ink/8 pt-3 flex justify-between font-semibold">
+          <span class="text-ink">Totale</span>
+          <span class="font-serif text-2xl text-ink">€157,00</span>
+        </div>
+        <div class="bg-mist rounded-lg p-3 text-xs text-ink/60 flex items-center gap-2">
+          <svg class="w-4 h-4 text-sage shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          Pagamento protetto SSL · Dati non memorizzati
+        </div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

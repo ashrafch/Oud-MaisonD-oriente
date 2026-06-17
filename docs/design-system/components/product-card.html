@@ -1,0 +1,194 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OUDÉ — Product Card</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink: 'rgb(23 20 18 / <alpha-value>)',
+        oud: 'rgb(116 29 18 / <alpha-value>)',
+        saffron: 'rgb(201 155 69 / <alpha-value>)',
+        cream: 'rgb(251 245 236 / <alpha-value>)',
+        mist: 'rgb(244 239 230 / <alpha-value>)',
+        bark: 'rgb(78 52 39 / <alpha-value>)',
+        sage: 'rgb(120 134 107 / <alpha-value>)'
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+      },
+      boxShadow: {
+        soft: '0 24px 70px rgba(23, 20, 18, 0.12)'
+      }
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  @keyframes soft-shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+  }
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: soft-shine 1.4s infinite;
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 70px rgba(23, 20, 18, 0.12);
+    border-color: rgb(201 155 69 / 0.35);
+  }
+</style>
+</head>
+<body class="bg-cream font-sans p-8 min-h-screen">
+  <p class="text-xs font-semibold uppercase tracking-widest text-oud mb-1">Components</p>
+  <h1 class="font-serif text-4xl text-ink mb-8">Product Card</h1>
+
+  <div class="grid gap-10">
+
+    <!-- Default -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Default — con hover</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+        <!-- Card 1: default -->
+        <div class="card-hover group relative flex flex-col bg-white border border-ink/10 rounded-xl overflow-hidden transition-all duration-300 cursor-pointer">
+          <div class="relative aspect-square bg-mist overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-oud/10 to-saffron/10 flex items-center justify-center">
+              <span class="font-serif text-6xl text-oud/20">Oud</span>
+            </div>
+            <!-- Tags -->
+            <div class="absolute top-3 left-3 flex gap-2">
+              <span class="bg-oud text-white text-xs font-semibold px-2 py-0.5 rounded-full">Bestseller</span>
+            </div>
+            <!-- Quick view -->
+            <div class="absolute bottom-0 inset-x-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
+              <button class="w-full min-h-9 bg-white/90 backdrop-blur-sm border border-ink/15 text-ink text-xs font-semibold rounded hover:bg-white transition-colors">
+                Vista rapida
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-col flex-1 p-4">
+            <p class="text-xs text-ink/40 mb-1">OUDÉ Selection</p>
+            <h3 class="font-serif text-xl text-ink">Oud Sultan</h3>
+            <p class="mt-1 text-sm text-ink/60 line-clamp-2">Oud caldo e regale con ambra, spezie scure e legno levigato.</p>
+            <div class="mt-2 flex gap-1 flex-wrap">
+              <span class="text-xs bg-mist text-ink/60 px-2 py-0.5 rounded-full">Zafferano</span>
+              <span class="text-xs bg-mist text-ink/60 px-2 py-0.5 rounded-full">Oud</span>
+              <span class="text-xs bg-mist text-ink/60 px-2 py-0.5 rounded-full">Ambra</span>
+            </div>
+            <div class="mt-auto pt-4 flex items-end justify-between">
+              <div>
+                <span class="font-serif text-2xl text-ink">€89</span>
+                <span class="ml-2 text-sm text-ink/40 line-through">€109</span>
+              </div>
+              <button class="min-h-9 px-4 bg-oud text-white text-xs font-semibold rounded hover:bg-bark transition-colors">
+                Acquista
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: stock basso -->
+        <div class="card-hover group relative flex flex-col bg-white border border-ink/10 rounded-xl overflow-hidden transition-all duration-300 cursor-pointer">
+          <div class="relative aspect-square bg-mist overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-saffron/10 to-oud/5 flex items-center justify-center">
+              <span class="font-serif text-6xl text-saffron/30">Musk</span>
+            </div>
+            <div class="absolute top-3 left-3 flex gap-2">
+              <span class="bg-saffron/90 text-white text-xs font-semibold px-2 py-0.5 rounded-full">Solo 3 rimasti</span>
+            </div>
+          </div>
+          <div class="flex flex-col flex-1 p-4">
+            <p class="text-xs text-ink/40 mb-1">Maison D'Oriente</p>
+            <h3 class="font-serif text-xl text-ink">Musk Al Tahara</h3>
+            <p class="mt-1 text-sm text-ink/60 line-clamp-2">Musk bianco pulito, cremoso e delicato per una scia intima.</p>
+            <div class="mt-auto pt-4 flex items-end justify-between">
+              <span class="font-serif text-2xl text-ink">€34</span>
+              <button class="min-h-9 px-4 bg-oud text-white text-xs font-semibold rounded hover:bg-bark transition-colors">
+                Acquista
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: esaurito -->
+        <div class="group relative flex flex-col bg-white border border-ink/10 rounded-xl overflow-hidden opacity-75">
+          <div class="relative aspect-square bg-mist overflow-hidden">
+            <div class="absolute inset-0 bg-mist/60 flex items-center justify-center">
+              <span class="font-sans text-sm font-semibold text-ink/40 uppercase tracking-wider">Esaurito</span>
+            </div>
+          </div>
+          <div class="flex flex-col flex-1 p-4">
+            <p class="text-xs text-ink/40 mb-1">OUDÉ Rituals</p>
+            <h3 class="font-serif text-xl text-ink/50">Rose Arabia</h3>
+            <div class="mt-auto pt-4 flex items-end justify-between">
+              <span class="font-serif text-2xl text-ink/40">€49</span>
+              <button disabled class="min-h-9 px-4 bg-mist text-ink/30 text-xs font-semibold rounded cursor-not-allowed">
+                Esaurito
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Skeleton loading -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Skeleton loading</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="flex flex-col bg-white border border-ink/10 rounded-xl overflow-hidden">
+          <div class="relative aspect-square bg-mist shimmer overflow-hidden"></div>
+          <div class="p-4 space-y-3">
+            <div class="h-3 bg-mist rounded w-1/3"></div>
+            <div class="h-5 bg-mist rounded w-3/4"></div>
+            <div class="h-3 bg-mist rounded w-full"></div>
+            <div class="h-3 bg-mist rounded w-2/3"></div>
+            <div class="flex justify-between items-center pt-2">
+              <div class="h-6 bg-mist rounded w-1/4"></div>
+              <div class="h-9 bg-mist rounded w-24"></div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col bg-white border border-ink/10 rounded-xl overflow-hidden">
+          <div class="relative aspect-square bg-mist overflow-hidden"></div>
+          <div class="p-4 space-y-3">
+            <div class="h-3 bg-mist rounded w-1/4"></div>
+            <div class="h-5 bg-mist rounded w-2/3"></div>
+            <div class="h-3 bg-mist rounded w-5/6"></div>
+            <div class="flex justify-between items-center pt-2">
+              <div class="h-6 bg-mist rounded w-1/4"></div>
+              <div class="h-9 bg-mist rounded w-24"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CSS tokens -->
+    <section>
+      <p class="text-xs font-semibold uppercase tracking-widest text-ink/40 mb-4">Hover pattern — CSS</p>
+      <div class="bg-white border border-ink/10 rounded-lg p-5 font-mono text-xs text-ink/60 space-y-1">
+        <p>/* Base */</p>
+        <p>border border-ink/10 rounded-xl transition-all duration-300</p>
+        <p class="mt-2">/* Hover */</p>
+        <p>-translate-y-1 shadow-soft border-saffron/35</p>
+        <p class="mt-2">/* shadow-soft */</p>
+        <p>0 24px 70px rgba(23, 20, 18, 0.12)</p>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>
