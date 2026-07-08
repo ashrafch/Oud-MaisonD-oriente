@@ -1,0 +1,1553 @@
+[
+  {
+    "slug": "lattafa-khamrah",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Molto intenso",
+    "shortDescription": "Orientale speziato e gourmand che avvolge datteri e pralina in un cuore caldo di cannella e noce moscata, chiudendosi su vaniglia, fava tonka e mirra.",
+    "notesTop": [
+      "Cannella",
+      "Noce moscata",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Datteri",
+      "Pralina",
+      "Tuberosa"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Fava tonka",
+      "Legno d'ambra",
+      "Mirra",
+      "Benzoino"
+    ]
+  },
+  {
+    "slug": "lattafa-khamrah-qahwa",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Reinterpretazione gourmand di Khamrah in chiave caffè: cardamomo e zenzero incontrano pralina e frutta candita su un fondo avvolgente di caffè, vaniglia e muschio.",
+    "notesTop": [
+      "Cannella",
+      "Cardamomo",
+      "Zenzero"
+    ],
+    "notesHeart": [
+      "Pralina",
+      "Frutta candita",
+      "Fiori bianchi"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Caffè",
+      "Fava tonka",
+      "Benzoino",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "lattafa-khamrah-dukhan",
+    "verified": true,
+    "gender": "uomo",
+    "intensity": "Molto intenso",
+    "shortDescription": "La versione affumicata della saga Khamrah: spezie e mandarino aprono a un cuore di incenso e labdano, su un fondo intenso di tabacco, pralina e ambra.",
+    "notesTop": [
+      "Spezie",
+      "Pimento",
+      "Mandarino"
+    ],
+    "notesHeart": [
+      "Incenso",
+      "Labdano",
+      "Fiori d'arancio",
+      "Patchouli"
+    ],
+    "notesBase": [
+      "Pralina",
+      "Tabacco",
+      "Ambra",
+      "Fava tonka",
+      "Benzoino"
+    ]
+  },
+  {
+    "slug": "lattafa-khamra-set",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Molto intenso",
+    "shortDescription": "Cofanetto dedicato a Khamrah, orientale speziato e gourmand con datteri e pralina, cuore di cannella e noce moscata e un fondo caldo di vaniglia, fava tonka e mirra.",
+    "notesTop": [
+      "Cannella",
+      "Noce moscata",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Datteri",
+      "Pralina",
+      "Tuberosa"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Fava tonka",
+      "Legno d'ambra",
+      "Mirra",
+      "Benzoino"
+    ]
+  },
+  {
+    "slug": "lattafa-khamrah-air-spray",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Profumatore d'ambiente ispirato a Khamrah, che diffonde l'inconfondibile accordo gourmand di datteri, pralina e spezie su un fondo caldo di vaniglia e fava tonka.",
+    "notesTop": [
+      "Cannella",
+      "Noce moscata",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Datteri",
+      "Pralina",
+      "Tuberosa"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Fava tonka",
+      "Legno d'ambra",
+      "Benzoino"
+    ]
+  },
+  {
+    "slug": "lattafa-asad",
+    "verified": true,
+    "gender": "uomo",
+    "intensity": "Molto intenso",
+    "shortDescription": "Fragranza maschile intensa e decisa, con un'apertura di pepe nero, tabacco e ananas, un cuore di patchouli e caffè e un fondo caldo di vaniglia, ambra e legni.",
+    "notesTop": [
+      "Pepe nero",
+      "Tabacco",
+      "Ananas"
+    ],
+    "notesHeart": [
+      "Patchouli",
+      "Caffè",
+      "Iris"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Ambra",
+      "Legni secchi",
+      "Benzoino",
+      "Labdano"
+    ]
+  },
+  {
+    "slug": "lattafa-asad-bourbon",
+    "verified": true,
+    "gender": "uomo",
+    "intensity": "Intenso",
+    "shortDescription": "Interpretazione più calda e avvolgente di Asad: pepe rosa, lavanda e prugna aprono a un cuore goloso di cacao e noce moscata, su un fondo di vaniglia bourbon, vetiver e ambra.",
+    "notesTop": [
+      "Pepe rosa",
+      "Lavanda",
+      "Prugna mirabella"
+    ],
+    "notesHeart": [
+      "Cacao",
+      "Davana",
+      "Noce moscata"
+    ],
+    "notesBase": [
+      "Vetiver",
+      "Vaniglia Bourbon",
+      "Ambra"
+    ]
+  },
+  {
+    "slug": "lattafa-asad-elixir",
+    "verified": true,
+    "gender": "uomo",
+    "intensity": "Molto intenso",
+    "shortDescription": "Versione più concentrata e profonda di Asad: pepe rosa, zafferano e pompelmo introducono un cuore di tabacco e cedro, con un fondo resinoso di incenso, ambra e patchouli.",
+    "notesTop": [
+      "Pepe rosa",
+      "Zafferano",
+      "Pompelmo"
+    ],
+    "notesHeart": [
+      "Tabacco",
+      "Cedro",
+      "Vaniglia"
+    ],
+    "notesBase": [
+      "Incenso",
+      "Ambra chiara",
+      "Patchouli",
+      "Cashmeran"
+    ]
+  },
+  {
+    "slug": "lattafa-badee-al-oud-honor-glory",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Fragranza avvolgente e gourmand con un'apertura fruttata di ananas e crème brûlée, un cuore speziato di cannella e pepe nero e un fondo cremoso di vaniglia, sandalo e cashmeran.",
+    "notesTop": [
+      "Ananas",
+      "Crème brûlée"
+    ],
+    "notesHeart": [
+      "Cannella",
+      "Curcuma",
+      "Pepe nero",
+      "Benzoino"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Sandalo",
+      "Cashmeran",
+      "Muschio di quercia"
+    ]
+  },
+  {
+    "slug": "lattafa-badee-al-oud-sublime",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Composizione fruttato-floreale luminosa, con mela, litchi e rosa in apertura, un cuore di prugna e gelsomino e un fondo caldo di vaniglia, patchouli e muschio.",
+    "notesTop": [
+      "Mela",
+      "Litchi",
+      "Rosa"
+    ],
+    "notesHeart": [
+      "Prugna",
+      "Gelsomino"
+    ],
+    "notesBase": [
+      "Muschio di quercia",
+      "Vaniglia",
+      "Patchouli"
+    ]
+  },
+  {
+    "slug": "lattafa-badee-al-oud-noble-blush",
+    "verified": true,
+    "gender": "donna",
+    "intensity": "Morbido",
+    "shortDescription": "Una fragranza floreale-gourmand cipriata e avvolgente, che unisce il latte di rosa alla dolcezza golosa di meringa e mandorla su un fondo cremoso di vaniglia e sandalo.",
+    "notesTop": [
+      "Rosa",
+      "Latte"
+    ],
+    "notesHeart": [
+      "Meringa",
+      "Mandorla"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Sandalo",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "lattafa-fakhar-black",
+    "verified": true,
+    "gender": "uomo",
+    "intensity": "Intenso",
+    "shortDescription": "Fragranza aromatica e legnosa dal carattere deciso e maschile, con un'apertura fresco-speziata di mela e zenzero che si posa su un cuore di lavanda e un fondo caldo di fava tonka e legni.",
+    "notesTop": [
+      "Mela",
+      "Bergamotto",
+      "Zenzero"
+    ],
+    "notesHeart": [
+      "Lavanda",
+      "Salvia",
+      "Bacche di ginepro",
+      "Geranio"
+    ],
+    "notesBase": [
+      "Fava tonka",
+      "Cedro",
+      "Legno ambrato",
+      "Vetiver"
+    ]
+  },
+  {
+    "slug": "lattafa-fakhar-gold",
+    "verified": true,
+    "gender": "donna",
+    "intensity": "Intenso",
+    "shortDescription": "Bouquet floreale-fruttato dal fascino luminoso, con succose note di pesca, pera e agrumi che sfumano in un cuore di rosa e gelsomino su un fondo di vaniglia, patchouli e muschio.",
+    "notesTop": [
+      "Pesca",
+      "Pera",
+      "Arancia",
+      "Mela",
+      "Ribes nero"
+    ],
+    "notesHeart": [
+      "Fiori d'arancio",
+      "Rosa",
+      "Gelsomino Sambac"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Patchouli",
+      "Sandalo",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "lattafa-fakhar-platino",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Fragranza fougère legnosa e frizzante che apre con bergamotto, pepe rosa e cardamomo, per un cuore fruttato-aromatico e un fondo avvolgente di incenso e sandalo.",
+    "notesTop": [
+      "Bergamotto",
+      "Pepe rosa",
+      "Cardamomo"
+    ],
+    "notesHeart": [
+      "Guava",
+      "Lavanda",
+      "Zenzero"
+    ],
+    "notesBase": [
+      "Incenso",
+      "Palo Santo",
+      "Sandalo"
+    ]
+  },
+  {
+    "slug": "lattafa-fakhar-air-spray",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Morbido",
+    "shortDescription": "Profumatore d'ambiente ispirato alla fragranza Fakhar: un accordo floreale-fruttato e legnoso che avvolge la casa con note di frutta succosa, rosa e muschio caldo.",
+    "notesTop": [
+      "Pesca",
+      "Pera",
+      "Arancia",
+      "Ribes nero"
+    ],
+    "notesHeart": [
+      "Fiori d'arancio",
+      "Rosa",
+      "Gelsomino"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Patchouli",
+      "Sandalo",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "lattafa-yara",
+    "verified": true,
+    "gender": "donna",
+    "intensity": "Molto intenso",
+    "shortDescription": "Iconica fragranza orientale-vanigliata, dolce e avvolgente, che intreccia orchidea ed eliotropio a un cuore goloso di frutti tropicali su un fondo cremoso di vaniglia, muschio e sandalo.",
+    "notesTop": [
+      "Orchidea",
+      "Eliotropio",
+      "Mandarino"
+    ],
+    "notesHeart": [
+      "Accordo gourmand",
+      "Frutti tropicali"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Muschio",
+      "Sandalo"
+    ]
+  },
+  {
+    "slug": "lattafa-yara-moi",
+    "verified": true,
+    "gender": "donna",
+    "intensity": "Intenso",
+    "shortDescription": "Interpretazione floreale-golosa di Yara, con gelsomino e pesca che si fondono in un cuore di caramello e ambra su un fondo sensuale di patchouli e sandalo.",
+    "notesTop": [
+      "Gelsomino",
+      "Pesca"
+    ],
+    "notesHeart": [
+      "Caramello",
+      "Ambra"
+    ],
+    "notesBase": [
+      "Patchouli",
+      "Sandalo"
+    ]
+  },
+  {
+    "slug": "lattafa-yara-candy",
+    "verified": true,
+    "gender": "donna",
+    "intensity": "Intenso",
+    "shortDescription": "Versione giocosa e zuccherina di Yara, con ribes nero e mandarino verde che incontrano una caramella alla fragola e gardenia, su un fondo goloso di vaniglia, muschio e ambra.",
+    "notesTop": [
+      "Ribes nero",
+      "Mandarino verde"
+    ],
+    "notesHeart": [
+      "Caramella alla fragola",
+      "Gardenia"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Muschio",
+      "Ambra",
+      "Sandalo"
+    ]
+  },
+  {
+    "slug": "lattafa-yara-air-spray",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Morbido",
+    "shortDescription": "Profumatore d'ambiente ispirato a Yara: un accordo orientale-vanigliato, dolce e goloso, che diffonde in casa note fruttate e cremose di vaniglia e muschio.",
+    "notesTop": [
+      "Orchidea",
+      "Eliotropio",
+      "Mandarino"
+    ],
+    "notesHeart": [
+      "Accordo gourmand",
+      "Frutti tropicali"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Muschio",
+      "Sandalo"
+    ]
+  },
+  {
+    "slug": "lattafa-musamam-black",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Molto intenso",
+    "shortDescription": "Fragranza legnosa-aromatica dal carattere scuro e goloso, con un'apertura di lavanda e spezie che evolve su un cuore legnoso e un fondo intenso di cacao, fava tonka e patchouli.",
+    "notesTop": [
+      "Lavanda",
+      "Noce moscata",
+      "Salvia",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Legno di cedro",
+      "Geranio",
+      "Rosa",
+      "Muschio"
+    ],
+    "notesBase": [
+      "Cacao",
+      "Fava tonka",
+      "Acero",
+      "Ambra",
+      "Patchouli"
+    ]
+  },
+  {
+    "slug": "lattafa-musamam-white",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Un orientale cremoso e avvolgente firmato Lattafa, dove il cocco e l'ylang-ylang incontrano un cuore ambrato di sandalo e benzoino. Una scia calda e sofisticata, adatta a uomo e donna.",
+    "notesTop": [
+      "Spezie",
+      "Bergamotto",
+      "Arancia"
+    ],
+    "notesHeart": [
+      "Cocco",
+      "Ylang Ylang",
+      "Ambroxan",
+      "Mahonial"
+    ],
+    "notesBase": [
+      "Sandalo",
+      "Muschio",
+      "Benzoino"
+    ]
+  },
+  {
+    "slug": "lattafa-teriaq-white",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Un gourmand raffinato e goloso in cui caramello, mandorla e albicocca si fondono con miele e fiori bianchi, per chiudere su una base calda di cuoio e vaniglia. Elegante e persistente, unisex.",
+    "notesTop": [
+      "Caramello",
+      "Mandorla amara",
+      "Albicocca",
+      "Pepe rosa"
+    ],
+    "notesHeart": [
+      "Miele",
+      "Rabarbaro",
+      "Fiori bianchi",
+      "Rosa"
+    ],
+    "notesBase": [
+      "Cuoio",
+      "Vaniglia",
+      "Muschio",
+      "Labdano",
+      "Vetiver"
+    ]
+  },
+  {
+    "slug": "lattafa-teriaq-black",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Molto intenso",
+    "shortDescription": "La versione più intensa e speziata di Teriaq: zafferano e bergamotto aprono su un cuore di liquore di prugna e cannella, avvolti da ambra, fava tonka e benzoino. Profondo e sensuale.",
+    "notesTop": [
+      "Zafferano",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Liquore di prugna",
+      "Cannella"
+    ],
+    "notesBase": [
+      "Ambra",
+      "Fava tonka",
+      "Benzoino"
+    ]
+  },
+  {
+    "slug": "lattafa-nebras-elixir",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Un elisir gourmand dolce e cremoso, con caramella al latte e panna montata che sfumano su vaniglia, ambroxan e muschio. Confortevole e goloso, per uomo e donna.",
+    "notesTop": [
+      "Caramella al latte",
+      "Panna montata"
+    ],
+    "notesHeart": [
+      "Canna da zucchero",
+      "Eliotropio"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Ambroxan",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "lattafa-classic-stone",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Dalla collezione Niche Emarati, un orientale speziato e legnoso che intreccia cardamomo, zafferano e cumino con un cuore di camoscio e chiodi di garofano su una base di ambra grigia e muschio di quercia. Carattere deciso, unisex.",
+    "notesTop": [
+      "Cardamomo",
+      "Zafferano",
+      "Cumino",
+      "Violetta"
+    ],
+    "notesHeart": [
+      "Camoscio",
+      "Noce moscata",
+      "Chiodi di garofano",
+      "Osmanto"
+    ],
+    "notesBase": [
+      "Ambra grigia",
+      "Note legnose",
+      "Muschio",
+      "Muschio di quercia"
+    ]
+  },
+  {
+    "slug": "lattafa-pure-crystal",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Un orientale dolce e frizzante firmato Lattafa Pride, con frutti rossi e agrumi che aprono su cognac e zenzero, per posarsi su ambra, vaniglia e legni. Avvolgente e contemporaneo, unisex.",
+    "notesTop": [
+      "Frutti rossi",
+      "Arancia amara",
+      "Cannella",
+      "Pompelmo",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Cognac",
+      "Zenzero",
+      "Salvia sclarea"
+    ],
+    "notesBase": [
+      "Ambra",
+      "Vaniglia",
+      "Sandalo",
+      "Patchouli",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "lattafa-queen-of-arabia",
+    "verified": true,
+    "gender": "donna",
+    "intensity": "Morbido",
+    "shortDescription": "Un floreale orientale morbido e cremoso pensato per la donna, dove cocco e nota salina incontrano sandalo ed eliotropio su un fondo di vaniglia e ambra. Sensuale e luminoso.",
+    "notesTop": [
+      "Cocco",
+      "Sale"
+    ],
+    "notesHeart": [
+      "Sandalo",
+      "Eliotropio"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Ambra"
+    ]
+  },
+  {
+    "slug": "lattafa-sherif",
+    "verified": true,
+    "gender": "uomo",
+    "intensity": "Morbido",
+    "shortDescription": "Una fragranza legnosa-aromatica maschile e sofisticata, con un'apertura fresca di mela, petitgrain e bergamotto su un cuore di legno di cedro e cashmeran, chiusa da muschio di quercia e ambra.",
+    "notesTop": [
+      "Mela",
+      "Petitgrain",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Legno di cedro",
+      "Cashmeran",
+      "Violetta"
+    ],
+    "notesBase": [
+      "Muschio di quercia",
+      "Muschio",
+      "Ambra"
+    ]
+  },
+  {
+    "slug": "lattafa-taureau-de-combat",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Un orientale caldo e speziato firmato Lattafa Pride: cardamomo, ambra e cannella aprono su un cuore di tabacco e gelsomino, per una base cremosa di vaniglia e fava tonka. Deciso e avvolgente, unisex.",
+    "notesTop": [
+      "Cardamomo",
+      "Ambra",
+      "Benzoino",
+      "Cannella"
+    ],
+    "notesHeart": [
+      "Tabacco",
+      "Cashmeran",
+      "Eliotropio",
+      "Gelsomino"
+    ],
+    "notesBase": [
+      "Patchouli",
+      "Vaniglia",
+      "Fava tonka"
+    ]
+  },
+  {
+    "slug": "lattafa-nasamaat",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Morbido",
+    "shortDescription": "Un floreale fruttato gourmand fresco e luminoso, con ribes nero, albicocca e ananas che sbocciano su un bouquet di gelsomino e fiori d'arancio, per posarsi su una base morbida di vaniglia e caramello. Unisex.",
+    "notesTop": [
+      "Ribes nero",
+      "Albicocca",
+      "Ananas"
+    ],
+    "notesHeart": [
+      "Magnolia",
+      "Ciclamino",
+      "Gelsomino",
+      "Fiori d'arancio",
+      "Rosa"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Cashmeran",
+      "Caramello",
+      "Sandalo"
+    ]
+  },
+  {
+    "slug": "lattafa-atheeri",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Morbido",
+    "shortDescription": "Un floreale gourmand etereo e luminoso ispirato al viaggio dell'ape, dove delicati fiori bianchi si fondono con una scia dolce e vellutata di vaniglia e legno d'ambra.",
+    "notesTop": [
+      "Fiore della passione",
+      "Goccia di rugiada"
+    ],
+    "notesHeart": [
+      "Orchidea",
+      "Gelsomino"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Legno d'ambra"
+    ]
+  },
+  {
+    "slug": "lattafa-victoria",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Un goloso floreale fruttato gourmand dal cuore avvolgente: l'accordo di torta meringata al limone incontra il neroli per sciogliersi in una base cremosa di vaniglia.",
+    "notesTop": [
+      "Torta meringata al limone"
+    ],
+    "notesHeart": [
+      "Neroli"
+    ],
+    "notesBase": [
+      "Vaniglia"
+    ]
+  },
+  {
+    "slug": "lattafa-sakeena",
+    "verified": true,
+    "gender": "donna",
+    "intensity": "Intenso",
+    "shortDescription": "Un vibrante floreale fruttato gourmand dal contrasto agrodolce: l'apertura frizzante di frutto della passione e note saline lascia spazio a un fondo goloso di praline, toffee e vaniglia.",
+    "notesTop": [
+      "Frutto della passione",
+      "Note ozoniche",
+      "Mandarino"
+    ],
+    "notesHeart": [
+      "Lampone",
+      "Rosa",
+      "Fiori d'arancio",
+      "Sale marino"
+    ],
+    "notesBase": [
+      "Toffee",
+      "Praline",
+      "Vaniglia",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "lattafa-eclaire",
+    "verified": true,
+    "gender": "donna",
+    "intensity": "Intenso",
+    "shortDescription": "Un irresistibile gourmand ispirato al bignè alla crema: caramello, latte e zucchero avvolti da miele e fiori bianchi, su un fondo cremoso di vaniglia e praline.",
+    "notesTop": [
+      "Caramello",
+      "Latte",
+      "Zucchero"
+    ],
+    "notesHeart": [
+      "Miele",
+      "Fiori bianchi"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Praline",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "lattafa-ana-abiyedh-poudree-air-spray",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Morbido",
+    "shortDescription": "Profumatore d'ambiente dalla scia cipriata e ovattata: delicati fiori bianchi avvolti da muschio e ambroxan si posano su un fondo tenero di vaniglia e legni.",
+    "notesTop": [
+      "Fiori d'arancio",
+      "Rosa",
+      "Gelsomino"
+    ],
+    "notesHeart": [
+      "Muschio",
+      "Ambroxan"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Fava tonka",
+      "Cedro",
+      "Vetiver",
+      "Patchouli"
+    ]
+  },
+  {
+    "slug": "lattafa-oud-mood-air-spray",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Molto intenso",
+    "shortDescription": "Profumatore d'ambiente dal carattere orientale intenso: oud, rosa e zafferano si fondono con ambra, incenso e resine per una scia calda e avvolgente.",
+    "notesTop": [
+      "Rosa",
+      "Zafferano",
+      "Pimento"
+    ],
+    "notesHeart": [
+      "Oud",
+      "Caramello",
+      "Note floreali",
+      "Patchouli"
+    ],
+    "notesBase": [
+      "Note legnose",
+      "Ambra",
+      "Resine",
+      "Incenso",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "lattafa-art-of-universe-set",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Morbido",
+    "shortDescription": "Set regalo dall'anima fresca e luminosa: un'esplosione di agrumi e zenzero si distende su un cuore di pera e fiori d'arancio, per chiudersi in una base morbida di ambra, muschio e cedro.",
+    "notesTop": [
+      "Mandarino",
+      "Zenzero",
+      "Bergamotto",
+      "Menta"
+    ],
+    "notesHeart": [
+      "Pera",
+      "Fiori d'arancio"
+    ],
+    "notesBase": [
+      "Muschio",
+      "Ambra",
+      "Cedro"
+    ]
+  },
+  {
+    "slug": "french-avenue-cosmic-tonka",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Un orientale legnoso avvolgente e sofisticato: zafferano e bergamotto introducono un cuore di oud e rosa bulgara, esaltati da una base calda di fava tonka, ambra e muschio bianco.",
+    "notesTop": [
+      "Zafferano",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Oud",
+      "Rosa bulgara"
+    ],
+    "notesBase": [
+      "Fava tonka",
+      "Muschio bianco",
+      "Ambra",
+      "Muschio di quercia"
+    ]
+  },
+  {
+    "slug": "french-avenue-marmara",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Un legnoso speziato dall'eleganza cipriata: zafferano, bergamotto e pepe nero aprono su un cuore di ambroxan e legno di cashmere, per una scia sensuale di muschio e sandalo bianco.",
+    "notesTop": [
+      "Zafferano",
+      "Bergamotto",
+      "Pepe nero"
+    ],
+    "notesHeart": [
+      "Note cipriate",
+      "Ambroxan",
+      "Legno di cashmere"
+    ],
+    "notesBase": [
+      "Muschio",
+      "Sandalo bianco"
+    ]
+  },
+  {
+    "slug": "french-avenue-nomade",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Un orientale legnoso dal respiro marino: zafferano e limone si aprono su un cuore di note marine e fiori bianchi, su un fondo caldo di vaniglia, ambra e patchouli.",
+    "notesTop": [
+      "Zafferano",
+      "Limone"
+    ],
+    "notesHeart": [
+      "Note marine",
+      "Fiori bianchi"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Ambra",
+      "Cipriolo",
+      "Patchouli"
+    ]
+  },
+  {
+    "slug": "french-avenue-liquid-brun",
+    "verified": true,
+    "gender": "uomo",
+    "intensity": "Intenso",
+    "shortDescription": "Un gourmand legnoso avvolgente in cui la cremosità della vaniglia Bourbon e della praline incontra il calore speziato di cannella e cardamomo, su un fondo ambrato di ambroxan e muschio.",
+    "notesTop": [
+      "Cannella",
+      "Fiori d'arancio",
+      "Cardamomo",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Vaniglia Bourbon",
+      "Elemi"
+    ],
+    "notesBase": [
+      "Praline",
+      "Ambroxan",
+      "Legno di guaiaco",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "french-avenue-vulcan-baie",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Una fragranza fruttata-floreale frizzante e sensuale, con un vibrante accordo di frutti rossi impreziosito da una nota di vodka e adagiato su una base morbida di muschio e sandalo.",
+    "notesTop": [
+      "More",
+      "Ribes nero",
+      "Rosmarino",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Lampone",
+      "Vodka",
+      "Basilico",
+      "Mughetto"
+    ],
+    "notesBase": [
+      "Fragola",
+      "Muschio",
+      "Ambra",
+      "Sandalo",
+      "Patchouli"
+    ]
+  },
+  {
+    "slug": "french-avenue-vulcan-feu",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Un floreale fruttato luminoso che apre con mango, limone e zenzero, evolvendo su un cuore di pepe rosa e gelsomino avvolto da fava tonka e cedro.",
+    "notesTop": [
+      "Mango",
+      "Limone",
+      "Zenzero",
+      "Rabarbaro"
+    ],
+    "notesHeart": [
+      "Pepe rosa",
+      "Gelsomino",
+      "Violetta",
+      "Praline"
+    ],
+    "notesBase": [
+      "Fava tonka",
+      "Cedro",
+      "Ambra grigia",
+      "Muschio di quercia"
+    ]
+  },
+  {
+    "slug": "french-avenue-eclair-affair",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Un goloso gourmand cremoso che fonde vaniglia, latte di cocco e caramello con un tocco di gelsomino, per un finale caldo e persistente di fava tonka e muschio.",
+    "notesTop": [
+      "Bacca di vaniglia",
+      "Latte di cocco",
+      "Gelsomino"
+    ],
+    "notesHeart": [
+      "Caramello",
+      "Accordo gourmand",
+      "Ambra"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Fava tonka",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "french-avenue-aromatix-xandal",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Molto intenso",
+    "shortDescription": "Un intenso gourmand boozy costruito su strati di vaniglia pregiata, arricchito da tartufo al cioccolato, rum e patchouli, su un fondo profondo di caramello, fava tonka e oud.",
+    "notesTop": [
+      "Vaniglia del Madagascar",
+      "Vaniglia Bourbon",
+      "Caviale di vaniglia"
+    ],
+    "notesHeart": [
+      "Tartufo al cioccolato",
+      "Vaniglia",
+      "Rum",
+      "Patchouli",
+      "Gelsomino"
+    ],
+    "notesBase": [
+      "Vaniglia assoluta",
+      "Caramello",
+      "Fava tonka",
+      "Oud"
+    ]
+  },
+  {
+    "slug": "barakkat-rouge-540",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Reinterpretazione dell'iconico accordo ambrato-legnoso: zafferano e mandorla amara incontrano gelsomino e cedro su una base luminosa di ambra grigia e muschio.",
+    "notesTop": [
+      "Zafferano",
+      "Mandorla amara"
+    ],
+    "notesHeart": [
+      "Cedro",
+      "Gelsomino"
+    ],
+    "notesBase": [
+      "Note legnose",
+      "Ambra grigia",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "barakkat-rouge-540-extrait",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Molto intenso",
+    "shortDescription": "Versione extrait più concentrata e persistente dell'iconico accordo ambrato-legnoso, con zafferano e mandorla amara su un cuore di cedro e gelsomino e un fondo avvolgente di ambra grigia e muschio.",
+    "notesTop": [
+      "Zafferano",
+      "Mandorla amara"
+    ],
+    "notesHeart": [
+      "Cedro",
+      "Gelsomino"
+    ],
+    "notesBase": [
+      "Note legnose",
+      "Ambra grigia",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "armaf-club-de-nuit-bling",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Una fragranza legnosa moderna e scintillante, con un'apertura agrumata che sfuma in un cuore floreale luminoso e un fondo caldo di vaniglia e legni vellutati.",
+    "notesTop": [
+      "Agrumi"
+    ],
+    "notesHeart": [
+      "Prisma floreale",
+      "Polvere di stelle"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Legni vellutati"
+    ]
+  },
+  {
+    "slug": "armaf-club-de-nuit-sillage",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Un floreale-legnoso-muschiato fresco ed elegante, con un'apertura agrumata vivace su un cuore di rosa, gelsomino e iris e una scia di ambroxan, muschio e sandalo.",
+    "notesTop": [
+      "Bergamotto",
+      "Limone",
+      "Lime",
+      "Ribes nero",
+      "Zenzero"
+    ],
+    "notesHeart": [
+      "Rosa",
+      "Gelsomino",
+      "Iris"
+    ],
+    "notesBase": [
+      "Ambroxan",
+      "Muschio",
+      "Sandalo",
+      "Cedro"
+    ]
+  },
+  {
+    "slug": "armaf-ego-exotic",
+    "verified": true,
+    "gender": "donna",
+    "intensity": "Intenso",
+    "shortDescription": "Un floreale femminile e sensuale, dove fiori d'arancio e pesca introducono un bouquet di gelsomino Sambac, tuberosa e rosa, avvolto da muschio, iris e sandalo.",
+    "notesTop": [
+      "Fiori d'arancio",
+      "Pesca"
+    ],
+    "notesHeart": [
+      "Gelsomino Sambac",
+      "Tuberosa",
+      "Rosa"
+    ],
+    "notesBase": [
+      "Muschio",
+      "Iris",
+      "Sandalo",
+      "Praline"
+    ]
+  },
+  {
+    "slug": "riiffs-fleurie-emerald",
+    "verified": true,
+    "gender": "donna",
+    "intensity": "Intenso",
+    "shortDescription": "Eau de parfum floreale orientale dall'anima dolce e avvolgente, dove un'apertura agrumata e brillante incontra un cuore speziato e un fondo caldo di caramello e vaniglia.",
+    "notesTop": [
+      "Scorza di limone",
+      "Arancia rossa",
+      "Lavanda"
+    ],
+    "notesHeart": [
+      "Fiori bianchi",
+      "Anice",
+      "Liquirizia",
+      "Cannella"
+    ],
+    "notesBase": [
+      "Caramello",
+      "Bacca di vaniglia",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "riiffs-golden-elixir",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Molto intenso",
+    "shortDescription": "Extrait de parfum orientale speziato e gourmand, un elisir opulento di caffè, cognac e datteri impreziosito da oud e vaniglia.",
+    "notesTop": [
+      "Cannella",
+      "Cognac",
+      "Caffè",
+      "Cardamomo"
+    ],
+    "notesHeart": [
+      "Pralina",
+      "Datteri",
+      "Fava tonka"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Oud",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "riiffs-patchouli-de-oro",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Fragranza cuoio-legnosa dal carattere deciso, con un'apertura agrumata e fresca che lascia spazio a un intenso patchouli indiano avvolto di cuoio e ambra.",
+    "notesTop": [
+      "Mandarino rosso",
+      "Pompelmo",
+      "Menta"
+    ],
+    "notesHeart": [
+      "Cannella"
+    ],
+    "notesBase": [
+      "Patchouli indiano",
+      "Note legnose",
+      "Cuoio",
+      "Ambra"
+    ]
+  },
+  {
+    "slug": "maison-asrar-rey",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Eau de parfum fougère orientale dall'eleganza sofisticata, che unisce una freschezza agrumata e aromatica a un fondo caldo e vellutato di muschio, vaniglia e ambra grigia.",
+    "notesTop": [
+      "Bergamotto",
+      "Geranio",
+      "Pompelmo"
+    ],
+    "notesHeart": [
+      "Note aromatiche",
+      "Pepe nero",
+      "Fava tonka"
+    ],
+    "notesBase": [
+      "Muschio",
+      "Vaniglia",
+      "Ambra grigia"
+    ]
+  },
+  {
+    "slug": "maison-asrar-vanilla-voyage",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Molto intenso",
+    "shortDescription": "Eau de parfum gourmand dedicato agli amanti della vaniglia, un abbraccio goloso di caramello, miele e fava tonka su un fondo cremoso di vaniglia e ambra.",
+    "notesTop": [
+      "Burro",
+      "Caramello"
+    ],
+    "notesHeart": [
+      "Miele",
+      "Fava tonka",
+      "Gelsomino"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Ambra",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "maison-asrar-muharib",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Eau de parfum aromatico-speziato dal temperamento virile, con un'apertura fresca di lavanda e agrumi che evolve in un cuore caldo di miele e cannella e un fondo di tabacco e fava tonka.",
+    "notesTop": [
+      "Lavanda",
+      "Limone",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Miele",
+      "Cannella",
+      "Legno di cashmere"
+    ],
+    "notesBase": [
+      "Tabacco",
+      "Fava tonka",
+      "Gelsomino"
+    ]
+  },
+  {
+    "slug": "maison-asrar-faris-al-arab",
+    "verified": true,
+    "gender": "uomo",
+    "intensity": "Intenso",
+    "shortDescription": "Eau de parfum legnoso orientale intenso e magnetico, dove il liquore di ciliegia e il legno di cashmere si fondono con ambra, sandalo e fava tonka.",
+    "notesTop": [
+      "Liquore di ciliegia",
+      "Note orientali",
+      "Legno di cashmere",
+      "Vaniglia"
+    ],
+    "notesHeart": [
+      "Ambra",
+      "Canna da zucchero",
+      "Legno di cedro"
+    ],
+    "notesBase": [
+      "Legno di sandalo",
+      "Fava tonka",
+      "Labdano",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "maison-asrar-hilm",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Morbido",
+    "shortDescription": "Eau de parfum fruttato orientale luminoso e raffinato, che intreccia frutti succosi e fiori delicati su un fondo caldo e leggermente gourmand di patchouli, caramello e legni.",
+    "notesTop": [
+      "Mango",
+      "Camomilla",
+      "Mandarino",
+      "Arancia"
+    ],
+    "notesHeart": [
+      "Iris",
+      "Cocco",
+      "Ylang-ylang",
+      "Gelsomino"
+    ],
+    "notesBase": [
+      "Patchouli",
+      "Vetiver",
+      "Caramello",
+      "Legno di cedro",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "maison-asrar-oh-honey",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Eau de parfum floreale-fruttato gourmand irresistibile, un intreccio goloso di mela e ribes nero, miele e fiori bianchi su un fondo caldo di sandalo e vaniglia.",
+    "notesTop": [
+      "Mela",
+      "Ribes nero",
+      "Agrumi",
+      "Spezie"
+    ],
+    "notesHeart": [
+      "Miele",
+      "Fiori bianchi",
+      "Cedro"
+    ],
+    "notesBase": [
+      "Orcanox",
+      "Legno di sandalo",
+      "Vaniglia"
+    ]
+  },
+  {
+    "slug": "maison-asrar-tornado",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Eau de parfum orientale dolce ed elegante, che avvolge frutti vellutati e zafferano in un cuore di osmanto e incenso su un fondo caldo di vaniglia, fava tonka e legni.",
+    "notesTop": [
+      "Davana",
+      "Zafferano",
+      "Pesca",
+      "Litchi"
+    ],
+    "notesHeart": [
+      "Osmanto",
+      "Incenso",
+      "Cashmeran"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Fava tonka",
+      "Legno di cedro",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "maison-asrar-cascade",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Morbido",
+    "shortDescription": "Una fragranza acquatica aromatica dal carattere fresco e luminoso, che apre con note frizzanti di melone e agrumi per posarsi su un fondo caldo di legni, ambra e muschio.",
+    "notesTop": [
+      "Melone",
+      "Limone",
+      "Zenzero"
+    ],
+    "notesHeart": [
+      "Note marine",
+      "Lavanda",
+      "Mela",
+      "Legni secchi"
+    ],
+    "notesBase": [
+      "Ambra",
+      "Sandalo",
+      "Patchouli",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "afnan-ornament-homme",
+    "verified": true,
+    "gender": "uomo",
+    "intensity": "Intenso",
+    "shortDescription": "Un profumo legnoso-aromatico maschile che intreccia l'apertura fruttata di mela alle spezie di cardamomo e zafferano, chiudendo su una base avvolgente di legni preziosi, patchouli e ambra.",
+    "notesTop": [
+      "Mela",
+      "Cardamomo",
+      "Chiodi di garofano",
+      "Noce moscata"
+    ],
+    "notesHeart": [
+      "Zafferano",
+      "Pepe",
+      "Geranio"
+    ],
+    "notesBase": [
+      "Ambra",
+      "Patchouli",
+      "Cedro",
+      "Sandalo"
+    ]
+  },
+  {
+    "slug": "afnan-ornament-femme",
+    "verified": true,
+    "gender": "donna",
+    "intensity": "Morbido",
+    "shortDescription": "Una composizione floreale-fruttata femminile, solare e avvolgente, con un'apertura di frutti tropicali e cocco che sfuma in un cuore di fiori d'arancio e in un fondo dolce di vaniglia, ambra e muschio.",
+    "notesTop": [
+      "Frutti tropicali",
+      "Cocco",
+      "Pesca",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Fiori d'arancio",
+      "Note floreali"
+    ],
+    "notesBase": [
+      "Ambra",
+      "Vaniglia",
+      "Muschio"
+    ]
+  },
+  {
+    "slug": "asdaaf-ameerat-al-arab",
+    "verified": true,
+    "gender": "donna",
+    "intensity": "Intenso",
+    "shortDescription": "Un elegante profumo floreale femminile che unisce la freschezza degli agrumi al muschio bianco, per svelare un cuore raffinato di gelsomino impreziosito da note legnose e oud.",
+    "notesTop": [
+      "Agrumi",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Muschio bianco",
+      "Aloe vera"
+    ],
+    "notesBase": [
+      "Gelsomino",
+      "Muschio",
+      "Note legnose",
+      "Oud"
+    ]
+  },
+  {
+    "slug": "asdaaf-ameerat-al-arab-air-spray",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Intenso",
+    "shortDescription": "Spray profumato per ambienti che diffonde l'iconica fragranza Ameerat Al Arab: agrumi frizzanti e muschio bianco su un cuore di gelsomino, note legnose e oud, per un'atmosfera raffinata e orientale.",
+    "notesTop": [
+      "Agrumi",
+      "Bergamotto"
+    ],
+    "notesHeart": [
+      "Muschio bianco",
+      "Aloe vera"
+    ],
+    "notesBase": [
+      "Gelsomino",
+      "Muschio",
+      "Note legnose",
+      "Oud"
+    ]
+  },
+  {
+    "slug": "asdaaf-ya-habibti",
+    "verified": true,
+    "gender": "donna",
+    "intensity": "Intenso",
+    "shortDescription": "Un profumo floreale orientale femminile, luminoso e romantico, che fonde l'apertura agrumata di mandarino e pompelmo con un cuore di rosa e gelsomino su un fondo caldo di vaniglia, sandalo e muschio.",
+    "notesTop": [
+      "Mandarino",
+      "Pompelmo"
+    ],
+    "notesHeart": [
+      "Rosa",
+      "Gelsomino"
+    ],
+    "notesBase": [
+      "Vaniglia",
+      "Sandalo",
+      "Muschio bianco",
+      "Ambra"
+    ]
+  },
+  {
+    "slug": "attri-ameer-al-oud-vip",
+    "verified": true,
+    "gender": "uomo",
+    "intensity": "Molto intenso",
+    "shortDescription": "Un intenso profumo legnoso-speziato dal carattere orientale, dominato dall'oud e dallo zafferano, con un cuore di rosa e ambra che sfuma in un fondo profondo di patchouli, sandalo e muschio.",
+    "notesTop": [
+      "Zafferano",
+      "Oud",
+      "Rosa"
+    ],
+    "notesHeart": [
+      "Ambra",
+      "Cannella",
+      "Cedro"
+    ],
+    "notesBase": [
+      "Patchouli",
+      "Sandalo",
+      "Muschio bianco",
+      "Muschio di quercia"
+    ]
+  },
+  {
+    "slug": "hersh-lahab",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Morbido",
+    "shortDescription": "Una fragranza aromatica fresca e unisex che combina pepe nero, basilico e vetiver con la vivacità del pompelmo e del pepe di Timut, su un fondo terroso di patchouli.",
+    "notesTop": [
+      "Pepe nero",
+      "Vetiver",
+      "Basilico"
+    ],
+    "notesHeart": [
+      "Pepe di Timut",
+      "Pompelmo"
+    ],
+    "notesBase": [
+      "Patchouli"
+    ]
+  },
+  {
+    "slug": "musk-pina-colada",
+    "verified": true,
+    "gender": "unisex",
+    "intensity": "Morbido",
+    "shortDescription": "Un profumo muschiato e fruttato dall'anima tropicale, con un'esplosione di ananas, cocco e mandarino che si adagia su un fondo cremoso di muschio, vaniglia e ambra grigia.",
+    "notesTop": [
+      "Ananas",
+      "Cocco",
+      "Mandarino"
+    ],
+    "notesHeart": [
+      "Mughetto",
+      "Violetta",
+      "Rosa"
+    ],
+    "notesBase": [
+      "Muschio",
+      "Vaniglia",
+      "Ambra grigia"
+    ]
+  }
+]
