@@ -1,13 +1,25 @@
 'use client';
 
+import { useEffect } from 'react';
 import { ProductCard } from '@/components/product/product-card';
 import { products as seedProducts } from '@/data/catalog';
-import { getStoredProducts, useCartStore } from '@/lib/cart/store';
+import { getStoredProducts, mergeProducts, useCartStore } from '@/lib/cart/store';
 import { Button } from '@/components/ui/button';
+import type { Product } from '@/types/catalog';
 
-export function WishlistClient() {
+export function WishlistClient({ initialProducts = [] }: { initialProducts?: Product[] }) {
   const wishlist = useCartStore((state) => state.wishlist);
-  const products = getStoredProducts(seedProducts).filter((product) => wishlist.includes(product.id));
+  const catalogProducts = useCartStore((state) => state.catalogProducts);
+  const syncProducts = useCartStore((state) => state.syncProducts);
+
+  useEffect(() => {
+    if (initialProducts.length) syncProducts(initialProducts);
+  }, [initialProducts, syncProducts]);
+
+  const catalog = mergeProducts(catalogProducts, initialProducts, getStoredProducts(seedProducts));
+  const products = wishlist
+    .map((id) => catalog.find((product) => product.id === id))
+    .filter((product): product is Product => Boolean(product));
 
   return (
     <section className="container py-12">

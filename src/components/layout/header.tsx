@@ -14,7 +14,6 @@ const activeCls =
   'bg-[linear-gradient(135deg,rgba(255,250,242,0.92),rgba(234,220,200,0.58))] text-ink shadow-[0_12px_30px_rgba(35,27,23,0.12)] ring-1 ring-white/65';
 
 const catalogGroups = [
-  { title: 'Per genere', slugs: ['uomo', 'donna', 'unisex'] },
   { title: 'Per famiglia', slugs: ['oud', 'gourmand'] },
   { title: 'Rituali & regali', slugs: ['set-regalo', 'casa'] }
 ];
@@ -89,8 +88,8 @@ export function Header() {
                 Catalogo <ChevronDown size={14} className={cn('transition-transform duration-200', catalogOpen ? 'rotate-180' : '')} />
               </Link>
               {catalogOpen ? (
-                <div className="absolute left-1/2 top-full z-50 w-[600px] -translate-x-1/2 pt-3">
-                  <div className="grid grid-cols-3 gap-5 rounded-2xl border border-ink/10 bg-cream/98 p-6 shadow-[0_30px_70px_rgba(23,20,18,0.18)] backdrop-blur-xl">
+                <div className="absolute left-1/2 top-full z-50 w-[560px] -translate-x-1/2 pt-3">
+                  <div className="grid grid-cols-[1fr_1fr_1.15fr] gap-5 rounded-2xl border border-ink/12 bg-cream p-6 shadow-[0_30px_70px_rgba(23,20,18,0.22)]">
                     {catalogGroups.map((group) => (
                       <div key={group.title}>
                         <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-oud/80">{group.title}</p>
@@ -100,7 +99,7 @@ export function Header() {
                             if (!category) return null;
                             return (
                               <li key={slug}>
-                                <Link href={`/categories/${slug}`} className="block rounded-lg px-2.5 py-1.5 text-[13px] font-medium normal-case tracking-normal text-ink/75 transition hover:bg-white hover:text-oud">
+                                <Link href={`/categories/${slug}`} className="block rounded-lg px-2.5 py-2 text-[13px] font-medium normal-case tracking-normal text-ink/80 transition hover:bg-white hover:text-oud">
                                   {category.name}
                                 </Link>
                               </li>
@@ -109,11 +108,11 @@ export function Header() {
                         </ul>
                       </div>
                     ))}
-                    <div className="col-span-3 border-t border-ink/8 pt-3">
-                      <Link href="/products" className="text-[11px] font-semibold uppercase tracking-widest text-oud transition hover:underline">
-                        Vedi tutto il catalogo →
-                      </Link>
-                    </div>
+                    <Link href="/products" className="flex flex-col justify-between rounded-xl bg-oud p-4 text-cream transition hover:bg-bark">
+                      <span className="text-[11px] font-semibold uppercase tracking-widest text-cream/70">Boutique OUDE</span>
+                      <span className="mt-6 font-serif text-2xl leading-tight normal-case tracking-normal">Tutto il catalogo</span>
+                      <span className="mt-1 text-[12px] normal-case tracking-normal text-cream/75">Esplora tutte le fragranze →</span>
+                    </Link>
                   </div>
                 </div>
               ) : null}
