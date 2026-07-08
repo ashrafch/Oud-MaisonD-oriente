@@ -100,8 +100,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <FragranceFinderQuiz />
-      <BundleBuilder />
+      <FragranceFinderQuiz products={products} />
+      <BundleBuilder products={products} />
       <RecentlyViewedProducts />
 
       <section className="bg-white py-12 sm:py-14">

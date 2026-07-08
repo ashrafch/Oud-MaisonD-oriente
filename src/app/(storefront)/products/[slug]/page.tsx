@@ -7,7 +7,7 @@ import { ReviewSummary } from '@/components/storefront/review-summary';
 import { StockUrgencyBadge } from '@/components/storefront/stock-urgency-badge';
 import { formatPrice } from '@/lib/cart/store';
 import { productJsonLd } from '@/lib/seo/json-ld';
-import { getSupabaseProductBySlug, getSupabaseProductSlugs } from '@/lib/supabase/catalog';
+import { getSupabaseProductBySlug, getSupabaseProductSlugs, getSupabaseProducts } from '@/lib/supabase/catalog';
 
 export async function generateStaticParams() {
   const slugs = await getSupabaseProductSlugs();
@@ -25,7 +25,10 @@ export async function generateMetadata({ params }: ProductPageProps) {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = await getSupabaseProductBySlug(slug);
+  const [product, allProducts] = await Promise.all([
+    getSupabaseProductBySlug(slug),
+    getSupabaseProducts()
+  ]);
   if (!product) notFound();
   return (
     <section className="container py-12">
@@ -36,7 +39,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
         <div>
           <p className="text-sm font-semibold uppercase tracking-widest text-oud">{product.brand}</p>
-          <ProductViewTracker productId={product.id} />
+          <ProductViewTracker product={product} />
           <div className="mt-3"><StockUrgencyBadge product={product} /></div>
           <h1 className="mt-3 font-serif text-4xl sm:text-5xl lg:text-6xl">{product.name}</h1>
           <p className="mt-4 text-base leading-7 text-ink/68 sm:text-lg sm:leading-8">{product.shortDescription}</p>
@@ -62,7 +65,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
       </div>
       <div className="mt-16"><ReviewSummary product={product} /></div>
-      <RecommendedPairings product={product} />
+      <RecommendedPairings product={product} products={allProducts} />
     </section>
   );
 }

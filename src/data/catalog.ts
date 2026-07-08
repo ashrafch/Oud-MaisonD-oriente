@@ -1,12 +1,13 @@
 import type { Category, Product } from '@/types/catalog';
 
 export const categories: Category[] = [
-  { name: 'Oud', slug: 'oud', description: 'Legni profondi, resine e scie intense.' },
-  { name: 'Musk', slug: 'musk', description: 'Pulizia vellutata, bianco muschiato e morbidezza.' },
-  { name: 'Attar', slug: 'attar', description: 'Oli profumati concentrati e rituali personali.' },
-  { name: 'Bakhoor', slug: 'bakhoor', description: 'Incensi premium e legni aromatici.' },
-  { name: 'Set regalo', slug: 'set-regalo', description: 'Box curate per occasioni speciali.' },
-  { name: 'Unisex', slug: 'unisex', description: 'Fragranze versatili e contemporanee.' }
+  { name: 'Uomo', slug: 'uomo', description: 'Fragranze maschili decise, legnose e strutturate.' },
+  { name: 'Donna', slug: 'donna', description: 'Fragranze femminili eleganti, floreali e sensuali.' },
+  { name: 'Unisex', slug: 'unisex', description: 'Fragranze versatili e contemporanee per lui e per lei.' },
+  { name: 'Oud & Legnosi', slug: 'oud', description: 'Oud, legni preziosi e scie orientali intense.' },
+  { name: 'Gourmand & Dolci', slug: 'gourmand', description: 'Vaniglia, caramello, datteri e note golose avvolgenti.' },
+  { name: 'Set Regalo', slug: 'set-regalo', description: 'Cofanetti e idee regalo curate.' },
+  { name: 'Casa & Profumatori', slug: 'casa', description: 'Profumatori per ambienti e bakhoor per la casa.' }
 ];
 
 export const products: Product[] = [
