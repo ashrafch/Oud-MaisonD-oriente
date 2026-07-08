@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { BundleBuilder } from '@/components/storefront/bundle-builder';
 import { FragranceFinderQuiz } from '@/components/storefront/fragrance-finder-quiz';
 import { RecentlyViewedProducts } from '@/components/storefront/recently-viewed';
@@ -22,7 +23,7 @@ export default async function HomePage() {
   const featuredProducts = products
     .filter((product) => product.tags.includes('bestseller') || product.tags.includes('nuovo') || product.tags.includes('gift'))
     .slice(0, 3);
-  const daily = products[0];
+  const daily = products.find((product) => product.tags.includes('bestseller')) ?? products[0];
 
   return (
     <>
@@ -73,9 +74,10 @@ export default async function HomePage() {
 
       <section className="bg-mist py-12 sm:py-14">
         <div className="container grid gap-8 lg:grid-cols-[0.8fr_1fr]">
-          <div className="soft-shine relative min-h-[260px] overflow-hidden rounded border border-ink/10 sm:min-h-80">
-            <Image src="/brand/location-card.png" alt="OUDE Bologna" fill className="object-cover" />
-          </div>
+          <Link href={`/products/${daily.slug}`} className="soft-shine group relative min-h-[260px] overflow-hidden rounded border border-ink/10 bg-white sm:min-h-80">
+            <Image src={daily.image} alt={daily.name} fill className="object-cover transition duration-500 group-hover:scale-105" sizes="(min-width: 1024px) 40vw, 100vw" unoptimized={daily.image.startsWith('data:')} />
+            <span className="absolute left-4 top-4 rounded bg-cream/95 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-oud shadow-sm">{daily.brand}</span>
+          </Link>
           <div className="self-center">
             <p className="text-sm font-semibold uppercase tracking-widest text-oud">Scelta consigliata</p>
             <h2 className="mt-2 font-serif text-4xl sm:text-5xl">{daily.name}</h2>

@@ -5,12 +5,24 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { ChevronDown } from 'lucide-react';
 import { categories } from '@/data/catalog';
 import { cn } from '@/lib/utils/cn';
 import { HeaderActions } from './header-actions';
 
+const activeCls =
+  'bg-[linear-gradient(135deg,rgba(255,250,242,0.92),rgba(234,220,200,0.58))] text-ink shadow-[0_12px_30px_rgba(35,27,23,0.12)] ring-1 ring-white/65';
+
+const catalogGroups = [
+  { title: 'Per genere', slugs: ['uomo', 'donna', 'unisex'] },
+  { title: 'Per famiglia', slugs: ['oud', 'gourmand'] },
+  { title: 'Rituali & regali', slugs: ['set-regalo', 'casa'] }
+];
+const findCat = (slug: string) => categories.find((category) => category.slug === slug);
+
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [catalogOpen, setCatalogOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -19,6 +31,12 @@ export function Header() {
     window.addEventListener('scroll', updateHeader, { passive: true });
     return () => window.removeEventListener('scroll', updateHeader);
   }, []);
+
+  useEffect(() => {
+    setCatalogOpen(false);
+  }, [pathname]);
+
+  const catalogActive = pathname.startsWith('/products') || pathname.startsWith('/categories');
 
   return (
     <>
@@ -59,14 +77,51 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-6 text-[13px] font-semibold uppercase tracking-wide text-ink/68 xl:flex">
+          <nav className="hidden items-center gap-5 text-[13px] font-semibold uppercase tracking-wide text-ink/68 xl:flex">
             <NavLink href="/" active={pathname === '/'}>Maison</NavLink>
-            <NavLink href="/products" active={pathname === '/products' || pathname.startsWith('/products/')}>Catalogo</NavLink>
-            {categories.slice(0, 5).map((category) => (
-              <NavLink key={category.slug} href={`/categories/${category.slug}`} active={pathname === `/categories/${category.slug}`}>
-                {category.name}
-              </NavLink>
-            ))}
+
+            <div className="relative" onMouseEnter={() => setCatalogOpen(true)} onMouseLeave={() => setCatalogOpen(false)}>
+              <Link
+                href="/products"
+                aria-expanded={catalogOpen}
+                className={cn('nav-underline relative flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 transition hover:text-oud', catalogActive ? activeCls : '')}
+              >
+                Catalogo <ChevronDown size={14} className={cn('transition-transform duration-200', catalogOpen ? 'rotate-180' : '')} />
+              </Link>
+              {catalogOpen ? (
+                <div className="absolute left-1/2 top-full z-50 w-[600px] -translate-x-1/2 pt-3">
+                  <div className="grid grid-cols-3 gap-5 rounded-2xl border border-ink/10 bg-cream/98 p-6 shadow-[0_30px_70px_rgba(23,20,18,0.18)] backdrop-blur-xl">
+                    {catalogGroups.map((group) => (
+                      <div key={group.title}>
+                        <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-oud/80">{group.title}</p>
+                        <ul className="grid gap-0.5">
+                          {group.slugs.map((slug) => {
+                            const category = findCat(slug);
+                            if (!category) return null;
+                            return (
+                              <li key={slug}>
+                                <Link href={`/categories/${slug}`} className="block rounded-lg px-2.5 py-1.5 text-[13px] font-medium normal-case tracking-normal text-ink/75 transition hover:bg-white hover:text-oud">
+                                  {category.name}
+                                </Link>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    ))}
+                    <div className="col-span-3 border-t border-ink/8 pt-3">
+                      <Link href="/products" className="text-[11px] font-semibold uppercase tracking-widest text-oud transition hover:underline">
+                        Vedi tutto il catalogo →
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+
+            <NavLink href="/categories/uomo" active={pathname === '/categories/uomo'}>Uomo</NavLink>
+            <NavLink href="/categories/donna" active={pathname === '/categories/donna'}>Donna</NavLink>
+            <NavLink href="/categories/unisex" active={pathname === '/categories/unisex'}>Unisex</NavLink>
             <NavLink href="/about" active={pathname === '/about'}>Boutique</NavLink>
           </nav>
 
@@ -77,7 +132,7 @@ export function Header() {
           <div className="container flex gap-4 overflow-x-auto py-3 text-[13px] font-semibold text-ink/70 [scrollbar-width:none]">
             <MobileNavLink href="/" active={pathname === '/'}>Maison</MobileNavLink>
             <MobileNavLink href="/products" active={pathname === '/products' || pathname.startsWith('/products/')}>Catalogo</MobileNavLink>
-            {categories.slice(0, 6).map((category) => (
+            {categories.map((category) => (
               <MobileNavLink key={category.slug} href={`/categories/${category.slug}`} active={pathname === `/categories/${category.slug}`}>
                 {category.name}
               </MobileNavLink>
@@ -95,9 +150,9 @@ function NavLink({ href, children, active = false }: { href: string; children: R
   return (
     <Link
       className={cn(
-        'nav-underline relative rounded-full px-2.5 py-1 transition hover:text-oud',
+        'nav-underline relative whitespace-nowrap rounded-full px-2.5 py-1 transition hover:text-oud',
         active
-          ? 'bg-[linear-gradient(135deg,rgba(255,250,242,0.92),rgba(234,220,200,0.58))] text-ink shadow-[0_12px_30px_rgba(35,27,23,0.12)] ring-1 ring-white/65 before:absolute before:inset-x-2 before:bottom-0 before:h-px before:bg-[linear-gradient(90deg,transparent,rgba(201,155,69,0.95),transparent)] before:content-[""]'
+          ? `${activeCls} before:absolute before:inset-x-2 before:bottom-0 before:h-px before:bg-[linear-gradient(90deg,transparent,rgba(201,155,69,0.95),transparent)] before:content-[""]`
           : ''
       )}
       href={href}
@@ -112,9 +167,9 @@ function MobileNavLink({ href, children, active = false }: { href: string; child
   return (
     <Link
       className={cn(
-        'nav-underline relative shrink-0 rounded-full px-2.5 py-1 transition hover:text-oud',
+        'nav-underline relative shrink-0 whitespace-nowrap rounded-full px-2.5 py-1 transition hover:text-oud',
         active
-          ? 'bg-[linear-gradient(135deg,rgba(255,250,242,0.92),rgba(234,220,200,0.58))] text-ink shadow-[0_12px_30px_rgba(35,27,23,0.12)] ring-1 ring-white/65 before:absolute before:inset-x-2 before:bottom-0 before:h-px before:bg-[linear-gradient(90deg,transparent,rgba(201,155,69,0.95),transparent)] before:content-[""]'
+          ? `${activeCls} before:absolute before:inset-x-2 before:bottom-0 before:h-px before:bg-[linear-gradient(90deg,transparent,rgba(201,155,69,0.95),transparent)] before:content-[""]`
           : ''
       )}
       href={href}
