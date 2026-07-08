@@ -88,7 +88,11 @@ export async function getSupabaseCategories(): Promise<Category[]> {
 }
 
 export async function getSupabaseProducts(options: { includeHidden?: boolean } = {}): Promise<Product[]> {
-  const supabase = (options.includeHidden ? createSupabaseServiceClient() : createSupabasePublicServerClient()) as SupabaseAnyClient;
+  // Le pagine catalogo/categoria sono Server Component: usiamo il client service-role
+  // (mai esposto al browser) così le join product_images / product_categories sono
+  // sempre leggibili. Con il solo client anon le RLS le restituiscono vuote e le
+  // immagini/categorie non compaiono nel sito. Fallback su client pubblico.
+  const supabase = (createSupabaseServiceClient() ?? createSupabasePublicServerClient()) as SupabaseAnyClient;
   if (!supabase) return seedProducts;
   let query = supabase
     .from('products')
