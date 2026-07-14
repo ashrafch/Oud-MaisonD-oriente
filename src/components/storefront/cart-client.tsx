@@ -5,8 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { products as seedProducts } from '@/data/catalog';
-import { calculateCart, formatPrice, getStoredProducts, mergeProducts, useCartStore } from '@/lib/cart/store';
+import { calculateCart, formatPrice, mergeProducts, useCartStore } from '@/lib/cart/store';
 import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
 import { useShippingConfig } from '@/lib/cart/use-shipping-config';
 import type { Product } from '@/types/catalog';
@@ -22,7 +21,7 @@ export function CartClient({ initialProducts = [] }: { initialProducts?: Product
   const addItem = useCartStore((state) => state.addItem);
   const coupons = useActiveCoupons();
   const shippingConfig = useShippingConfig();
-  const products = mergeProducts(catalogProducts, initialProducts, getStoredProducts(seedProducts));
+  const products = mergeProducts(catalogProducts, initialProducts);
   const totals = calculateCart(items, products, couponCode, coupons, shippingConfig);
   const cartProducts = items.map((item) => ({ item, product: products.find((product) => product.id === item.productId) })).filter((entry) => entry.product);
   const upsells = products.filter((product) => !items.some((item) => item.productId === product.id)).slice(0, 3);

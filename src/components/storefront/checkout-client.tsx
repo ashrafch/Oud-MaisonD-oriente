@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CreditCard, MessageCircle, ShieldCheck } from 'lucide-react';
-import { products as seedProducts } from '@/data/catalog';
-import { calculateCart, formatPrice, getStoredProducts, mergeProducts, type CustomerDraft, useCartStore } from '@/lib/cart/store';
+import { calculateCart, formatPrice, mergeProducts, type CustomerDraft, useCartStore } from '@/lib/cart/store';
 import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
 import { useShippingConfig } from '@/lib/cart/use-shipping-config';
 import type { Product } from '@/types/catalog';
@@ -41,7 +40,7 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
   const paypalInternalOrderId = useRef<string | undefined>(undefined);
   const coupons = useActiveCoupons();
   const shippingConfig = useShippingConfig();
-  const products = useMemo(() => mergeProducts(catalogProducts, initialProducts, getStoredProducts(seedProducts)), [catalogProducts, initialProducts]);
+  const products = useMemo(() => mergeProducts(catalogProducts, initialProducts), [catalogProducts, initialProducts]);
   const totals = useMemo(() => calculateCart(items, products, couponCode, coupons, shippingConfig), [couponCode, coupons, items, products, shippingConfig]);
   const isValid = customer.fullName && customer.email.includes('@') && customer.phone && customer.address && customer.city && customer.zip && items.length;
 

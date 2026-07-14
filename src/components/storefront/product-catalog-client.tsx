@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ProductCard } from '@/components/product/product-card';
 import { ProductQuickViewDialog } from '@/components/storefront/product-quick-view-dialog';
-import { getStoredProducts, useCartStore } from '@/lib/cart/store';
+import { useCartStore } from '@/lib/cart/store';
 import type { Category, Product } from '@/types/catalog';
 
 type ProductCatalogClientProps = {
@@ -16,7 +16,7 @@ export function ProductCatalogClient({ initialProducts, initialCategories }: Pro
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sort, setSort] = useState('recommended');
   const [quickViewProduct, setQuickViewProduct] = useState<Product | undefined>();
-  const [products] = useState(() => getStoredProducts(initialProducts));
+  const [products] = useState(() => initialProducts);
   const syncProducts = useCartStore((state) => state.syncProducts);
 
   useEffect(() => {

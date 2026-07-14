@@ -4,8 +4,7 @@ import { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, ShoppingBag, X } from 'lucide-react';
-import { products as seedProducts } from '@/data/catalog';
-import { calculateCart, formatPrice, getStoredProducts, mergeProducts, useCartStore } from '@/lib/cart/store';
+import { calculateCart, formatPrice, mergeProducts, useCartStore } from '@/lib/cart/store';
 import { useActiveCoupons } from '@/lib/cart/use-active-coupons';
 import { useShippingConfig } from '@/lib/cart/use-shipping-config';
 import type { Product } from '@/types/catalog';
@@ -21,7 +20,7 @@ export function CartDrawer({ initialProducts = [] }: { initialProducts?: Product
   const setQuantity = useCartStore((state) => state.setQuantity);
   const coupons = useActiveCoupons();
   const shippingConfig = useShippingConfig();
-  const products = mergeProducts(catalogProducts, initialProducts, getStoredProducts(seedProducts));
+  const products = mergeProducts(catalogProducts, initialProducts);
   const totals = calculateCart(items, products, couponCode, coupons, shippingConfig);
 
   useEffect(() => {

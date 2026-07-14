@@ -2,8 +2,7 @@
 
 import { useEffect } from 'react';
 import { ProductCard } from '@/components/product/product-card';
-import { products as seedProducts } from '@/data/catalog';
-import { getStoredProducts, mergeProducts, useCartStore } from '@/lib/cart/store';
+import { mergeProducts, useCartStore } from '@/lib/cart/store';
 import { Button } from '@/components/ui/button';
 import type { Product } from '@/types/catalog';
 
@@ -16,7 +15,7 @@ export function WishlistClient({ initialProducts = [] }: { initialProducts?: Pro
     if (initialProducts.length) syncProducts(initialProducts);
   }, [initialProducts, syncProducts]);
 
-  const catalog = mergeProducts(catalogProducts, initialProducts, getStoredProducts(seedProducts));
+  const catalog = mergeProducts(catalogProducts, initialProducts);
   const products = wishlist
     .map((id) => catalog.find((product) => product.id === id))
     .filter((product): product is Product => Boolean(product));
