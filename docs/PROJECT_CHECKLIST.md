@@ -1,6 +1,6 @@
 # Project checklist e quadro produzione
 
-Ultimo aggiornamento: 11/06/2026
+Ultimo aggiornamento: 14/07/2026
 
 Questo e il documento unico per capire lo stato del progetto OUDÉ Maison D'Oriente Ecommerce: cosa e completato, cosa e predisposto, cosa manca prima della produzione e cosa conviene sviluppare dopo.
 
@@ -9,6 +9,21 @@ Documenti collegati:
 - `docs/FUNCTIONAL_GUIDE.md`: guida operativa per usare storefront, admin, checkout, Supabase e email.
 - `docs/SUPABASE_ADMIN_AUTH.md`: procedura specifica per login admin/super admin.
 - `README.md`: setup rapido, stack e link documentazione.
+
+## Ultimi aggiornamenti (luglio 2026) — Catalogo reale e UX
+
+- [x] Import catalogo reale: 69 prodotti dal listino SumUp del negozio (nomi, brand, prezzi, gender, intensità, note olfattive verificate).
+- [x] 81 foto prodotto reali caricate su Supabase Storage e collegate ai prodotti (`scripts/import-products.mjs`, `scripts/products-data.mjs`).
+- [x] Fix immagini storefront: il catalogo pubblico ora legge le join immagini/categorie via client service-role server-side (le RLS bloccavano il client anon).
+- [x] Tassonomia categorie ridisegnata e popolata: Uomo, Donna, Unisex, Oud & Legnosi, Gourmand & Dolci, Set Regalo, Casa & Profumatori (vecchie attar/musk/bakhoor nascoste). `scripts/restructure-categories.mjs`.
+- [x] Top bar armoniosa con mega-menu "Catalogo" (opaco e leggibile), nomi lunghi non vanno più a capo.
+- [x] Finder olfattivo professionale e personalizzato: 4 domande, profilo cliente, % di affinità calcolata sui prodotti reali.
+- [x] Bundle "Crea il tuo rituale" scalabile: tab per famiglia, selezione su tutto il catalogo, sconto a scaglioni (2→-8%, 3→-12%, 4+→-15%), riepilogo sticky.
+- [x] Coerenza foto ovunque: catalogo, scheda, quick view, carrello, drawer, checkout, wishlist, scelta consigliata, rituale consigliato, visti di recente.
+- [x] Rimosso merge legacy `localStorage['oude-products']`: niente più prodotti demo/test fantasma nel browser; lo storefront mostra solo il catalogo reale.
+- [x] Prodotti demo/seed (oud-sultan, musk-al-tahara, amber-night, test) soft-deleted dal DB.
+- [ ] ~34 voci del listino SumUp ancora senza foto (bukhoor, oli essenziali, cofanetti incenso, set Valentine): da aggiungere quando arrivano le foto.
+- [ ] Descrizioni estese/storytelling per prodotto (ora c'è la descrizione breve + note olfattive).
 
 ## Stato sintetico
 
@@ -59,7 +74,7 @@ Documenti collegati:
 - [x] Cookie banner limitato ai cookie tecnici.
 - [x] Footer con link utili, contatti e dati fiscali da env.
 - [x] Pagine informative: chi siamo, contatti, FAQ, spedizioni, resi, privacy, termini.
-- [ ] Foto prodotto reali complete.
+- [x] Foto prodotto reali per i 69 prodotti importati (mancano ~34 voci listino senza foto: bukhoor, oli, cofanetti, set Valentine).
 - [ ] Foto categoria reali.
 - [ ] Foto negozio/storytelling reale.
 - [ ] Ingredienti, allergeni, avvertenze e note normative per ogni prodotto.
