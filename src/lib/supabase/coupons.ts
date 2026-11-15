@@ -8,19 +8,16 @@ export type Coupon = {
   active: boolean;
 };
 
-const fallbackCoupons: Coupon[] = [
-  { code: 'OUDE10', type: 'percent', value: 10, active: true },
-  { code: 'WELCOME15', type: 'percent', value: 15, active: true }
-];
-
 export async function getSupabaseCoupons(): Promise<Coupon[]> {
   const supabase = createSupabaseServiceClient() as any;
-  if (!supabase) return fallbackCoupons;
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from('coupons')
     .select('id, code, discount_type, discount_value, is_active')
+    .or(`starts_at.is.null,starts_at.lte.${new Date().toISOString()}`)
+    .or(`ends_at.is.null,ends_at.gt.${new Date().toISOString()}`)
     .order('created_at', { ascending: false });
-  if (error) return fallbackCoupons;
+  if (error) return [];
   return (data ?? []).map((coupon: { id: string; code: string; discount_type: 'percent' | 'fixed'; discount_value: number | string; is_active: boolean }) => ({
     id: coupon.id,
     code: coupon.code,
