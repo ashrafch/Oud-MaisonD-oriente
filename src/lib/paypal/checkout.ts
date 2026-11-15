@@ -22,6 +22,8 @@ type PayPalCaptureResponse = {
   id: string;
   status: string;
   purchase_units?: {
+    custom_id?: string;
+    reference_id?: string;
     payments?: {
       captures?: { id: string; status: string }[];
     };
@@ -101,6 +103,16 @@ export async function createPayPalCheckoutOrder(input: PayPalCreateInput) {
 }
 
 export async function capturePayPalCheckoutOrder(paypalOrderId: string, orderId?: string) {
+  if (!/^[A-Z0-9]+$/i.test(paypalOrderId)) throw new Error('ID PayPal non valido');
+  const approved = await paypalRequest<PayPalCaptureResponse>({
+    method: 'GET',
+    path: `/v2/checkout/orders/${paypalOrderId}`
+  });
+  const verifiedOrderId = approved.purchase_units?.[0]?.custom_id;
+  if (!verifiedOrderId || (orderId && orderId !== verifiedOrderId)) {
+    throw new Error('Ordine PayPal non corrispondente');
+  }
+  orderId = verifiedOrderId;
   const capture = await paypalRequest<PayPalCaptureResponse>({
     path: `/v2/checkout/orders/${paypalOrderId}/capture`,
     body: {}
