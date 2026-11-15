@@ -1,11 +1,5 @@
 import { createSupabaseServiceClient } from './server';
 
-type OrderItemRow = {
-  product_id: string | null;
-  product_name: string;
-  quantity: number;
-};
-
 type ProductStockRow = {
   id: string;
   slug: string | null;
@@ -22,26 +16,28 @@ export async function checkStockAvailability(
   items: { productId: string; quantity: number }[]
 ): Promise<string[] | null> {
   const supabase = createSupabaseServiceClient() as any;
-  if (!supabase) return null;
+  if (!supabase) return ['Catalogo non disponibile'];
 
   const uuids = items.filter((item) => isUuid(item.productId)).map((item) => item.productId);
   const slugs = items.filter((item) => !isUuid(item.productId)).map((item) => item.productId);
   let products: ProductStockRow[] = [];
 
   if (uuids.length) {
-    const { data } = await supabase.from('products').select('id, slug, name, stock, status').in('id', uuids);
+    const { data } = await supabase.from('products').select('id, slug, name, stock, status').is('deleted_at', null).in('id', uuids);
     if (data) products = [...products, ...(data as ProductStockRow[])];
   }
   if (slugs.length) {
-    const { data } = await supabase.from('products').select('id, slug, name, stock, status').in('slug', slugs);
+    const { data } = await supabase.from('products').select('id, slug, name, stock, status').is('deleted_at', null).in('slug', slugs);
     if (data) products = [...products, ...(data as ProductStockRow[])];
   }
 
   const outOfStock: string[] = [];
   for (const item of items) {
     const product = products.find((p) => p.id === item.productId || p.slug === item.productId);
-    if (!product) continue;
-    if (product.status === 'sold_out' || Number(product.stock ?? 0) < item.quantity) {
+    if (!product) { outOfStock.push('Prodotto non disponibile'); continue; }
+    const quantity = items.filter((entry) => entry.productId === product.id || entry.productId === product.slug)
+      .reduce((sum, entry) => sum + entry.quantity, 0);
+    if (product.status !== 'published' || Number(product.stock ?? 0) < quantity) {
       outOfStock.push(product.name);
     }
   }
@@ -50,118 +46,19 @@ export async function checkStockAvailability(
 }
 
 export async function decrementStockForPaidOrder(orderId: string) {
-  const supabase = createSupabaseServiceClient() as any;
-  if (!supabase) throw new Error('Supabase service client non configurato');
-
-  const movementNote = `ordine:${orderId}`;
-  const { data: existingMovements } = await supabase
-    .from('inventory_movements')
-    .select('id')
-    .eq('reason', 'vendita')
-    .eq('note', movementNote)
-    .limit(1);
-  if (existingMovements?.length) return { skipped: true };
-
-  const { data: items, error: itemsError } = await supabase
-    .from('order_items')
-    .select('product_id, product_name, quantity')
-    .eq('order_id', orderId);
-  if (itemsError) throw itemsError;
-
-  for (const item of (items ?? []) as OrderItemRow[]) {
-    if (!item.product_id) continue;
-
-    const { data: product, error: productError } = await supabase
-      .from('products')
-      .select('stock')
-      .eq('id', item.product_id)
-      .single();
-    if (productError) throw productError;
-
-    const nextStock = Math.max(0, Number(product.stock ?? 0) - item.quantity);
-    const update: Record<string, string | number> = {
-      stock: nextStock,
-      updated_at: new Date().toISOString()
-    };
-    if (nextStock === 0) update.status = 'sold_out';
-
-    const { error: updateError } = await supabase
-      .from('products')
-      .update(update)
-      .eq('id', item.product_id);
-    if (updateError) throw updateError;
-
-    const { error: movementError } = await supabase.from('inventory_movements').insert({
-      product_id: item.product_id,
-      quantity_delta: -item.quantity,
-      reason: 'vendita',
-      note: movementNote
-    });
-    if (movementError) throw movementError;
-  }
-
-  return { skipped: false };
+  await applyOrderStock(orderId, false);
 }
 
 export async function restoreStockForRefundedOrder(orderId: string) {
-  const supabase = createSupabaseServiceClient() as any;
-  if (!supabase) throw new Error('Supabase service client non configurato');
+  await applyOrderStock(orderId, true);
+}
 
-  const movementNote = `ordine:${orderId}`;
-
-  const { data: existingRestoration } = await supabase
-    .from('inventory_movements')
-    .select('id')
-    .eq('reason', 'rimborso')
-    .eq('note', movementNote)
-    .limit(1);
-  if (existingRestoration?.length) return { skipped: true };
-
-  const { data: saleMovements } = await supabase
-    .from('inventory_movements')
-    .select('id')
-    .eq('reason', 'vendita')
-    .eq('note', movementNote)
-    .limit(1);
-  if (!saleMovements?.length) return { skipped: true };
-
-  const { data: items, error: itemsError } = await supabase
-    .from('order_items')
-    .select('product_id, product_name, quantity')
-    .eq('order_id', orderId);
-  if (itemsError) throw itemsError;
-
-  for (const item of (items ?? []) as OrderItemRow[]) {
-    if (!item.product_id) continue;
-
-    const { data: product, error: productError } = await supabase
-      .from('products')
-      .select('stock, status')
-      .eq('id', item.product_id)
-      .single();
-    if (productError) throw productError;
-
-    const nextStock = Number(product.stock ?? 0) + item.quantity;
-    const update: Record<string, string | number> = {
-      stock: nextStock,
-      updated_at: new Date().toISOString()
-    };
-    if (product.status === 'sold_out') update.status = 'active';
-
-    const { error: updateError } = await supabase
-      .from('products')
-      .update(update)
-      .eq('id', item.product_id);
-    if (updateError) throw updateError;
-
-    const { error: movementError } = await supabase.from('inventory_movements').insert({
-      product_id: item.product_id,
-      quantity_delta: item.quantity,
-      reason: 'rimborso',
-      note: movementNote
-    });
-    if (movementError) throw movementError;
-  }
-
-  return { skipped: false };
+async function applyOrderStock(orderId: string, restore: boolean) {
+  const supabase = createSupabaseServiceClient();
+  if (!supabase) throw new Error("Supabase service client non configurato");
+  const rpc = supabase.rpc.bind(supabase) as unknown as (
+    name: 'apply_order_stock', args: { p_order_id: string; p_restore: boolean }
+  ) => PromiseLike<{ error: { message: string } | null }>;
+  const { error } = await rpc('apply_order_stock', { p_order_id: orderId, p_restore: restore });
+  if (error) throw error;
 }
