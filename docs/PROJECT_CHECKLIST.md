@@ -2,6 +2,16 @@
 
 Ultimo aggiornamento: 14/07/2026
 
+## Revisione sicurezza 15/11/2026 — in corso, non pubblicata
+
+- Branch `fix/security-hardening`: auth obbligatoria fuori sviluppo; ruoli admin solo da allowlist server; header di sicurezza; verifica associazione PayPal; rimborsi parziali Stripe esclusi dal ripristino totale; limiti upload; controllo prodotti mancanti/nascosti/eliminati e quantita aggregate; coupon demo rimossi.
+- Next.js aggiornato a 15.5.29, Zod a 4.6.7 e dipendenze transitive aggiornate. Audit npm: zero vulnerabilita; typecheck passato; build locale passata. API prodotti validata con Zod.
+- Test PostgreSQL locale: migrazioni 001–004 applicate; doppio scarico e doppio ripristino stock verificati; ruolo cliente privo di permessi modifica ruolo/esecuzione funzione stock. Test riproducibile in `supabase/tests/stock.sql`.
+- Migrazioni 003 (RLS e permessi profili) e 004 (stock transazionale) preparate: NON ancora applicate su Supabase. Applicarle e verificarle prima del deploy del codice che usa `apply_order_stock`.
+- Verificare `ADMIN_SUPER_EMAILS` e `ADMIN_EMAILS` in Preview/Production prima del rilascio: il ruolo nel profilo non concede piu accesso da solo.
+- Restano: verifica schema reale e Storage, test concorrenti stock, Preview pagamenti/rimborsi, rate limiting distribuito, validazione completa API admin, backup/restore e monitoraggio. Dominio in pausa per richiesta del titolare.
+- Non considerare questa revisione una certificazione di sicurezza o un deploy completato.
+
 Questo e il documento unico per capire lo stato del progetto OUDÉ Maison D'Oriente Ecommerce: cosa e completato, cosa e predisposto, cosa manca prima della produzione e cosa conviene sviluppare dopo.
 
 Documenti collegati:
