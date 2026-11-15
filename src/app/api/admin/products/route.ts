@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { requireAdminApiSession } from '@/lib/admin/auth';
 import { getSupabaseProducts } from '@/lib/supabase/catalog';
 import { softDeleteAdminProduct, upsertAdminProduct } from '@/lib/supabase/admin-products';
-import type { Product } from '@/types/catalog';
+import { adminProductSchema } from '@/lib/validations/product';
 
 export async function GET() {
   try {
@@ -19,8 +19,9 @@ export async function POST(request: Request) {
   try {
     const admin = await requireAdminApiSession();
     if (!admin) return unauthorized();
-    const product = await request.json() as Product;
-    const productId = await upsertAdminProduct(product);
+    const product = adminProductSchema.safeParse(await request.json().catch(() => null));
+    if (!product.success) return NextResponse.json({ error: 'Dati prodotto non validi' }, { status: 400 });
+    const productId = await upsertAdminProduct(product.data);
     return NextResponse.json({ productId });
   } catch (error) {
     return NextResponse.json({ error: getErrorMessage(error) }, { status: 500 });
