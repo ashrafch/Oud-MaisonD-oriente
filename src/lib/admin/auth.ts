@@ -11,10 +11,8 @@ export type AdminSession = {
   fullName?: string;
 };
 
-const adminRoles = new Set(['super_admin', 'admin']);
-
 export function isAdminAuthEnabled() {
-  return process.env.ADMIN_AUTH_ENABLED === 'true';
+  return !(process.env.NODE_ENV === 'development' && process.env.ADMIN_AUTH_ENABLED === 'false');
 }
 
 export function getConfiguredAdminRole(email?: string | null): AdminRole | null {
@@ -69,8 +67,7 @@ export async function ensureAdminProfile(userId: string, email: string, fullName
     .eq('id', userId)
     .maybeSingle();
 
-  const existingRole = adminRoles.has(existing?.role) ? existing.role as AdminRole : null;
-  const role = configuredRole ?? existingRole;
+  const role = configuredRole;
   if (!role) return null;
 
   if (configuredRole || !existing) {
