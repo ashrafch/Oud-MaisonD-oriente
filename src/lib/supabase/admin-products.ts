@@ -123,10 +123,14 @@ export async function updateAdminProductStock(productId: string, stock: number, 
 }
 
 export async function uploadProductImage(file: File) {
+  const extensions: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+  const extension = extensions[file.type];
+  if (!extension || file.size === 0 || file.size > 5 * 1024 * 1024) {
+    throw new Error('Usa immagini JPEG, PNG o WebP fino a 5 MB');
+  }
   const supabase = createSupabaseServiceClient() as SupabaseServiceClient;
   if (!supabase) throw new Error('Supabase service client non configurato');
   const bucket = process.env.SUPABASE_STORAGE_BUCKET ?? 'product-images';
-  const extension = file.name.split('.').pop() || 'jpg';
   const path = `products/${crypto.randomUUID()}.${extension}`;
   const bytes = await file.arrayBuffer();
   const { error } = await supabase.storage.from(bucket).upload(path, bytes, {
