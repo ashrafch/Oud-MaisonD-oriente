@@ -4,6 +4,8 @@ Ultimo aggiornamento: 14/07/2026
 
 ## Revisione sicurezza 15/11/2026 — in corso, non pubblicata
 
+- 16/11/2026: build Vercel Preview del commit `70299b8` riuscita (non equivale a test funzionale pagamenti). PR #1 ancora draft. Aggiunta validazione Zod inventario (interi non negativi, UUID e limite note) e coupon (tipo, codice, valore, percentuale massima 100%). Supabase/Vercel risultano installati ma gli strumenti dei provider non sono ancora disponibili in questa sessione; migrazioni remote e configurazione restano da verificare.
+
 - Branch `fix/security-hardening`: auth obbligatoria fuori sviluppo; ruoli admin solo da allowlist server; header di sicurezza; verifica associazione PayPal; rimborsi parziali Stripe esclusi dal ripristino totale; limiti upload; controllo prodotti mancanti/nascosti/eliminati e quantita aggregate; coupon demo rimossi.
 - Next.js aggiornato a 15.5.29, Zod a 4.6.7 e dipendenze transitive aggiornate. Audit npm: zero vulnerabilita; typecheck passato; build locale passata. API prodotti validata con Zod.
 - Test PostgreSQL locale: migrazioni 001–004 applicate; doppio scarico e doppio ripristino stock verificati; ruolo cliente privo di permessi modifica ruolo/esecuzione funzione stock. Test riproducibile in `supabase/tests/stock.sql`.
