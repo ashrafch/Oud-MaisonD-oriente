@@ -1,6 +1,16 @@
 # Project checklist e quadro produzione
 
-Ultimo aggiornamento: 14/07/2026
+Ultimo aggiornamento: 16/11/2026
+
+## Rilascio sicurezza pubblicato 16/11/2026
+
+- PR #1 unita su main, commit `23625de`. Vercel Production READY, deployment `dpl_FLQMFDszFge9fzHfXmR8nutC2Fg7`, sito `https://oud-maison-d-oriente.vercel.app`.
+- Verifica Production superata: home/catalogo/checkout/login HTTP 200 con nuovi header; otto API admin HTTP 401 senza sessione; payload login/checkout non validi HTTP 400; origine checkout esterna HTTP 403. Nessun ordine o pagamento creato.
+- Nessun log runtime error/fatal rilevato nella finestra di controllo del deployment; questo controllo breve non sostituisce monitoraggio continuativo.
+- Migrazioni remote applicate e testate. Tutte le tabelle public hanno RLS, colonna ruolo non aggiornabile da authenticated, funzioni stock/rate limit non invocabili da anon.
+- Limitazioni e attivita residue elencate sotto restano aperte; il rilascio rafforza la sicurezza ma non completa tutta la roadmap. Test Stripe saltato su richiesta esplicita. Nessuna modifica al dominio.
+
+Le sezioni successive conservano lo storico: per lo stato di pubblicazione prevale questa sezione.
 
 ## Verifica remota 16/11/2026 — rilascio in preparazione
 
