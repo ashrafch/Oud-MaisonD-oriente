@@ -4,6 +4,9 @@ Ultimo aggiornamento: 16/11/2026
 
 ## Completamento hardening admin e operazioni — 16/11/2026
 
+- Pubblicato tramite PR #2, commit main `39b3451`: Production READY (`dpl_8bE6mnt3xSGzQ1qkZ8LaM2tonuAS`). Primo workflow monitoring completato con successo: https://github.com/ashrafch/Oud-MaisonD-oriente/actions/runs/43830937039. Smoke manuale Production superato, `/api/health` HTTP 200/ok, nessun error/fatal nella breve finestra log verificata.
+- Successiva osservazione browser: sessione super_admin attiva sul deployment Production precedente `2y9kwfc7a` (commit `0f7980e`), quindi allowlist/login della prima revisione confermati. Navigazione automatizzata non verificabile; upload sull'ultima revisione resta da provare.
+
 - Validazioni categorie, collezioni, contenuti e social tramite Zod; UUID e payload DELETE validati. Body JSON limitati realmente a 128 KiB anche senza Content-Length.
 - Upload raster verifica signature JPEG/PNG/WebP e dimensioni; rifiuta MIME falsificati. Controllo cross-site sulle API admin/logout; profilo admin verificato senza ignorare errori Supabase.
 - Funzione `set_admin_product_stock` applicata su Supabase e testata con rollback: stock, stato published/sold_out e movimento cambiano atomicamente; invocazione negata ad authenticated/anon.
