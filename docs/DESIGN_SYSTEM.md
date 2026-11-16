@@ -9,7 +9,7 @@ Aggiornato automaticamente con il codice sorgente. File di riferimento autoritat
 
 Home editoriale: sfondo borgogna `#431b16`, sfumatura `#873324`, superfici avorio `#f5eee1` e accenti saffron esistenti. Titolo serif con corsivo, spaziature ampie e CTA principali riconoscibili.
 
-`ScentDiscovery` mostra un prodotto disponibile per accordo olfattivo usando le note reali; selezione manuale con pulsanti aria-pressed, prezzo e link alla scheda. Nessun autoplay. `BoutiqueMotion` usa IntersectionObserver e Web Animations per un ingresso unico, senza nascondere contenuti nel markup e disattivato con prefers-reduced-motion.
+`ScentDiscovery` mostra un prodotto disponibile per accordo olfattivo usando le note reali per la selezione server. Vetrina integrata nel fondo borgogna, nicchia avorio ad arco e tre pulsanti arrotondati aria-pressed con area minima 44px. Solo brand, nome, prezzo e link alla scheda: niente contatori, descrizioni o piramide delle note nella hero. Nessun autoplay. `BoutiqueMotion` usa IntersectionObserver e Web Animations per un ingresso unico, senza nascondere contenuti nel markup e disattivato con prefers-reduced-motion.
 
 Schede categoria numerate, immagini prodotto object-contain, azioni con target minimo 44px e focus visibile. Non modificare gli asset brand per adattarli al layout.
 

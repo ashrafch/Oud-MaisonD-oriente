@@ -4,6 +4,7 @@ Ultimo aggiornamento: 16/11/2026
 
 ## Boutique experience — proposta UI/UX in Preview
 
+- Revisione su feedback del titolare: taccuino sostituito da una vetrina essenziale integrata nella hero. Tre pulsanti famiglia, flacone su nicchia avorio, brand/nome/prezzo e link; rimossi contatore, note e descrizioni. Typecheck superato; verifica Preview e visuale della revisione da completare.
 - Branch `feat/boutique-experience`: nuova home editoriale borgogna/avorio/oro, tipografia piu espressiva e vetrina olfattiva interattiva su tre accordi, selezionati dalle note reali del catalogo disponibile.
 - Schede prodotto con immagini contenute, disponibilita esplicita, azioni da almeno 44px, preferiti con stato accessibile e carrello disabilitato per esauriti. Menu Catalogo con apertura click/tastiera ed Escape.
 - Animazioni native di ingresso/cambio fragranza; contenuti visibili senza JavaScript; rispetto prefers-reduced-motion. Nessuna libreria aggiunta, asset public/brand invariati.

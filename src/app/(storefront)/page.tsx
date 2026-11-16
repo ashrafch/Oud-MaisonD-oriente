@@ -21,14 +21,14 @@ export default async function HomePage() {
   const featured = [...products].sort((a, b) => Number(b.tags.includes('bestseller')) - Number(a.tags.includes('bestseller'))).slice(0, 4);
   const available = products.filter(product => product.stock > 0);
   const chapters: ScentChapter[] = [
-    { label: 'Legnoso', subtitle: 'Il carattere profondo dei legni e delle spezie.', match: /oud|sandalo|cedro|legno/i },
-    { label: 'Gourmand', subtitle: 'Accordi golosi, morbidi e avvolgenti.', match: /vaniglia|tonka|caramello|cioccolato/i },
-    { label: 'Floreale', subtitle: 'Petali e sfumature da scoprire sulla pelle.', match: /rosa|gelsomino|fiori|floreale/i }
-  ].flatMap(({ label, subtitle, match }) => {
+    { label: 'Legnoso', match: /oud|sandalo|cedro|legno/i },
+    { label: 'Gourmand', match: /vaniglia|tonka|caramello|cioccolato/i },
+    { label: 'Floreale', match: /rosa|gelsomino|fiori|floreale/i }
+  ].flatMap(({ label, match }) => {
     const product = available.find(entry => match.test([...entry.notes.top, ...entry.notes.heart, ...entry.notes.base].join(' ')));
     if (!product) return [];
-    const { slug, name, brand, image, price, notes } = product;
-    return [{ label, subtitle, product: { slug, name, brand, image, price, notes } }];
+    const { slug, name, brand, image, price } = product;
+    return [{ label, product: { slug, name, brand, image, price } }];
   });
   const brands = [...new Set(products.map(product => product.brand))].slice(0, 6);
 
