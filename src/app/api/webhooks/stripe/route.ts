@@ -27,6 +27,7 @@ export async function POST(request: Request) {
       await updateSupabaseOrder({
         orderId,
         status: 'paid',
+        expectedPaymentStatuses: ['pending', 'failed'],
         paymentStatus: 'paid',
         fulfillmentStatus: 'ready_to_prepare',
         shippingStatus: 'not_ready',
@@ -45,6 +46,7 @@ export async function POST(request: Request) {
       await updateSupabaseOrder({
         orderId,
         status: 'cancelled',
+        expectedPaymentStatuses: ['pending'],
         paymentStatus: 'failed',
         fulfillmentStatus: 'blocked',
         stripeCheckoutSessionId: session.id,
@@ -61,7 +63,8 @@ export async function POST(request: Request) {
         orderId,
         paymentStatus: 'failed',
         fulfillmentStatus: 'blocked',
-        internalNotes: `Pagamento Stripe fallito. PaymentIntent: ${paymentIntent.id}`
+        internalNotes: `Pagamento Stripe fallito. PaymentIntent: ${paymentIntent.id}`,
+        expectedPaymentStatuses: ['pending']
       });
     }
   }

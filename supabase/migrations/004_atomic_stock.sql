@@ -3,7 +3,7 @@ begin;
 create or replace function public.apply_order_stock(p_order_id uuid, p_restore boolean default false)
 returns void
 language plpgsql
-security definer
+security invoker
 set search_path = public, pg_temp
 as $$
 declare

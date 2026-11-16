@@ -208,6 +208,7 @@ export async function updateSupabaseOrder(input: {
   trackingCode?: string;
   stripeCheckoutSessionId?: string;
   internalNotes?: string;
+  expectedPaymentStatuses?: string[];
 }) {
   const supabase = createSupabaseServiceClient() as any;
   if (!supabase) throw new Error('Supabase service client non configurato');
@@ -227,7 +228,9 @@ export async function updateSupabaseOrder(input: {
     update.internal_notes = JSON.stringify({ ...existing, notes: input.internalNotes });
   }
 
-  const { error } = await supabase.from('orders').update(update).eq('id', input.orderId);
+  let query = supabase.from('orders').update(update).eq('id', input.orderId);
+  if (input.expectedPaymentStatuses) query = query.in('payment_status', input.expectedPaymentStatuses);
+  const { error } = await query;
   if (error) throw error;
 }
 

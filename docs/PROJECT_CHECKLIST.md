@@ -2,6 +2,17 @@
 
 Ultimo aggiornamento: 14/07/2026
 
+## Verifica remota 16/11/2026 — rilascio in preparazione
+
+- Accessi Supabase e Vercel verificati per i progetti corretti. Sul database reale tutte le tabelle pubbliche avevano gia RLS attiva; la vulnerabilita confermata era il permesso UPDATE sulla colonna `profiles.role`.
+- Applicate e verificate migrazioni security_baseline, atomic_stock (SECURITY INVOKER), restrict_profile_trigger_execution e api_rate_limits. Utenti/anon non possono modificare ruoli o invocare funzioni privilegiate. Test stock e rate limit eseguiti con dati temporanei in transazioni annullate.
+- Protezione distribuita login/checkout/PayPal tramite contatori DB; controllo origine e dimensione dichiarata richieste; limiti input checkout. Preview rifiuta checkout Stripe con chiavi live.
+- Rimborsi admin richiedono pagamento Stripe pagato verificabile e chiave di idempotenza. Eventi Stripe ripetuti/falliti/scaduti non riportano un ordine gia pagato a stati precedenti.
+- Build locale e typecheck passati, audit dipendenze zero vulnerabilita. Prima Preview: catalogo raggiungibile; verifica API attraverso protezione Vercel ha incontrato errore autenticazione del connettore e richiede controllo finale.
+- Test Stripe end-to-end saltato su esplicita richiesta del titolare. Nessun pagamento/rimborso reale eseguito. PayPal sandbox non configurato.
+- Avviso Supabase residuo: leaked password protection disabilitata. Tabelle con RLS senza policy sono intenzionalmente accessibili solo dal server service-role. Dominio e mittente email definitivo ancora sospesi.
+- Non dichiarare il prodotto interamente finito: restano test login admin autenticato, upload immagine, backup/restore, monitoraggio, validazioni residue admin e prove pagamenti.
+
 ## Revisione sicurezza 15/11/2026 — in corso, non pubblicata
 
 - 16/11/2026: build Vercel Preview del commit `70299b8` riuscita (non equivale a test funzionale pagamenti). PR #1 ancora draft. Aggiunta validazione Zod inventario (interi non negativi, UUID e limite note) e coupon (tipo, codice, valore, percentuale massima 100%). Supabase/Vercel risultano installati ma gli strumenti dei provider non sono ancora disponibili in questa sessione; migrazioni remote e configurazione restano da verificare.

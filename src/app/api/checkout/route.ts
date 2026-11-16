@@ -1,3 +1,4 @@
+import { guardPublicRequest } from '@/lib/security/request-guard';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createCheckoutSession } from '@/lib/stripe/checkout';
@@ -7,17 +8,17 @@ import { createSupabaseOrder } from '@/lib/supabase/orders';
 const checkoutSchema = z.object({
   mode: z.enum(['manual_order', 'stripe_checkout']).optional(),
   items: z.array(z.object({
-    productId: z.string().min(1),
-    quantity: z.number().int().positive()
-  })).min(1),
+    productId: z.string().min(1).max(200),
+    quantity: z.number().int().positive().max(100)
+  })).min(1).max(50),
   customer: z.object({
-    fullName: z.string().min(2),
+    fullName: z.string().min(2).max(200),
     email: z.string().email(),
-    phone: z.string().min(5),
-    address: z.string().min(3),
-    city: z.string().min(2),
-    zip: z.string().min(3),
-    notes: z.string().optional()
+    phone: z.string().min(5).max(40),
+    address: z.string().min(3).max(300),
+    city: z.string().min(2).max(150),
+    zip: z.string().min(3).max(20),
+    notes: z.string().max(2000).optional()
   }),
   couponCode: z.string().optional(),
   subtotal: z.number().nonnegative(),
@@ -27,6 +28,8 @@ const checkoutSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const blocked = await guardPublicRequest(request, 'checkout', 20);
+  if (blocked) return blocked;
   const body = checkoutSchema.safeParse(await request.json().catch(() => null));
   if (!body.success) return NextResponse.json({ error: 'Dati checkout non validi' }, { status: 400 });
 

@@ -1,9 +1,12 @@
+import { guardPublicRequest } from '@/lib/security/request-guard';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { ensureAdminProfile } from '@/lib/admin/auth';
 import { createSupabaseCookieServerClient } from '@/lib/supabase/ssr';
 
 export async function POST(request: Request) {
+  const blocked = await guardPublicRequest(request, 'login', 15);
+  if (blocked) return blocked;
   const supabase = await createSupabaseCookieServerClient();
   if (!supabase) {
     return NextResponse.json({ error: 'Supabase Auth non configurato' }, { status: 500 });

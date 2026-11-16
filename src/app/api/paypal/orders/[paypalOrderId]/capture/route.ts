@@ -1,3 +1,4 @@
+import { guardPublicRequest } from '@/lib/security/request-guard';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { capturePayPalCheckoutOrder } from '@/lib/paypal/checkout';
@@ -8,6 +9,8 @@ const captureSchema = z.object({
 });
 
 export async function POST(request: Request, { params }: { params: Promise<{ paypalOrderId: string }> }) {
+  const blocked = await guardPublicRequest(request, 'paypal-capture', 30);
+  if (blocked) return blocked;
   if (!isPayPalConfigured()) {
     return NextResponse.json({ error: 'PayPal non configurato' }, { status: 501 });
   }

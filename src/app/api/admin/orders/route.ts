@@ -132,12 +132,20 @@ export async function POST(request: Request) {
     if (order.payment_status === 'refunded') {
       return NextResponse.json({ error: 'Ordine già rimborsato' }, { status: 409 });
     }
+    if (order.payment_status !== 'paid') {
+      return NextResponse.json({ error: 'Solo un ordine pagato puo essere rimborsato' }, { status: 409 });
+    }
+    if (!stripe || !order.stripe_checkout_session_id) {
+      return NextResponse.json({ error: 'Rimborso online disponibile solo per pagamenti Stripe verificati' }, { status: 409 });
+    }
 
     if (stripe && order.stripe_checkout_session_id) {
       const session = await stripe.checkout.sessions.retrieve(order.stripe_checkout_session_id as string);
       const paymentIntentId = typeof session.payment_intent === 'string' ? session.payment_intent : null;
       if (paymentIntentId) {
-        await stripe.refunds.create({ payment_intent: paymentIntentId });
+        await stripe.refunds.create({ payment_intent: paymentIntentId }, { idempotencyKey: `refund:${orderId}` });
+      } else {
+        return NextResponse.json({ error: 'Pagamento Stripe non trovato' }, { status: 409 });
       }
     }
 
