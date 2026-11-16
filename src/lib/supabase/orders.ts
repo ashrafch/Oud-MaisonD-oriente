@@ -3,6 +3,7 @@ import { sendOrderEmails } from '@/lib/email/order-email';
 import { createSupabaseServiceClient } from '@/lib/supabase/server';
 import { getSupabaseProducts } from './catalog';
 import { getSupabaseCoupons } from './coupons';
+import { checkStockAvailability } from './fulfillment';
 
 export type AdminOrder = Omit<Order, 'items'> & {
   customerId?: string;
@@ -74,6 +75,9 @@ export async function createSupabaseOrder(input: {
 }) {
   const supabase = createSupabaseServiceClient() as any;
   if (!supabase) throw new Error('Supabase service client non configurato');
+
+  const unavailable = await checkStockAvailability(input.items);
+  if (unavailable) throw new Error(`Disponibilita insufficiente: ${unavailable.join(', ')}`);
 
   const email = input.customer.email.trim().toLowerCase();
   const { data: customer, error: customerError } = await supabase
@@ -204,6 +208,7 @@ export async function updateSupabaseOrder(input: {
   trackingCode?: string;
   stripeCheckoutSessionId?: string;
   internalNotes?: string;
+  expectedPaymentStatuses?: string[];
 }) {
   const supabase = createSupabaseServiceClient() as any;
   if (!supabase) throw new Error('Supabase service client non configurato');
@@ -223,7 +228,9 @@ export async function updateSupabaseOrder(input: {
     update.internal_notes = JSON.stringify({ ...existing, notes: input.internalNotes });
   }
 
-  const { error } = await supabase.from('orders').update(update).eq('id', input.orderId);
+  let query = supabase.from('orders').update(update).eq('id', input.orderId);
+  if (input.expectedPaymentStatuses) query = query.in('payment_status', input.expectedPaymentStatuses);
+  const { error } = await query;
   if (error) throw error;
 }
 

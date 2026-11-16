@@ -15,6 +15,9 @@ type StripeCheckoutInput = {
 };
 
 export async function createCheckoutSession(input: StripeCheckoutInput) {
+  if (process.env.VERCEL_ENV === 'preview' && !process.env.STRIPE_SECRET_KEY?.startsWith('sk_test_')) {
+    throw new Error('Preview richiede chiavi Stripe test dedicate');
+  }
   if (!stripe) return { url: null };
   const siteUrl = input.siteUrl ?? process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 

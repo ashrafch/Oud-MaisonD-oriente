@@ -1,17 +1,24 @@
+import { guardPublicRequest } from '@/lib/security/request-guard';
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { ensureAdminProfile } from '@/lib/admin/auth';
 import { createSupabaseCookieServerClient } from '@/lib/supabase/ssr';
 
 export async function POST(request: Request) {
+  const blocked = await guardPublicRequest(request, 'login', 15);
+  if (blocked) return blocked;
   const supabase = await createSupabaseCookieServerClient();
   if (!supabase) {
     return NextResponse.json({ error: 'Supabase Auth non configurato' }, { status: 500 });
   }
 
-  const { email, password } = await request.json() as { email?: string; password?: string };
-  if (!email || !password) {
+  const parsed = z.object({ email: z.string().email().max(254), password: z.string().min(1).max(1024) })
+    .safeParse(await request.json().catch(() => null));
+  if (!parsed.success) {
     return NextResponse.json({ error: 'Email e password obbligatorie' }, { status: 400 });
   }
+
+  const { email, password } = parsed.data;
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error || !data.user?.email) {

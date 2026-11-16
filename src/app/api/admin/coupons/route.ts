@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { requireAdminApiSession } from '@/lib/admin/auth';
-import { deleteSupabaseCoupon, getSupabaseCoupons, upsertSupabaseCoupon, type Coupon } from '@/lib/supabase/coupons';
+import { deleteSupabaseCoupon, getSupabaseCoupons, upsertSupabaseCoupon } from '@/lib/supabase/coupons';
 
 export async function GET() {
   try {
@@ -17,11 +18,17 @@ export async function POST(request: Request) {
   try {
     const admin = await requireAdminApiSession();
     if (!admin) return unauthorized();
-    const coupon = await request.json() as Coupon;
-    if (!coupon.code || coupon.value <= 0) {
+    const coupon = z.object({
+      code: z.string().trim().min(1).max(100).regex(/^[a-zA-Z0-9_-]+$/),
+      type: z.enum(['percent', 'fixed']),
+      value: z.number().positive().max(100000),
+      active: z.boolean()
+    }).refine(value => value.type !== 'percent' || value.value <= 100)
+      .safeParse(await request.json().catch(() => null));
+    if (!coupon.success) {
       return NextResponse.json({ error: 'Coupon non valido' }, { status: 400 });
     }
-    await upsertSupabaseCoupon(coupon);
+    await upsertSupabaseCoupon(coupon.data);
     return NextResponse.json({ ok: true });
   } catch (error) {
     return NextResponse.json({ error: getErrorMessage(error) }, { status: 500 });

@@ -21,11 +21,13 @@ export async function POST(request: Request) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
+    if (session.payment_status !== 'paid') return NextResponse.json({ received: true });
     const orderId = session.metadata?.orderId;
     if (orderId) {
       await updateSupabaseOrder({
         orderId,
         status: 'paid',
+        expectedPaymentStatuses: ['pending', 'failed'],
         paymentStatus: 'paid',
         fulfillmentStatus: 'ready_to_prepare',
         shippingStatus: 'not_ready',
@@ -44,6 +46,7 @@ export async function POST(request: Request) {
       await updateSupabaseOrder({
         orderId,
         status: 'cancelled',
+        expectedPaymentStatuses: ['pending'],
         paymentStatus: 'failed',
         fulfillmentStatus: 'blocked',
         stripeCheckoutSessionId: session.id,
@@ -60,13 +63,17 @@ export async function POST(request: Request) {
         orderId,
         paymentStatus: 'failed',
         fulfillmentStatus: 'blocked',
-        internalNotes: `Pagamento Stripe fallito. PaymentIntent: ${paymentIntent.id}`
+        internalNotes: `Pagamento Stripe fallito. PaymentIntent: ${paymentIntent.id}`,
+        expectedPaymentStatuses: ['pending']
       });
     }
   }
 
   if (event.type === 'charge.refunded') {
     const charge = event.data.object as Stripe.Charge;
+    if (!charge.refunded || charge.amount_refunded !== charge.amount) {
+      return NextResponse.json({ received: true });
+    }
     const paymentIntentId = typeof charge.payment_intent === 'string' ? charge.payment_intent : null;
     if (paymentIntentId && stripe) {
       try {
@@ -85,6 +92,7 @@ export async function POST(request: Request) {
         }
       } catch (err) {
         console.error('charge.refunded handling failed', err);
+        return NextResponse.json({ error: 'Refund processing failed' }, { status: 500 });
       }
     }
   }
