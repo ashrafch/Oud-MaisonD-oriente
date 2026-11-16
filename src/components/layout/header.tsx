@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -22,6 +22,7 @@ const findCat = (slug: string) => categories.find((category) => category.slug ==
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [catalogOpen, setCatalogOpen] = useState(false);
+  const catalogTrigger = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -43,8 +44,8 @@ export function Header() {
         className={cn(
           'fixed inset-x-0 top-0 z-50 border-b transition-all duration-300',
           isScrolled
-            ? 'border-cream/18 bg-cream/64 shadow-[0_18px_45px_rgba(23,20,18,0.10)] backdrop-blur-xl'
-            : 'border-cream/18 bg-cream/82 backdrop-blur-md'
+            ? 'border-ink/10 bg-cream/95 shadow-[0_8px_30px_rgba(23,20,18,0.06)] backdrop-blur-md'
+            : 'border-ink/10 bg-cream'
         )}
       >
         <div
@@ -79,16 +80,19 @@ export function Header() {
           <nav className="hidden items-center gap-5 text-[13px] font-semibold uppercase tracking-wide text-ink/68 xl:flex">
             <NavLink href="/" active={pathname === '/'}>Maison</NavLink>
 
-            <div className="relative" onMouseEnter={() => setCatalogOpen(true)} onMouseLeave={() => setCatalogOpen(false)}>
-              <Link
-                href="/products"
+            <div className="relative" onMouseEnter={() => setCatalogOpen(true)} onMouseLeave={event => { if (!event.currentTarget.contains(document.activeElement)) setCatalogOpen(false); }} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setCatalogOpen(false); }} onKeyDown={event => { if (event.key === 'Escape') { setCatalogOpen(false); catalogTrigger.current?.focus(); } }}>
+              <button
+                ref={catalogTrigger}
+                type="button"
+                onClick={() => setCatalogOpen(open => !open)}
+                aria-controls="boutique-catalog-menu"
                 aria-expanded={catalogOpen}
-                className={cn('nav-underline relative flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 transition hover:text-oud', catalogActive ? activeCls : '')}
+                className={cn('focus-ring nav-underline relative flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 transition hover:text-oud', catalogActive ? activeCls : '')}
               >
                 Catalogo <ChevronDown size={14} className={cn('transition-transform duration-200', catalogOpen ? 'rotate-180' : '')} />
-              </Link>
+              </button>
               {catalogOpen ? (
-                <div className="absolute left-1/2 top-full z-50 w-[560px] -translate-x-1/2 pt-3">
+                <div id="boutique-catalog-menu" className="absolute left-1/2 top-full z-50 w-[560px] -translate-x-1/2 pt-3">
                   <div className="grid grid-cols-[1fr_1fr_1.15fr] gap-5 rounded-2xl border border-ink/12 bg-cream p-6 shadow-[0_30px_70px_rgba(23,20,18,0.22)]">
                     {catalogGroups.map((group) => (
                       <div key={group.title}>

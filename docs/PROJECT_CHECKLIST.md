@@ -2,6 +2,14 @@
 
 Ultimo aggiornamento: 16/11/2026
 
+## Boutique experience — proposta UI/UX in Preview
+
+- Branch `feat/boutique-experience`: nuova home editoriale borgogna/avorio/oro, tipografia piu espressiva e vetrina olfattiva interattiva su tre accordi, selezionati dalle note reali del catalogo disponibile.
+- Schede prodotto con immagini contenute, disponibilita esplicita, azioni da almeno 44px, preferiti con stato accessibile e carrello disabilitato per esauriti. Menu Catalogo con apertura click/tastiera ed Escape.
+- Animazioni native di ingresso/cambio fragranza; contenuti visibili senza JavaScript; rispetto prefers-reduced-motion. Nessuna libreria aggiunta, asset public/brand invariati.
+- Rimossi dalla home testo da prototipo e testimonianza demo presentata come cliente verificato. Quiz, bundle, carrello e navigazione prodotti conservati.
+- Typecheck e build locale superati; verifica HTTP locale home 200 con nuovi contenuti. Verifica visuale/interazioni desktop-mobile ancora da completare: il browser condiviso e in uso e i tentativi di navigazione sono stati interrotti. Nessun merge Production fino alla validazione della proposta.
+
 ## Completamento hardening admin e operazioni — 16/11/2026
 
 - Pubblicato tramite PR #2, commit main `39b3451`: Production READY (`dpl_8bE6mnt3xSGzQ1qkZ8LaM2tonuAS`). Primo workflow monitoring completato con successo: https://github.com/ashrafch/Oud-MaisonD-oriente/actions/runs/43830937039. Smoke manuale Production superato, `/api/health` HTTP 200/ok, nessun error/fatal nella breve finestra log verificata.

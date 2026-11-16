@@ -1,127 +1,99 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { ArrowDown, ArrowRight, ArrowUpRight, MessageCircle, ShieldCheck, Sparkles, Truck } from 'lucide-react';
 import { BundleBuilder } from '@/components/storefront/bundle-builder';
 import { FragranceFinderQuiz } from '@/components/storefront/fragrance-finder-quiz';
 import { RecentlyViewedProducts } from '@/components/storefront/recently-viewed';
+import { BoutiqueMotion } from '@/components/storefront/boutique-motion';
+import { ScentDiscovery, type ScentChapter } from '@/components/storefront/scent-discovery';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/product/product-card';
 import { getSupabaseCategories, getSupabaseProducts } from '@/lib/supabase/catalog';
-import { ShieldCheck, Sparkles, Truck, MessageCircle } from 'lucide-react';
 
 const benefits = [
-  { icon: Truck, label: 'Spedizione rapida' },
-  { icon: ShieldCheck, label: 'Pagamento sicuro' },
-  { icon: MessageCircle, label: 'Assistenza WhatsApp' },
-  { icon: Sparkles, label: 'Profumi selezionati' }
+  { icon: Truck, label: 'A casa o in boutique', detail: 'Spedizione e ritiro a Bologna' },
+  { icon: ShieldCheck, label: 'Acquisti con serenità', detail: 'Pagamento protetto con Stripe' },
+  { icon: MessageCircle, label: 'Un consiglio personale', detail: 'Ti accompagniamo nella scelta' }
 ];
 
 export default async function HomePage() {
-  const [categories, products] = await Promise.all([
-    getSupabaseCategories(),
-    getSupabaseProducts()
-  ]);
-  const featuredProducts = products
-    .filter((product) => product.tags.includes('bestseller') || product.tags.includes('nuovo') || product.tags.includes('gift'))
-    .slice(0, 3);
-  const daily = products.find((product) => product.tags.includes('bestseller')) ?? products[0];
+  const [categories, products] = await Promise.all([getSupabaseCategories(), getSupabaseProducts()]);
+  const featured = [...products].sort((a, b) => Number(b.tags.includes('bestseller')) - Number(a.tags.includes('bestseller'))).slice(0, 4);
+  const available = products.filter(product => product.stock > 0);
+  const chapters: ScentChapter[] = [
+    { label: 'Legnoso', subtitle: 'Il carattere profondo dei legni e delle spezie.', match: /oud|sandalo|cedro|legno/i },
+    { label: 'Gourmand', subtitle: 'Accordi golosi, morbidi e avvolgenti.', match: /vaniglia|tonka|caramello|cioccolato/i },
+    { label: 'Floreale', subtitle: 'Petali e sfumature da scoprire sulla pelle.', match: /rosa|gelsomino|fiori|floreale/i }
+  ].flatMap(({ label, subtitle, match }) => {
+    const product = available.find(entry => match.test([...entry.notes.top, ...entry.notes.heart, ...entry.notes.base].join(' ')));
+    if (!product) return [];
+    const { slug, name, brand, image, price, notes } = product;
+    return [{ label, subtitle, product: { slug, name, brand, image, price, notes } }];
+  });
+  const brands = [...new Set(products.map(product => product.brand))].slice(0, 6);
 
   return (
-    <>
-      <section className="bg-oud text-cream">
-        <div className="container grid min-h-[620px] items-center gap-8 py-12 sm:py-14 lg:min-h-[680px] lg:grid-cols-[1fr_0.82fr] lg:gap-12">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-saffron sm:text-sm sm:tracking-[0.22em]">Boutique di profumi arabi</p>
-            <h1 className="mt-5 max-w-3xl font-serif text-5xl leading-[0.98] sm:text-6xl lg:text-7xl">OUDE Maison D&apos;Oriente</h1>
-            <p className="mt-6 max-w-xl text-base leading-7 text-cream/78 sm:text-lg sm:leading-8">
-              Oud, musk, attar e rituali orientali selezionati per chi cerca una scia elegante, calda e memorabile.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button href="/products" className="w-full bg-saffron text-ink hover:bg-cream sm:w-auto">Esplora catalogo</Button>
-              <Button href="/categories/set-regalo" variant="secondary" className="w-full border-cream/25 bg-cream/10 text-cream hover:bg-cream/18 sm:w-auto">Idee regalo</Button>
+    <BoutiqueMotion>
+      <section className="boutique-hero relative overflow-hidden text-cream" aria-labelledby="boutique-heading">
+        <div className="hero-contours" aria-hidden="true" />
+        <div className="container relative grid items-center gap-12 py-12 sm:py-16 lg:grid-cols-[1.05fr_1fr] lg:gap-20 lg:py-20">
+          <div className="hero-copy">
+            <div className="mb-8 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-saffron sm:text-xs">
+              <span className="h-px w-9 bg-saffron/60" aria-hidden="true" /> Profumeria araba · Bologna
+            </div>
+            <h1 id="boutique-heading" className="max-w-xl font-serif text-[3.6rem] leading-[0.95] tracking-[-0.025em] sm:text-7xl lg:text-[5.5rem]">Ci sono scie<br />che <em className="font-normal text-saffron">parlano</em><br />di te.</h1>
+            <p className="mt-7 max-w-md text-base leading-7 text-cream/75">Oud preziosi, dolcezze inattese, incontri sulla pelle. Entra nel mondo OUDÉ e trova la fragranza che senti tua.</p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Button href="/products" className="gap-7 bg-saffron px-6 text-ink hover:bg-cream">Esplora la collezione <ArrowUpRight size={18} aria-hidden="true" /></Button>
+              <Link href="#scopri-la-tua-scia" className="focus-ring inline-flex min-h-11 items-center justify-center gap-3 px-4 text-sm font-medium text-cream/85 transition hover:text-saffron">Trova la tua scia <ArrowDown size={16} aria-hidden="true" /></Link>
+            </div>
+            <div className="mt-12 flex items-center gap-3 border-t border-cream/15 pt-6 text-xs text-cream/60">
+              <Sparkles size={16} className="text-saffron" aria-hidden="true" /> Una selezione da esplorare, un profumo da riconoscere.
             </div>
           </div>
-          <div className="soft-shine relative min-h-[320px] overflow-hidden rounded border border-cream/15 bg-cream shadow-soft sm:min-h-[440px]">
-            <Image src="/brand/botanical-identity.jpg" alt="Identita OUDE Maison D'Oriente" fill priority className="object-cover" />
+          {chapters.length ? <ScentDiscovery chapters={chapters} /> : <div className="relative aspect-square overflow-hidden rounded-t-[45%] bg-cream"><Image src="/brand/botanical-identity.jpg" alt="Il mondo botanico di OUDÉ" fill priority className="object-cover" /></div>}
+        </div>
+        <div className="relative border-t border-cream/10">
+          <div className="container flex flex-wrap items-center justify-center gap-x-8 gap-y-3 py-5 text-[10px] uppercase tracking-[0.22em] text-cream/45 sm:justify-between">
+            <span className="text-saffron/80">I marchi della nostra selezione</span>
+            {brands.map(brand => <span key={brand}>{brand}</span>)}
           </div>
         </div>
       </section>
 
-      <section className="container py-10 sm:py-12">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {benefits.map(({ icon: Icon, label }) => (
-            <div key={label} className="premium-card flex min-h-20 items-center gap-3 rounded border border-saffron/20 bg-[linear-gradient(135deg,#fffaf2_0%,#f4efe6_100%)] p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-saffron/50">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded bg-oud/9 text-oud">
-                <Icon size={21} />
-              </span>
-              <span className="text-sm font-semibold text-ink/82">{label}</span>
-            </div>
-          ))}
+      <section className="container grid gap-5 py-8 sm:grid-cols-3 sm:py-10" aria-label="La tua esperienza in boutique">
+        {benefits.map(({ icon: Icon, label, detail }) => <div key={label} className="flex items-center gap-4 py-2" data-reveal><Icon size={24} strokeWidth={1.3} className="shrink-0 text-oud" aria-hidden="true" /><div><p className="text-sm font-medium">{label}</p><p className="mt-1 text-xs text-ink/55">{detail}</p></div></div>)}
+      </section>
+
+      <section id="selezione" className="container scroll-mt-28 py-10 sm:py-14">
+        <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end" data-reveal>
+          <div><p className="boutique-eyebrow">La selezione OUDÉ</p><h2 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">Piccoli incontri.<br className="sm:hidden" /> Grandi affinità.</h2></div>
+          <Link href="/products" className="boutique-text-link">Tutte le fragranze <ArrowRight size={17} aria-hidden="true" /></Link>
+        </div>
+        <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{featured.map(product => <div key={product.id} data-reveal><ProductCard product={product} /></div>)}</div>
+      </section>
+
+      <section className="container py-12 sm:py-16" aria-labelledby="universi-heading">
+        <div className="mb-8 flex items-end justify-between gap-5" data-reveal><div><p className="boutique-eyebrow">Segui la tua curiosità</p><h2 id="universi-heading" className="mt-3 font-serif text-4xl sm:text-5xl">A ogni anima, il suo universo.</h2></div><span className="hidden font-serif text-5xl italic text-oud/20 sm:block" aria-hidden="true">O.</span></div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {categories.map((category, index) => <Link key={category.slug} href={`/categories/${category.slug}`} className={`universe-card focus-ring group ${index === 0 ? 'universe-card-featured' : ''}`} data-reveal><div className="flex items-start justify-between"><span className="text-[10px] tracking-widest opacity-45">0{index + 1}</span><ArrowUpRight size={20} strokeWidth={1.25} className="transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" aria-hidden="true" /></div><div className="mt-8"><h3 className="font-serif text-3xl">{category.name}</h3><p className="mt-2 max-w-xs text-sm leading-6 opacity-65">{category.description}</p></div><span className="mt-6 block text-[10px] font-semibold uppercase tracking-[0.18em]">Esplora l&apos;universo</span></Link>)}
         </div>
       </section>
 
-      <section className="container py-9 sm:py-11">
-        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-widest text-oud">In evidenza</p>
-            <h2 className="mt-2 font-serif text-3xl sm:text-4xl">Fragranze da scoprire</h2>
-          </div>
-          <Button href="/products" variant="secondary">Vedi tutto</Button>
-        </div>
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredProducts.map((product) => <ProductCard key={product.id} product={product} />)}
+      <section className="my-6 overflow-hidden bg-mist" aria-labelledby="rituale-heading">
+        <div className="container grid gap-8 py-14 sm:py-20 lg:grid-cols-[.9fr_1fr] lg:gap-20">
+          <div className="relative min-h-80 overflow-hidden rounded-t-[160px] border border-ink/10 sm:min-h-[440px]" data-reveal><Image src="/brand/botanical-identity.jpg" alt="Botanica e dettagli dell'identità OUDÉ Maison D'Oriente" fill sizes="(min-width:1024px) 40vw, 100vw" className="object-cover" /></div>
+          <div className="self-center" data-reveal><p className="boutique-eyebrow">La cultura del profumo</p><h2 id="rituale-heading" className="mt-4 max-w-lg font-serif text-4xl leading-[1.05] sm:text-6xl">Prima di una fragranza,<br /><em className="font-normal text-oud">un rituale.</em></h2><p className="mt-6 max-w-lg text-base leading-8 text-ink/65">Una goccia, il calore della pelle, il tempo di lasciarla cambiare. La profumeria araba invita a rallentare: ad ascoltare le note, a sovrapporle, a trovare il proprio equilibrio.</p><p className="mt-4 max-w-lg leading-7 text-ink/65">Da OUDÉ puoi esplorare questo mondo al tuo ritmo, online o nella nostra boutique a Bologna.</p><Link href="/about" className="boutique-text-link mt-8">La nostra Maison <ArrowRight size={17} aria-hidden="true" /></Link></div>
         </div>
       </section>
 
-      <section className="bg-mist py-12 sm:py-14">
-        <div className="container grid gap-8 lg:grid-cols-[0.8fr_1fr]">
-          <Link href={`/products/${daily.slug}`} className="soft-shine group relative min-h-[260px] overflow-hidden rounded border border-ink/10 bg-white sm:min-h-80">
-            <Image src={daily.image} alt={daily.name} fill className="object-cover transition duration-500 group-hover:scale-105" sizes="(min-width: 1024px) 40vw, 100vw" unoptimized={daily.image.startsWith('data:')} />
-            <span className="absolute left-4 top-4 rounded bg-cream/95 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-oud shadow-sm">{daily.brand}</span>
-          </Link>
-          <div className="self-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-oud">Scelta consigliata</p>
-            <h2 className="mt-2 font-serif text-4xl sm:text-5xl">{daily.name}</h2>
-            <p className="mt-4 max-w-xl leading-7 text-ink/68">
-              {daily.shortDescription} Note di testa {daily.notes.top.join(', ')}, cuore {daily.notes.heart.join(', ')} e fondo {daily.notes.base.join(', ')}.
-            </p>
-            <Button href={`/products/${daily.slug}`} className="mt-7">Scopri il profumo</Button>
-          </div>
-        </div>
-      </section>
-
-      <section className="container py-12 sm:py-14">
-        <p className="text-sm font-semibold uppercase tracking-widest text-oud">Categorie</p>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => (
-            <a key={category.slug} href={`/categories/${category.slug}`} className="premium-card group rounded border border-ink/10 bg-white p-5 transition duration-300 hover:-translate-y-1 hover:border-oud/40 hover:shadow-soft sm:p-6">
-              <h3 className="font-serif text-2xl sm:text-3xl">{category.name}</h3>
-              <p className="mt-2 text-sm leading-6 text-ink/62">{category.description}</p>
-              <span className="mt-5 inline-flex text-xs font-semibold uppercase tracking-widest text-oud opacity-0 transition duration-300 group-hover:opacity-100">Esplora categoria</span>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <FragranceFinderQuiz products={products} />
-      <BundleBuilder products={products} />
+      <div id="scopri-la-tua-scia" className="scroll-mt-24" data-reveal><FragranceFinderQuiz products={products} /></div>
+      <div data-reveal><BundleBuilder products={products} /></div>
       <RecentlyViewedProducts />
 
-      <section className="bg-white py-12 sm:py-14">
-        <div className="container grid gap-10 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <p className="text-sm font-semibold uppercase tracking-widest text-oud">Storytelling</p>
-            <h2 className="mt-2 font-serif text-4xl sm:text-5xl">Un rituale prima ancora di un prodotto</h2>
-            <p className="mt-5 max-w-3xl text-base leading-7 text-ink/68 sm:text-lg sm:leading-8">
-              Il mondo dei profumi arabi vive di materie prime intense, gesti lenti e composizioni persistenti. Questa base ecommerce e pronta per raccontare ogni fragranza con note, durata, occasioni d&apos;uso, gift box e contenuti social.
-            </p>
-          </div>
-          <div className="rounded border border-ink/10 bg-cream p-6">
-            <p className="font-serif text-3xl">Recensioni</p>
-            <p className="mt-4 leading-7 text-ink/68">&quot;Fragranze persistenti, packaging curato e consiglio WhatsApp preciso. Sembra una boutique vera anche online.&quot;</p>
-            <p className="mt-4 text-sm font-semibold">Cliente verificato</p>
-          </div>
-        </div>
+      <section className="container py-12 sm:py-20" data-reveal>
+        <div className="boutique-concierge flex flex-col gap-8 px-6 py-10 sm:px-12 lg:flex-row lg:items-center lg:justify-between"><div><p className="boutique-eyebrow">Il piacere di scegliere insieme</p><h2 className="mt-3 font-serif text-4xl sm:text-5xl">Un profumo si sceglie.<br />Una scia si riconosce.</h2><p className="mt-4 max-w-xl text-sm leading-7 text-ink/60">Hai una nota del cuore o cerchi un regalo? Raccontaci cosa ti piace: ti aiutiamo a orientarti nella selezione.</p></div><Button href="/contact" variant="secondary" className="shrink-0 gap-6 border-oud/20 bg-transparent">Parliamone <MessageCircle size={18} aria-hidden="true" /></Button></div>
       </section>
-    </>
+    </BoutiqueMotion>
   );
 }
