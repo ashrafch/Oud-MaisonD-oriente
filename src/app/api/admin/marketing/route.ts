@@ -1,6 +1,9 @@
+import { z } from 'zod';
+import { readJsonBody } from '@/lib/security/json-body';
+import { marketingSchema } from '@/lib/validations/admin';
 import { NextResponse } from 'next/server';
 import { requireAdminApiSession } from '@/lib/admin/auth';
-import { deleteMarketingPost, getMarketingPosts, upsertMarketingPost, type MarketingPost } from '@/lib/supabase/marketing';
+import { deleteMarketingPost, getMarketingPosts, upsertMarketingPost } from '@/lib/supabase/marketing';
 
 export async function GET() {
   const admin = await requireAdminApiSession();
@@ -12,7 +15,9 @@ export async function POST(request: Request) {
   try {
     const admin = await requireAdminApiSession();
     if (!admin) return unauthorized();
-    const post = await request.json() as MarketingPost;
+    const parsed = marketingSchema.safeParse(await readJsonBody(request).catch(() => null));
+    if (!parsed.success) return NextResponse.json({ error: 'Dati non validi' }, { status: 400 });
+    const post = parsed.data;
     if (!post.channel || !post.caption) return NextResponse.json({ error: 'Canale e caption obbligatori' }, { status: 400 });
     await upsertMarketingPost(post);
     return NextResponse.json({ ok: true });
@@ -25,8 +30,9 @@ export async function DELETE(request: Request) {
   try {
     const admin = await requireAdminApiSession();
     if (!admin) return unauthorized();
-    const { postId } = await request.json() as { postId?: string };
-    if (!postId) return NextResponse.json({ error: 'Post mancante' }, { status: 400 });
+    const parsed = z.object({ postId: z.string().uuid() }).safeParse(await readJsonBody(request));
+    if (!parsed.success) return NextResponse.json({ error: 'Dati non validi' }, { status: 400 });
+    const { postId } = parsed.data;
     await deleteMarketingPost(postId);
     return NextResponse.json({ ok: true });
   } catch (error) {

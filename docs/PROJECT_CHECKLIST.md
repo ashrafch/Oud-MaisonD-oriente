@@ -2,6 +2,16 @@
 
 Ultimo aggiornamento: 16/11/2026
 
+## Completamento hardening admin e operazioni — 16/11/2026
+
+- Validazioni categorie, collezioni, contenuti e social tramite Zod; UUID e payload DELETE validati. Body JSON limitati realmente a 128 KiB anche senza Content-Length.
+- Upload raster verifica signature JPEG/PNG/WebP e dimensioni; rifiuta MIME falsificati. Controllo cross-site sulle API admin/logout; profilo admin verificato senza ignorare errori Supabase.
+- Funzione `set_admin_product_stock` applicata su Supabase e testata con rollback: stock, stato published/sold_out e movimento cambiano atomicamente; invocazione negata ad authenticated/anon.
+- Monitoraggio GitHub Actions ogni 30 minuti e su push main, con controllo storefront, health DB e otto API admin. Endpoint `/api/health` senza dettagli sensibili; runbook in `docs/OPERATIONS.md`.
+- Test unitari: body chunked eccessivo, validazioni admin, MIME immagine falsificato. Typecheck/build/audit eseguiti nel rilascio.
+- Sessione super_admin osservata nel browser sul vecchio deployment `6a34emnmi`; NON equivale a login/upload verificati sul dominio Production attuale. Input browser interrotto da errore geometria; nessun prodotto o ordine modificato.
+- Blocchi esterni confermati: Supabase Free non offre leaked password protection (richiede Pro). CLI backup non autenticata, nessuna destinazione privata di backup configurata; procedura documentata ma esportazione completa e restore NON eseguiti. Non considerare backup completato o Pro attivato.
+
 ## Rilascio sicurezza pubblicato 16/11/2026
 
 - PR #1 unita su main, commit `23625de`. Vercel Production READY, deployment `dpl_FLQMFDszFge9fzHfXmR8nutC2Fg7`, sito `https://oud-maison-d-oriente.vercel.app`.

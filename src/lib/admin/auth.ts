@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createSupabaseCookieServerClient } from '@/lib/supabase/ssr';
 import { createSupabaseServiceClient } from '@/lib/supabase/server';
+import { headers } from 'next/headers';
 
 export type AdminRole = 'super_admin' | 'admin';
 
@@ -53,30 +54,35 @@ export async function requireSuperAdminSession(): Promise<AdminSession> {
 }
 
 export async function requireAdminApiSession(): Promise<AdminSession | null> {
+  const requestHeaders = await headers();
+  if (requestHeaders.get('sec-fetch-site') === 'cross-site') return null;
   return getCurrentAdminSession();
 }
 
 export async function ensureAdminProfile(userId: string, email: string, fullName?: string): Promise<AdminSession | null> {
-  const supabase = createSupabaseServiceClient() as any;
+  const supabase = createSupabaseServiceClient();
   if (!supabase) return null;
 
   const configuredRole = getConfiguredAdminRole(email);
-  const { data: existing } = await supabase
+  const { data, error } = await supabase
     .from('profiles')
     .select('role, full_name')
     .eq('id', userId)
     .maybeSingle();
+  if (error) return null;
+  const existing = data as { role: string; full_name: string | null } | null;
 
   const role = configuredRole;
   if (!role) return null;
 
-  if (configuredRole || !existing) {
-    await supabase.from('profiles').upsert({
+  if (!existing || existing.role !== role) {
+    const { error: saveError } = await supabase.from('profiles').upsert({
       id: userId,
       role,
       full_name: existing?.full_name ?? fullName ?? email,
       updated_at: new Date().toISOString()
     });
+    if (saveError) return null;
   }
 
   return {

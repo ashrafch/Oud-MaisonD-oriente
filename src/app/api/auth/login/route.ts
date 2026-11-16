@@ -1,3 +1,4 @@
+import { readJsonBody } from '@/lib/security/json-body';
 import { guardPublicRequest } from '@/lib/security/request-guard';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
   }
 
   const parsed = z.object({ email: z.string().email().max(254), password: z.string().min(1).max(1024) })
-    .safeParse(await request.json().catch(() => null));
+    .safeParse(await readJsonBody(request).catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ error: 'Email e password obbligatorie' }, { status: 400 });
   }

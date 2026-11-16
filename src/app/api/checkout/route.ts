@@ -1,3 +1,4 @@
+import { readJsonBody } from '@/lib/security/json-body';
 import { guardPublicRequest } from '@/lib/security/request-guard';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -30,7 +31,7 @@ const checkoutSchema = z.object({
 export async function POST(request: Request) {
   const blocked = await guardPublicRequest(request, 'checkout', 20);
   if (blocked) return blocked;
-  const body = checkoutSchema.safeParse(await request.json().catch(() => null));
+  const body = checkoutSchema.safeParse(await readJsonBody(request).catch(() => null));
   if (!body.success) return NextResponse.json({ error: 'Dati checkout non validi' }, { status: 400 });
 
   const outOfStock = await checkStockAvailability(body.data.items);

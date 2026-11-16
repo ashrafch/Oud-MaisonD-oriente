@@ -1,3 +1,4 @@
+import { readJsonBody } from '@/lib/security/json-body';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireAdminApiSession } from '@/lib/admin/auth';
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
       value: z.number().positive().max(100000),
       active: z.boolean()
     }).refine(value => value.type !== 'percent' || value.value <= 100)
-      .safeParse(await request.json().catch(() => null));
+      .safeParse(await readJsonBody(request).catch(() => null));
     if (!coupon.success) {
       return NextResponse.json({ error: 'Coupon non valido' }, { status: 400 });
     }
@@ -39,7 +40,9 @@ export async function DELETE(request: Request) {
   try {
     const admin = await requireAdminApiSession();
     if (!admin) return unauthorized();
-    const { code } = await request.json() as { code?: string };
+    const parsed = z.object({ code: z.string().trim().min(1).max(100).regex(/^[a-zA-Z0-9_-]+$/) }).safeParse(await readJsonBody(request));
+    if (!parsed.success) return NextResponse.json({ error: 'Dati non validi' }, { status: 400 });
+    const { code } = parsed.data;
     if (!code) return NextResponse.json({ error: 'Codice coupon mancante' }, { status: 400 });
     await deleteSupabaseCoupon(code);
     return NextResponse.json({ ok: true });
