@@ -20,13 +20,15 @@ export default async function HomePage() {
   const [categories, products] = await Promise.all([getSupabaseCategories(), getSupabaseProducts()]);
   const featured = [...products].sort((a, b) => Number(b.tags.includes('bestseller')) - Number(a.tags.includes('bestseller'))).slice(0, 4);
   const available = products.filter(product => product.stock > 0);
+  const selectedProductIds = new Set<string>();
   const chapters: ScentChapter[] = [
     { label: 'Legnoso', match: /oud|sandalo|cedro|legno/i },
     { label: 'Gourmand', match: /vaniglia|tonka|caramello|cioccolato/i },
     { label: 'Floreale', match: /rosa|gelsomino|fiori|floreale/i }
   ].flatMap(({ label, match }) => {
-    const product = available.find(entry => match.test([...entry.notes.top, ...entry.notes.heart, ...entry.notes.base].join(' ')));
+    const product = available.find(entry => !selectedProductIds.has(entry.id) && match.test([...entry.notes.top, ...entry.notes.heart, ...entry.notes.base].join(' ')));
     if (!product) return [];
+    selectedProductIds.add(product.id);
     const { slug, name, brand, image, price } = product;
     return [{ label, product: { slug, name, brand, image, price } }];
   });
