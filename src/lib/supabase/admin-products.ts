@@ -1,5 +1,6 @@
 import type { Product } from '@/types/catalog';
 import { createSupabaseServiceClient } from './server';
+import { validateImageBytes } from '@/lib/security/image-validation';
 
 type SupabaseServiceClient = any;
 
@@ -97,29 +98,8 @@ export async function updateAdminProductStock(productId: string, stock: number, 
   const supabase = createSupabaseServiceClient() as SupabaseServiceClient;
   if (!supabase) throw new Error('Supabase service client non configurato');
 
-  const { data: current, error: currentError } = await supabase
-    .from('products')
-    .select('stock')
-    .eq('id', productId)
-    .single();
-  if (currentError) throw currentError;
-
-  const nextStock = Math.max(0, stock);
-  const quantityDelta = nextStock - Number(current.stock ?? 0);
-  const { error } = await supabase
-    .from('products')
-    .update({ stock: nextStock, updated_at: new Date().toISOString() })
-    .eq('id', productId);
+  const { error } = await supabase.rpc('set_admin_product_stock', { p_product_id: productId, p_stock: stock, p_note: note });
   if (error) throw error;
-
-  if (quantityDelta !== 0) {
-    await supabase.from('inventory_movements').insert({
-      product_id: productId,
-      quantity_delta: quantityDelta,
-      reason: quantityDelta > 0 ? 'carico_magazzino' : 'correzione_manuale',
-      note
-    });
-  }
 }
 
 export async function uploadProductImage(file: File) {
@@ -133,6 +113,9 @@ export async function uploadProductImage(file: File) {
   const bucket = process.env.SUPABASE_STORAGE_BUCKET ?? 'product-images';
   const path = `products/${crypto.randomUUID()}.${extension}`;
   const bytes = await file.arrayBuffer();
+  if (!validateImageBytes(new Uint8Array(bytes), file.type)) {
+    throw new Error('Il contenuto del file non corrisponde al formato immagine');
+  }
   const { error } = await supabase.storage.from(bucket).upload(path, bytes, {
     contentType: file.type || 'image/jpeg',
     upsert: false

@@ -1,3 +1,4 @@
+import { readJsonBody } from '@/lib/security/json-body';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireAdminApiSession } from '@/lib/admin/auth';
@@ -19,7 +20,7 @@ export async function PATCH(request: Request) {
       productId: z.string().uuid(),
       stock: z.number().int().min(0).max(1000000),
       note: z.string().max(1200).optional()
-    }).safeParse(await request.json().catch(() => null));
+    }).safeParse(await readJsonBody(request).catch(() => null));
     if (!parsed.success) {
       return NextResponse.json({ error: 'Dati inventario non validi' }, { status: 400 });
     }

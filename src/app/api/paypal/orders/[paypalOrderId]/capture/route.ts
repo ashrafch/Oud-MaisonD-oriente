@@ -1,3 +1,4 @@
+import { readJsonBody } from '@/lib/security/json-body';
 import { guardPublicRequest } from '@/lib/security/request-guard';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -16,7 +17,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ pay
   }
 
   const { paypalOrderId } = await params;
-  const payload = captureSchema.safeParse(await request.json().catch(() => ({})));
+  const payload = captureSchema.safeParse(await readJsonBody(request).catch(() => ({})));
   if (!payload.success) {
     return NextResponse.json({ error: 'Dati capture PayPal non validi' }, { status: 400 });
   }

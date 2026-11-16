@@ -1,3 +1,4 @@
+import { readJsonBody } from '@/lib/security/json-body';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { sendOrderPreparingEmail, sendOrderRefundedEmail, sendOrderShippedEmail } from '@/lib/email/order-email';
@@ -14,7 +15,7 @@ const fulfillmentStatuses = ['new', 'ready_to_prepare', 'preparing', 'packed', '
 const shippingStatuses = ['not_ready', 'pickup_ready', 'waiting_courier', 'shipped', 'delivered', 'returned'] as const;
 
 const updateOrderSchema = z.object({
-  orderId: z.string().min(1),
+  orderId: z.string().uuid(),
   status: z.enum(statuses as [Order['status'], ...Order['status'][]]).optional(),
   paymentStatus: z.enum(paymentStatuses).optional(),
   fulfillmentStatus: z.enum(fulfillmentStatuses).optional(),
@@ -24,7 +25,7 @@ const updateOrderSchema = z.object({
 });
 
 const refundActionSchema = z.object({
-  orderId: z.string().min(1),
+  orderId: z.string().uuid(),
   action: z.literal('refund')
 });
 
@@ -64,7 +65,7 @@ export async function PATCH(request: Request) {
   try {
     const admin = await requireAdminApiSession();
     if (!admin) return unauthorized();
-    const payload = updateOrderSchema.safeParse(await request.json());
+    const payload = updateOrderSchema.safeParse(await readJsonBody(request));
     if (!payload.success) return NextResponse.json({ error: 'Dati ordine non validi' }, { status: 400 });
 
     await updateSupabaseOrder(payload.data);
@@ -91,7 +92,9 @@ export async function POST(request: Request) {
     const admin = await requireAdminApiSession();
     if (!admin) return unauthorized();
 
-    const body = await request.json() as Record<string, unknown>;
+    const raw = await readJsonBody(request);
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) return NextResponse.json({ error: "Dati non validi" }, { status: 400 });
+    const body = raw as Record<string, unknown>;
 
     if (body.action === 'create') {
       const parsed = createOrderSchema.safeParse(body);

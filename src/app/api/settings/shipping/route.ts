@@ -1,3 +1,4 @@
+import { readJsonBody } from '@/lib/security/json-body';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireAdminApiSession } from '@/lib/admin/auth';
@@ -28,7 +29,7 @@ export async function PATCH(request: Request) {
     const admin = await requireAdminApiSession();
     if (!admin) return NextResponse.json({ error: 'Accesso admin richiesto' }, { status: 401 });
 
-    const body = shippingSchema.safeParse(await request.json().catch(() => null));
+    const body = shippingSchema.safeParse(await readJsonBody(request).catch(() => null));
     if (!body.success) return NextResponse.json({ error: 'Dati non validi' }, { status: 400 });
 
     const supabase = createSupabaseServiceClient() as any;
