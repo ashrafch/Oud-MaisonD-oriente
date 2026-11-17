@@ -1,13 +1,16 @@
 # Project checklist e quadro produzione
 
-Ultimo aggiornamento: 16/11/2026
+Ultimo aggiornamento: 17/11/2026
 
-## Boutique experience — approvata per il rilascio
+## Boutique experience — pubblicata in Production
+
+- Verifica conclusa il 17/11/2026: PR #3 unita, commit `8bafb14`, Vercel Production READY (`dpl_5oruhaj6KxBCyHJYwocMQ611wWAn`). Home canonica HTTP 200; dati della vetrina verificati: Legnoso / Ameer Al Oud VIP, Gourmand / Musk Pina Colada, Floreale / Ya Habibti, tutti distinti.
+- Smoke Production superato: storefront, health database, header di sicurezza e otto API admin negate senza sessione. Nessun pagamento, ordine o dato di inventario modificato dai controlli.
 
 - 16/11/2026: titolare approva la grafica della Preview e autorizza Production. Corretta la selezione: ogni famiglia esclude i prodotti gia mostrati dalle altre, mantenendo corrispondenza delle note e disponibilita. Se non esiste un altro prodotto compatibile, la famiglia viene omessa anziche duplicare il profumo.
-- Preview della grafica semplificata `fad951c`: build READY e home HTTP 200. Verifica visuale automatica desktop/mobile non completata per problema cattura Chrome; approvazione visuale fornita direttamente dal titolare. Rilascio della correzione in corso tramite Preview e merge Git.
+- Preview della grafica semplificata `fad951c` e della correzione `52effd4`: build READY e home HTTP 200; tre prodotti distinti verificati prima del merge. Verifica visuale automatica desktop/mobile non completata per problema cattura Chrome; approvazione visuale fornita direttamente dal titolare.
 
-- Revisione su feedback del titolare: taccuino sostituito da una vetrina essenziale integrata nella hero. Tre pulsanti famiglia, flacone su nicchia avorio, brand/nome/prezzo e link; rimossi contatore, note e descrizioni. Typecheck superato; verifica Preview e visuale della revisione da completare.
+- Revisione su feedback del titolare: taccuino sostituito da una vetrina essenziale integrata nella hero. Tre pulsanti famiglia, flacone su nicchia avorio, brand/nome/prezzo e link; rimossi contatore, note e descrizioni. Typecheck superato; Preview verificata e grafica approvata.
 - Branch `feat/boutique-experience`: nuova home editoriale borgogna/avorio/oro, tipografia piu espressiva e vetrina olfattiva interattiva su tre accordi, selezionati dalle note reali del catalogo disponibile.
 - Schede prodotto con immagini contenute, disponibilita esplicita, azioni da almeno 44px, preferiti con stato accessibile e carrello disabilitato per esauriti. Menu Catalogo con apertura click/tastiera ed Escape.
 - Animazioni native di ingresso/cambio fragranza; contenuti visibili senza JavaScript; rispetto prefers-reduced-motion. Nessuna libreria aggiunta, asset public/brand invariati.
