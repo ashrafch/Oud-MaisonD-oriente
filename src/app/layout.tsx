@@ -20,10 +20,10 @@ export const metadata: Metadata = {
     default: "OUDE Maison D'Oriente",
     template: "%s | OUDE Maison D'Oriente"
   },
-  description: 'Ecommerce boutique per profumi arabi, oud, musk, attar, bakhoor e gift box.',
+  description: 'Scopri i profumi arabi di OUDÉ Maison D’Oriente: oud, note dolci e floreali. Acquista online o visita la boutique in Via Farini 26/D a Bologna.',
   openGraph: {
     title: "OUDE Maison D'Oriente",
-    description: 'Profumi arabi selezionati, eleganti e accessibili.',
+    description: 'Profumi arabi, online e nella nostra boutique a Bologna. Scopri il catalogo e chiedici un consiglio.',
     images: ['/brand/oude-logo.jpg']
   },
   manifest: '/manifest.json'

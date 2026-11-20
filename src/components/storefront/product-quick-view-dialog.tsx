@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import { X } from 'lucide-react';
 import { ProductActions } from '@/components/product/product-actions';
-import { ReviewSummary } from '@/components/storefront/review-summary';
 import { StockUrgencyBadge } from '@/components/storefront/stock-urgency-badge';
 import type { Product } from '@/types/catalog';
 import { formatPrice } from '@/lib/cart/store';
@@ -35,9 +34,6 @@ export function ProductQuickViewDialog({ product, onClose }: { product?: Product
             </div>
             <ProductActions product={product} />
           </div>
-        </div>
-        <div className="p-5 pt-0">
-          <ReviewSummary product={product} />
         </div>
       </div>
     </div>

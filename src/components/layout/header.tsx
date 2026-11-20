@@ -15,7 +15,7 @@ const activeCls =
 
 const catalogGroups = [
   { title: 'Per famiglia', slugs: ['oud', 'gourmand'] },
-  { title: 'Rituali & regali', slugs: ['set-regalo', 'casa'] }
+  { title: 'Casa e regali', slugs: ['set-regalo', 'casa'] }
 ];
 const findCat = (slug: string) => categories.find((category) => category.slug === slug);
 
@@ -55,7 +55,7 @@ export function Header() {
           )}
         >
           <div className="container flex min-h-9 items-center justify-center text-center text-[12px] font-semibold uppercase tracking-widest text-ink/66">
-            Boutique profumi arabi a Bologna - ritiro in negozio e spedizione rapida
+            Profumi arabi a Bologna · Acquista online o ritira in boutique
           </div>
         </div>
 

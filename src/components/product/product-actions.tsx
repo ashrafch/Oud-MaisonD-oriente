@@ -25,8 +25,8 @@ export function ProductActions({ product }: { product: Product }) {
       <button className="inline-flex min-h-11 w-full items-center justify-center rounded border border-ink/15 bg-cream px-5 text-sm font-semibold text-ink transition hover:bg-mist sm:w-auto" onClick={buyNow}>
         <Zap className="mr-2" size={18} /> Acquista ora
       </button>
-      <button className="inline-flex min-h-11 w-full items-center justify-center rounded px-5 text-sm font-semibold text-ink transition hover:bg-mist sm:w-auto" onClick={() => toggleWishlist(product.id)}>
-        <Heart className="mr-2" size={18} fill={isWishlisted ? 'currentColor' : 'none'} /> Wishlist
+      <button aria-pressed={isWishlisted} className="inline-flex min-h-11 w-full items-center justify-center rounded px-5 text-sm font-semibold text-ink transition hover:bg-mist sm:w-auto" onClick={() => toggleWishlist(product.id)}>
+        <Heart className="mr-2" size={18} fill={isWishlisted ? 'currentColor' : 'none'} /> {isWishlisted ? 'Salvato nei preferiti' : 'Salva nei preferiti'}
       </button>
     </div>
   );

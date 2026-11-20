@@ -100,7 +100,7 @@ export const useCartStore = create<CartState>()(
           items,
           catalogProducts: product ? mergeProducts([product], state.catalogProducts) : state.catalogProducts,
           isCartDrawerOpen: true,
-          toast: { id: crypto.randomUUID(), title: 'Aggiunto al carrello', description: 'Il prodotto è pronto per il checkout.', tone: 'success' }
+          toast: { id: crypto.randomUUID(), title: 'Aggiunto al carrello', description: product?.name, tone: 'success' }
         };
       }),
       syncProducts: (products) => set((state) => ({
@@ -129,14 +129,14 @@ export const useCartStore = create<CartState>()(
           wishlist,
           toast: {
             id: crypto.randomUUID(),
-            title: wishlist.includes(productId) ? 'Salvato in wishlist' : 'Rimosso dalla wishlist',
+            title: wishlist.includes(productId) ? 'Salvato nei preferiti' : 'Rimosso dai preferiti',
             tone: 'success'
           }
         };
       }),
       setCouponCode: (couponCode) => set({
         couponCode,
-        toast: couponCode ? { id: crypto.randomUUID(), title: 'Coupon applicato', description: couponCode.toUpperCase(), tone: 'success' } : undefined
+        toast: couponCode ? { id: crypto.randomUUID(), title: 'Codice sconto inserito', description: 'Lo sconto compare nel riepilogo se il codice è valido.', tone: 'info' } : undefined
       }),
       createOrder: (orderInput) => {
         const order: Order = {

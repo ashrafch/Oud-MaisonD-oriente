@@ -79,15 +79,15 @@ export function CartDrawer({ initialProducts = [] }: { initialProducts?: Product
           {items.length ? (
             <div className="mt-4">
               <div className="flex gap-2">
-                <input value={couponCode} onChange={(event) => setCouponCode(event.target.value)} placeholder="OUDE10" className="min-w-0 flex-1 rounded border border-ink/12 px-3 text-sm" />
+                <input value={couponCode} onChange={(event) => setCouponCode(event.target.value)} aria-label="Codice sconto" placeholder="Codice sconto" className="min-w-0 flex-1 rounded border border-ink/12 px-3 text-sm" />
                 <button className="rounded bg-mist px-3 text-sm font-semibold" onClick={() => setCouponCode(couponCode)}>Applica</button>
               </div>
-              <p className="mt-2 text-xs text-ink/45">Coupon attivi: {coupons.map((coupon) => coupon.code).join(', ') || 'nessuno'}</p>
+
             </div>
           ) : null}
           <div className="mt-4 grid grid-cols-2 gap-3">
             <Link className="rounded border border-ink/12 px-4 py-3 text-center text-sm font-semibold" href="/cart" onClick={close}>Carrello</Link>
-            <Link className="rounded bg-oud px-4 py-3 text-center text-sm font-semibold text-white" href="/checkout" onClick={close}>Checkout</Link>
+            <Link className="rounded bg-oud px-4 py-3 text-center text-sm font-semibold text-white" href="/checkout" onClick={close}>Procedi</Link>
           </div>
         </div>
       </aside>

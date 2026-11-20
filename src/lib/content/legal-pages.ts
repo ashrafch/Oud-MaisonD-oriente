@@ -1,7 +1,7 @@
 import type { LegalPageContent } from '@/components/storefront/legal-page';
 
 const updatedAt = '10 giugno 2026';
-const seller = 'OUDE Maison D Oriente';
+const seller = "OUDÉ Maison D’Oriente";
 const address = 'Via Farini 26/D, 40124 Bologna (BO)';
 const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'ordini@oude.example';
 const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '393331234567';
@@ -9,22 +9,22 @@ const fiscalData = process.env.NEXT_PUBLIC_BUSINESS_FISCAL_DATA || 'Dati fiscali
 
 export const legalPages: Record<string, LegalPageContent> = {
   about: {
-    title: 'Chi siamo',
-    updatedAt,
-    intro: `${seller} e una boutique dedicata a profumi arabi, oud, musk, attar e rituali olfattivi orientali.`,
+    title: 'La boutique OUDÉ',
+    updatedAt: '20 novembre 2026',
+    intro: `${seller} è una profumeria araba a Bologna. Puoi scegliere online o venire a trovarci in Via Farini 26/D.`,
     sections: [
-      { title: 'La boutique', body: [`Sede operativa: ${address}. Selezioniamo fragranze persistenti e prodotti per la profumazione personale e della casa, con attenzione a consulenza, packaging e assistenza post vendita.`] },
-      { title: 'Come lavoriamo', body: ['Ogni scheda prodotto descrive famiglia olfattiva, intensita, durata indicativa, note principali e disponibilita. Le informazioni olfattive sono descrittive e possono variare in base a pelle, ambiente e modalita di applicazione.'] },
-      { title: 'Assistenza', body: [`Per consigli prima dell acquisto o supporto ordine puoi scrivere a ${email} o contattarci su WhatsApp al numero ${whatsapp}.`] }
+      { title: 'La boutique', body: [`Oud, note dolci, fiori e muschi: il nostro catalogo raccoglie profumi di diversi marchi. Se hai un dubbio o cerchi un regalo, raccontaci cosa ti piace e quanto vuoi spendere.`] },
+      { title: 'Come lavoriamo', body: ['Nelle schede trovi le note, l’intensità e la disponibilità dei profumi. La durata è indicativa: cambia con la pelle, il clima e la quantità applicata.'] },
+      { title: 'Assistenza', body: [`Per un consiglio o una domanda sul tuo ordine, scrivici a ${email} o su WhatsApp al ${whatsapp}.`] }
     ]
   },
   contact: {
-    title: 'Contatti',
-    updatedAt,
-    intro: 'Siamo disponibili per informazioni su prodotti, ordini, spedizioni, resi e consulenza olfattiva.',
+    title: 'Contatta la boutique',
+    updatedAt: '20 novembre 2026',
+    intro: 'Hai un dubbio su un profumo o sul tuo ordine? Scrivici: ti rispondiamo dalla boutique.',
     sections: [
       { title: 'Recapiti', body: [`Negozio: ${seller}. Indirizzo: ${address}. Email: ${email}. WhatsApp: ${whatsapp}.`] },
-      { title: 'Orari di risposta', body: ['Le richieste ricevute tramite email o WhatsApp vengono gestite nei giorni lavorativi. Nei periodi di alta richiesta i tempi di risposta possono allungarsi.'] },
+      { title: 'Orari di risposta', body: ['Rispondiamo a email e messaggi WhatsApp nei giorni lavorativi. Per informazioni su un acquisto, indica il numero ordine.'] },
       { title: 'Dati aziendali', body: [fiscalData] }
     ]
   },
@@ -84,16 +84,16 @@ export const legalPages: Record<string, LegalPageContent> = {
     ]
   },
   faq: {
-    title: 'FAQ',
-    updatedAt,
-    intro: 'Risposte rapide alle domande piu frequenti su prodotti, ordini e assistenza.',
+    title: 'Domande frequenti',
+    updatedAt: '20 novembre 2026',
+    intro: 'Le informazioni utili per scegliere e acquistare.',
     sections: [
-      { title: 'Come posso pagare?', body: ['Puoi pagare online con carta tramite Stripe. Se hai bisogno di consulenza o vuoi verificare un prodotto prima dell acquisto, puoi usare la richiesta assistita e il negozio ti ricontattera.'] },
-      { title: 'Quando viene preparato l ordine?', body: ['Gli ordini online vengono preparati dopo pagamento confermato. Riceverai il numero ordine nella pagina di conferma e via email quando il sistema di notifica e attivo.'] },
-      { title: 'Posso chiedere consiglio prima di comprare?', body: [`Si. Puoi scrivere su WhatsApp al numero ${whatsapp} indicando gusti, occasione d uso e budget.`] },
-      { title: 'Quanto dura un profumo?', body: ['La durata indicata in scheda e orientativa. Persistenza e proiezione dipendono da pelle, clima, quantita applicata e concentrazione del prodotto.'] },
+      { title: 'Come posso pagare?', body: ['Puoi pagare con carta tramite Stripe. Se preferisci parlare con noi prima di acquistare, scegli la richiesta assistita: ti contatteremo per concordare i prossimi passi.'] },
+      { title: 'Quando viene preparato l’ordine?', body: ['Prepariamo gli ordini dopo la conferma del pagamento. Conserva il numero mostrato nella pagina di conferma: ci aiuta a ritrovare il tuo acquisto se ci contatti.'] },
+      { title: 'Posso chiedere consiglio prima di comprare?', body: [`Certo. Scrivici su WhatsApp al ${whatsapp}: dicci quali profumi o note ti piacciono e quanto vuoi spendere.`] },
+      { title: 'Quanto dura un profumo?', body: ['La durata indicata nella scheda è orientativa. Dipende dalla pelle, dal clima, dalla quantità applicata e dalla concentrazione del profumo.'] },
       { title: 'Posso restituire un profumo aperto?', body: ['Per motivi igienici i prodotti sigillati aperti possono non essere idonei al reso. In caso di difetto o prodotto errato contatta subito il negozio.'] },
-      { title: 'I coupon sono cumulabili?', body: ['Salvo diversa indicazione, i coupon non sono cumulabili. Il carrello applica il codice inserito se attivo e valido.'] }
+      { title: 'I coupon sono cumulabili?', body: ['Puoi inserire un codice sconto nel carrello. Se è valido, lo sconto compare nel riepilogo prima del pagamento. Si può usare un solo codice per ordine.'] }
     ]
   }
 };

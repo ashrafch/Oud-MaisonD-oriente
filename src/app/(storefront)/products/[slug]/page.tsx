@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { ProductActions } from '@/components/product/product-actions';
 import { ProductViewTracker } from '@/components/product/product-view-tracker';
 import { RecommendedPairings } from '@/components/storefront/recommended-pairings';
-import { ReviewSummary } from '@/components/storefront/review-summary';
 import { StockUrgencyBadge } from '@/components/storefront/stock-urgency-badge';
 import { formatPrice } from '@/lib/cart/store';
 import { productJsonLd } from '@/lib/seo/json-ld';
@@ -52,7 +51,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
             <Info label="Intensità" value={product.intensity} />
             <Info label="Durata" value={product.duration} />
-            <Info label="Target" value={product.gender} />
+            <Info label="Per chi" value={product.gender} />
           </div>
           <div className="mt-8 rounded border border-ink/10 bg-white p-5">
             <h2 className="font-serif text-3xl">Note olfattive</h2>
@@ -64,7 +63,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
       </div>
-      <div className="mt-16"><ReviewSummary product={product} /></div>
       <RecommendedPairings product={product} products={allProducts} />
     </section>
   );

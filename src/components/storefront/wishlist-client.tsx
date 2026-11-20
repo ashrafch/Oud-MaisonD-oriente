@@ -22,7 +22,7 @@ export function WishlistClient({ initialProducts = [] }: { initialProducts?: Pro
 
   return (
     <section className="container py-12">
-      <h1 className="font-serif text-4xl sm:text-5xl">Wishlist</h1>
+      <h1 className="font-serif text-4xl sm:text-5xl">I tuoi preferiti</h1>
       {products.length ? (
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product) => <ProductCard key={product.id} product={product} />)}
@@ -30,8 +30,8 @@ export function WishlistClient({ initialProducts = [] }: { initialProducts?: Pro
       ) : (
         <div className="mt-8 rounded border border-dashed border-ink/20 bg-white p-10 text-center">
           <p className="font-serif text-3xl">Nessun prodotto salvato</p>
-          <p className="mt-2 text-sm text-ink/60">Usa il cuore sulle card prodotto per creare una selezione.</p>
-          <Button href="/products" className="mt-6">Scopri prodotti</Button>
+          <p className="mt-2 text-sm text-ink/60">Tocca il cuore accanto a un profumo per ritrovarlo qui.</p>
+          <Button href="/products" className="mt-6">Scopri i profumi</Button>
         </div>
       )}
     </section>

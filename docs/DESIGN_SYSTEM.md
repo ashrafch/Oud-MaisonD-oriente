@@ -7,9 +7,16 @@ Aggiornato automaticamente con il codice sorgente. File di riferimento autoritat
 
 ## Boutique experience — novembre 2026
 
+### Testi e immagini — revisione 20 novembre
+
+- Tono da negozio: frasi brevi, informazioni concrete e un'azione chiara per sezione. La home presenta profumi, catalogo, boutique e assistenza senza accumulare slogan su scie, anime e rituali.
+- Descrivere servizi e promozioni solo quando effettivamente disponibili. Nessuna recensione dimostrativa, percentuale di affinita presentata come misura esatta, sconto simulato o dettaglio del gestionale nei messaggi al cliente.
+- Il quiz orienta tra le proposte disponibili; le etichette restano qualitative. La selezione multipla mostra il totale effettivo; le promozioni sono gestite dal carrello tramite coupon validi.
+- Nell'arco la fotografia riempie il contenitore quadrato con `object-cover` e viene ritagliata dal bordo esterno. Nessun riquadro interno, deformazione o fusione dei colori. Next Image mantiene gli originali e fornisce immagini responsive con quality 90; la dissolvenza non sposta i bordi della foto.
+
 Home editoriale: sfondo borgogna `#431b16`, sfumatura `#873324`, superfici avorio `#f5eee1` e accenti saffron esistenti. Titolo serif con corsivo, spaziature ampie e CTA principali riconoscibili.
 
-`ScentDiscovery` mostra un prodotto disponibile per accordo olfattivo usando le note reali per la selezione server. Vetrina integrata nel fondo borgogna, nicchia avorio ad arco e tre pulsanti arrotondati aria-pressed con area minima 44px. Solo brand, nome, prezzo e link alla scheda: niente contatori, descrizioni o piramide delle note nella hero. Nessun autoplay. `BoutiqueMotion` usa IntersectionObserver e Web Animations per un ingresso unico, senza nascondere contenuti nel markup e disattivato con prefers-reduced-motion.
+`ScentDiscovery` mostra un prodotto disponibile per accordo olfattivo usando le note reali per la selezione server. Vetrina integrata nel fondo borgogna, fotografia ritagliata ad arco e tre pulsanti arrotondati aria-pressed con area minima 44px. Solo brand, nome, prezzo e link alla scheda: niente contatori, descrizioni o piramide delle note nella hero. Nessun autoplay. `BoutiqueMotion` usa IntersectionObserver e Web Animations per un ingresso unico, senza nascondere contenuti nel markup e disattivato con prefers-reduced-motion.
 
 Schede categoria numerate, immagini prodotto object-contain, azioni con target minimo 44px e focus visibile. Non modificare gli asset brand per adattarli al layout.
 

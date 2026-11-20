@@ -112,7 +112,7 @@ a { color: inherit; text-decoration: none; }
 .hero-contours::before, .hero-contours::after { content: ''; position: absolute; inset: 8%; border: 1px solid rgb(201 155 69 / .1); border-radius: inherit; }
 .hero-contours::after { inset: 17%; }
 .scent-discovery { position: relative; width: 100%; max-width: 400px; margin-inline: auto; }
-.scent-stage { position: relative; padding: 30px 12px 20px; overflow: hidden; border-radius: 50% 50% 6px 6px / 40% 40% 6px 6px; background: radial-gradient(ellipse at 50% 35%, #fffaf2, #eadcc6); }
+.scent-stage { position: relative; aspect-ratio: 1; overflow: hidden; isolation: isolate; border-radius: 50% 50% 6px 6px / 40% 40% 6px 6px; background: #eadcc6; }
 .boutique-eyebrow { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .22em; color: #741d12; }
 .boutique-text-link { display: inline-flex; min-height: 44px; align-items: center; gap: 24px; border-bottom: 1px solid rgb(116 29 18 / .25); font-size: 13px; font-weight: 600; color: #741d12; transition: gap 200ms ease; }
 .boutique-text-link:hover { gap: 32px; }
@@ -129,5 +129,5 @@ a { color: inherit; text-decoration: none; }
   .hero-copy { animation: boutique-arrive 800ms ease both; }
   .scent-image-enter { animation: scent-enter 500ms ease both; }
   @keyframes boutique-arrive { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes scent-enter { from { opacity: .2; transform: translateY(8px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes scent-enter { from { opacity: .2; } to { opacity: 1; } }
 }

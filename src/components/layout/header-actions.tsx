@@ -14,7 +14,7 @@ export function HeaderActions() {
       <Link aria-label="Cerca" className="focus-ring rounded-full p-2 text-ink/76 transition hover:bg-mist hover:text-oud" href="/search">
         <Search size={19} />
       </Link>
-      <Link aria-label="Wishlist" className="focus-ring relative rounded-full p-2 text-ink/76 transition hover:bg-mist hover:text-oud" href="/wishlist">
+      <Link aria-label="Preferiti" className="focus-ring relative rounded-full p-2 text-ink/76 transition hover:bg-mist hover:text-oud" href="/wishlist">
         <Heart size={19} />
         {wishlistCount ? <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-saffron px-1 text-center text-[11px] font-semibold text-ink">{wishlistCount}</span> : null}
       </Link>
