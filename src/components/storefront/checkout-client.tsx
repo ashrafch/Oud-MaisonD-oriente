@@ -166,7 +166,7 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
       notify({ title: 'Richiesta ordine inviata', description: payload.order.id, tone: 'success' });
       router.push(`/checkout/success?order=${payload.order.id}`);
     } catch {
-      notify({ title: 'Richiesta non inviata', description: 'Riprova tra poco o contatta la boutique. I prodotti sono ancora nel carrello.', tone: 'warning' });
+      notify({ title: 'Invio non confermato', description: 'Contatta la boutique per verificare la richiesta. Il carrello è ancora disponibile.', tone: 'warning' });
     } finally {
       setIsSubmitting(false);
     }
