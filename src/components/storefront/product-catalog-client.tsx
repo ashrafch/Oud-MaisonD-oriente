@@ -51,7 +51,7 @@ export function ProductCatalogClient({ initialProducts, initialCategories }: Pro
           <p className="text-sm font-semibold uppercase tracking-widest text-oud">Catalogo</p>
           <h1 className="mt-2 font-serif text-4xl sm:text-5xl">Profumi arabi selezionati</h1>
         </div>
-        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cerca per nome, note o brand" className="min-h-11 w-full rounded border border-ink/12 bg-white px-4 text-sm md:max-w-sm" />
+        <input aria-label="Cerca nel catalogo" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cerca un profumo, un marchio o una nota" className="min-h-11 w-full rounded border border-ink/12 bg-white px-4 text-sm md:max-w-sm" />
       </div>
       <div className="mt-8 grid gap-6 lg:grid-cols-[240px_1fr] lg:gap-8">
         <aside className="rounded border border-ink/10 bg-white p-5">
@@ -63,12 +63,12 @@ export function ProductCatalogClient({ initialProducts, initialCategories }: Pro
               </label>
             ))}
           </div>
-          <select value={sort} onChange={(event) => setSort(event.target.value)} className="mt-5 min-h-11 w-full rounded border border-ink/12 bg-cream px-3 text-sm">
+          <select aria-label="Ordina i prodotti" value={sort} onChange={(event) => setSort(event.target.value)} className="mt-5 min-h-11 w-full rounded border border-ink/12 bg-cream px-3 text-sm">
             <option value="recommended">Ordina: consigliati</option>
             <option value="price-asc">Prezzo crescente</option>
             <option value="price-desc">Prezzo decrescente</option>
             <option value="new">Nuovi arrivi</option>
-            <option value="stock">Stock basso</option>
+            <option value="stock">Ultimi pezzi</option>
           </select>
         </aside>
         {visibleProducts.length ? (

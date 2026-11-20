@@ -35,7 +35,7 @@ export function CartClient({ initialProducts = [] }: { initialProducts?: Product
       <section className="container py-12">
         <div className="rounded border border-dashed border-ink/20 bg-white p-10 text-center">
           <h1 className="font-serif text-4xl sm:text-5xl">Il carrello è vuoto</h1>
-          <p className="mt-4 text-ink/62">Aggiungi un oud, un musk o una gift box per iniziare il tuo ordine.</p>
+          <p className="mt-4 text-ink/62">Scegli i tuoi profumi dal catalogo: li ritroverai qui.</p>
           <Button href="/products" className="mt-6">Vai al catalogo</Button>
         </div>
       </section>
@@ -68,7 +68,7 @@ export function CartClient({ initialProducts = [] }: { initialProducts?: Product
             </div>
           ) : null)}
           <section className="rounded border border-ink/10 bg-white p-5">
-            <p className="font-serif text-2xl">Completa il rituale</p>
+            <p className="font-serif text-2xl">Aggiungi un altro profumo</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
               {upsells.map((product) => (
                 <button key={product.id} className="rounded border border-ink/10 p-3 text-left hover:bg-mist" onClick={() => addItem(product.id, product)}>
@@ -88,11 +88,11 @@ export function CartClient({ initialProducts = [] }: { initialProducts?: Product
             <div className="flex justify-between border-t border-ink/10 pt-3 text-lg font-semibold"><span>Totale</span><span>{formatPrice(totals.total)}</span></div>
           </div>
           <div className="mt-5 flex gap-2">
-            <input value={couponCode} onChange={(event) => setCouponCode(event.target.value)} placeholder="OUDE10" className="min-w-0 flex-1 rounded border border-ink/12 px-3 text-sm" />
+            <input value={couponCode} onChange={(event) => setCouponCode(event.target.value)} aria-label="Codice sconto" placeholder="Codice sconto" className="min-w-0 flex-1 rounded border border-ink/12 px-3 text-sm" />
             <button className="rounded bg-mist px-3 text-sm font-semibold" onClick={() => setCouponCode(couponCode)}>Applica</button>
           </div>
-          <p className="mt-2 text-xs text-ink/45">Coupon attivi: {coupons.map((coupon) => coupon.code).join(', ') || 'nessuno'}</p>
-          <Button href="/checkout" className="mt-6 w-full">Vai al checkout</Button>
+
+          <Button href="/checkout" className="mt-6 w-full">Procedi con l’ordine</Button>
         </aside>
       </div>
     </section>

@@ -14,13 +14,6 @@ const tabs = [
   { key: 'gourmand', label: 'Gourmand', match: (p: Product) => p.categories.includes('gourmand') }
 ];
 
-function discountRate(n: number) {
-  if (n >= 4) return 0.15;
-  if (n === 3) return 0.12;
-  if (n === 2) return 0.08;
-  return 0;
-}
-
 export function BundleBuilder({ products }: { products: Product[] }) {
   const addItem = useCartStore((state) => state.addItem);
   const notify = useCartStore((state) => state.notify);
@@ -40,21 +33,17 @@ export function BundleBuilder({ products }: { products: Product[] }) {
     .map((id) => products.find((p) => p.id === id))
     .filter((p): p is Product => Boolean(p));
   const total = selectedProducts.reduce((sum, p) => sum + p.price, 0);
-  const rate = discountRate(selectedProducts.length);
-  const discountedTotal = total * (1 - rate);
-  const nextTierAt = selectedProducts.length < 2 ? 2 : selectedProducts.length < 3 ? 3 : selectedProducts.length < 4 ? 4 : null;
-  const nextTierRate = nextTierAt ? discountRate(nextTierAt) : null;
 
   const toggle = (id: string) =>
     setSelectedIds((current) => (current.includes(id) ? current.filter((x) => x !== id) : [...current, id]));
 
   const addBundle = () => {
     if (selectedProducts.length < 2) {
-      notify({ title: 'Scegli almeno due profumi per creare il bundle', tone: 'warning' });
+      notify({ title: 'Scegli almeno due profumi', tone: 'warning' });
       return;
     }
     selectedProducts.forEach((p) => addItem(p.id, p));
-    notify({ title: 'Bundle aggiunto al carrello', description: `${selectedProducts.length} profumi · sconto -${Math.round(rate * 100)}% applicato.`, tone: 'success' });
+    notify({ title: 'Profumi aggiunti al carrello', description: `${selectedProducts.length} profumi · ${formatPrice(total)}`, tone: 'success' });
     setSelectedIds([]);
   };
 
@@ -62,11 +51,11 @@ export function BundleBuilder({ products }: { products: Product[] }) {
     <section className="container py-12 sm:py-14">
       <div className="max-w-2xl">
         <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-oud">
-          <Gift size={18} /> Crea il tuo rituale
+          <Gift size={18} /> Scegli più profumi
         </p>
-        <h2 className="mt-2 font-serif text-3xl sm:text-4xl">Componi il tuo set e risparmia</h2>
+        <h2 className="mt-2 font-serif text-3xl sm:text-4xl">Componi la tua selezione</h2>
         <p className="mt-2 text-sm leading-6 text-ink/60">
-          Scegli i tuoi profumi preferiti dal catalogo: più ne aggiungi, più risparmi. <span className="font-semibold text-ink/75">2 profumi -8% · 3 profumi -12% · 4+ profumi -15%</span>.
+          Per te o da regalare: scegli i profumi e aggiungili insieme al carrello.
         </p>
       </div>
 
@@ -114,10 +103,9 @@ export function BundleBuilder({ products }: { products: Product[] }) {
           </div>
         </div>
 
-        {/* Riepilogo */}
         <aside className="lg:sticky lg:top-28 lg:self-start">
           <div className="rounded-2xl border border-saffron/25 bg-[linear-gradient(150deg,#fffaf2_0%,#ffffff_60%,#f4efe6_100%)] p-5 shadow-sm">
-            <p className="font-serif text-2xl">Il tuo rituale</p>
+            <p className="font-serif text-2xl">La tua selezione</p>
             {selectedProducts.length ? (
               <ul className="mt-4 grid max-h-48 gap-2 overflow-y-auto pr-1">
                 {selectedProducts.map((p) => (
@@ -131,26 +119,14 @@ export function BundleBuilder({ products }: { products: Product[] }) {
                 ))}
               </ul>
             ) : (
-              <p className="mt-4 text-sm text-ink/55">Nessun profumo selezionato. Tocca i prodotti per aggiungerli al tuo rituale.</p>
+              <p className="mt-4 text-sm text-ink/55">Scegli almeno due profumi dal catalogo qui accanto.</p>
             )}
 
             <div className="mt-4 border-t border-ink/10 pt-4">
-              {rate > 0 ? (
-                <div className="flex items-center justify-between text-sm text-sage">
-                  <span>Sconto -{Math.round(rate * 100)}%</span>
-                  <span>-{formatPrice(total - discountedTotal)}</span>
-                </div>
-              ) : null}
               <div className="mt-1 flex items-end justify-between">
                 <span className="text-sm text-ink/55">Totale</span>
-                <span className="font-serif text-2xl">{formatPrice(discountedTotal || 0)}</span>
+                <span className="font-serif text-2xl">{formatPrice(total)}</span>
               </div>
-              {total && rate > 0 ? <p className="text-right text-sm text-ink/40 line-through">{formatPrice(total)}</p> : null}
-              {nextTierAt && nextTierRate ? (
-                <p className="mt-2 rounded-lg bg-oud/8 px-3 py-2 text-xs font-medium text-oud">
-                  Aggiungi ancora {nextTierAt - selectedProducts.length} per sbloccare -{Math.round(nextTierRate * 100)}%
-                </p>
-              ) : null}
             </div>
 
             <button

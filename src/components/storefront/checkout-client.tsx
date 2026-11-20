@@ -30,7 +30,6 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
   const couponCode = useCartStore((state) => state.couponCode);
   const catalogProducts = useCartStore((state) => state.catalogProducts);
   const syncProducts = useCartStore((state) => state.syncProducts);
-  const createOrder = useCartStore((state) => state.createOrder);
   const clearCart = useCartStore((state) => state.clearCart);
   const notify = useCartStore((state) => state.notify);
   const [customer, setCustomer] = useState(emptyCustomer);
@@ -167,9 +166,7 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
       notify({ title: 'Richiesta ordine inviata', description: payload.order.id, tone: 'success' });
       router.push(`/checkout/success?order=${payload.order.id}`);
     } catch {
-      const order = createOrder({ items, customer, ...totals });
-      notify({ title: 'Ordine salvato in locale', description: 'Supabase non ha confermato la creazione.', tone: 'warning' });
-      router.push(`/checkout/success?order=${order.id}`);
+      notify({ title: 'Richiesta non inviata', description: 'Riprova tra poco o contatta la boutique. I prodotti sono ancora nel carrello.', tone: 'warning' });
     } finally {
       setIsSubmitting(false);
     }
@@ -180,7 +177,7 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
       <section className="container py-12">
         <div className="rounded border border-dashed border-ink/20 bg-white p-10 text-center">
           <h1 className="font-serif text-4xl sm:text-5xl">Nessun prodotto da ordinare</h1>
-          <p className="mt-3 text-ink/60">Il checkout si attiva dopo aver aggiunto almeno un prodotto.</p>
+          <p className="mt-3 text-ink/60">Scegli un profumo dal catalogo per proseguire.</p>
         </div>
       </section>
     );
@@ -190,10 +187,10 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
     <section className="container py-12">
       <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
         <form onSubmit={submitOrder} className="rounded border border-ink/10 bg-white p-6 sm:p-8">
-          <p className="text-sm font-semibold uppercase tracking-widest text-oud">Checkout sicuro</p>
-          <h1 className="mt-3 font-serif text-4xl sm:text-5xl">Dati cliente e spedizione</h1>
+          <p className="text-sm font-semibold uppercase tracking-widest text-oud">Il tuo ordine</p>
+          <h1 className="mt-3 font-serif text-4xl sm:text-5xl">Dove spediamo?</h1>
           <div className="mt-5 rounded border border-saffron/25 bg-saffron/10 p-4 text-sm leading-6 text-ink/70">
-            Paga online in modo sicuro con carta tramite Stripe. Il negozio prepara l ordine dopo conferma del pagamento. Se preferisci assistenza prima dell acquisto, puoi inviare una richiesta ordine.
+            Inserisci i tuoi dati e scegli come pagare. Se hai bisogno di assistenza, puoi inviare una richiesta alla boutique.
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <Field label="Nome e cognome" value={customer.fullName} onChange={(value) => updateField('fullName', value)} />
@@ -201,14 +198,14 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
             <Field label="Telefono" value={customer.phone} onChange={(value) => updateField('phone', value)} />
             <Field label="CAP" value={customer.zip} onChange={(value) => updateField('zip', value)} />
             <Field label="Indirizzo" className="sm:col-span-2" value={customer.address} onChange={(value) => updateField('address', value)} />
-            <Field label="Citta" value={customer.city} onChange={(value) => updateField('city', value)} />
+            <Field label="Città" value={customer.city} onChange={(value) => updateField('city', value)} />
             <label className="grid gap-2 sm:col-span-2">
-              <span className="text-sm font-semibold">Note ordine</span>
+              <span className="text-sm font-semibold">Note per la boutique</span>
               <textarea value={customer.notes} onChange={(event) => updateField('notes', event.target.value)} className="min-h-28 rounded border border-ink/12 px-3 py-2 text-sm" />
             </label>
           </div>
           <button className="mt-8 min-h-12 w-full rounded bg-oud px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50" disabled={!isValid || isSubmitting || paymentMethod === 'paypal'}>
-            {paymentMethod === 'paypal' ? 'Completa dal bottone PayPal' : paymentMethod === 'stripe' ? isSubmitting ? 'Apertura pagamento...' : 'Paga ora con carta' : isSubmitting ? 'Invio richiesta...' : 'Invia richiesta assistita'}
+            {paymentMethod === 'paypal' ? 'Continua con il pulsante PayPal' : paymentMethod === 'stripe' ? isSubmitting ? 'Apertura pagamento...' : 'Paga ora con carta' : isSubmitting ? 'Invio richiesta...' : 'Invia richiesta assistita'}
           </button>
         </form>
         <aside className="h-fit rounded border border-ink/10 bg-white p-6">
@@ -225,29 +222,29 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
             <div className="flex justify-between text-lg font-semibold"><span>Totale</span><span>{formatPrice(totals.total)}</span></div>
           </div>
           <div className="mt-5 rounded bg-mist p-3 text-xs leading-5 text-ink/60">
-            <p className="flex items-center gap-2 font-semibold text-ink"><MessageCircle size={15} /> Dopo il pagamento</p>
-            <p className="mt-1">Riceverai conferma ordine via email. Il pannello admin registra il pagamento e l ordine passa alla preparazione.</p>
+            <p className="flex items-center gap-2 font-semibold text-ink"><MessageCircle size={15} /> Preparazione dell’ordine</p>
+            <p className="mt-1">Prepariamo gli ordini dopo la conferma del pagamento. Per una richiesta assistita, ti contattiamo prima di procedere.</p>
           </div>
 
           <div className="mt-5 rounded border border-ink/10 bg-white p-4">
-            <p className="flex items-center gap-2 text-sm font-semibold"><CreditCard size={17} /> Metodo pagamento</p>
+            <p className="flex items-center gap-2 text-sm font-semibold"><CreditCard size={17} /> Come preferisci pagare?</p>
             <div className="mt-3 grid gap-2">
               <PaymentChoice
-                label="Richiesta ordine assistita"
-                description="Per consulenza o disponibilita: il negozio ti ricontatta prima del pagamento."
+                label="Chiedi assistenza per l’ordine"
+                description="Ti contattiamo per verificare i prodotti e concordare il pagamento."
                 checked={paymentMethod === 'manual'}
                 onChange={() => setPaymentMethod('manual')}
               />
               <PaymentChoice
-                label="Carta / Stripe"
-                description={stripeEnabled ? 'Pagamento online sicuro con carta, Apple Pay o metodi disponibili su Stripe.' : 'Metodo temporaneamente non disponibile.'}
+                label="Carta di pagamento"
+                description={stripeEnabled ? 'Prosegui su Stripe per scegliere tra i metodi di pagamento disponibili.' : 'Metodo temporaneamente non disponibile.'}
                 checked={paymentMethod === 'stripe'}
                 disabled={!stripeEnabled}
                 onChange={() => setPaymentMethod('stripe')}
               />
               <PaymentChoice
                 label="PayPal"
-                description={paypalEnabled ? 'Pagamento online con PayPal Checkout.' : 'In arrivo: PayPal sara attivato dopo configurazione account.'}
+                description={paypalEnabled ? 'Paga dal tuo account PayPal.' : 'Metodo temporaneamente non disponibile.'}
                 checked={paymentMethod === 'paypal'}
                 disabled={!paypalEnabled}
                 onChange={() => setPaymentMethod('paypal')}
@@ -256,7 +253,7 @@ export function CheckoutClient({ initialProducts = [] }: { initialProducts?: Pro
             {paymentMethod === 'paypal' && paypalEnabled ? (
               <div className="mt-4">
                 <div id="paypal-button-container" />
-                {paypalOrderId ? <p className="mt-2 text-xs text-ink/50">PayPal order: {paypalOrderId}</p> : null}
+                {paypalOrderId ? <p className="mt-2 text-xs text-ink/50">Riferimento PayPal: {paypalOrderId}</p> : null}
               </div>
             ) : null}
           </div>

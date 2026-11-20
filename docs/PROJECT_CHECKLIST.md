@@ -1,6 +1,14 @@
 # Project checklist e quadro produzione
 
-Ultimo aggiornamento: 17/11/2026
+Ultimo aggiornamento: 20/11/2026
+
+## Immagine ad arco e testi storefront — 20/11/2026
+
+- Branch `feat/storefront-copy-refresh`: foto della vetrina a tutta superficie, ritagliata dall'arco con proporzioni conservate. Eliminati riquadro interno, padding e blend che alterava i colori. Immagini originali invariate, Next Image quality 90 e sizes fino a 400px (risoluzione responsive per display densi); cambio foto con sola dissolvenza.
+- Rivisti home, guida alla scelta, selezione multipla, catalogo, preferiti, carrello, checkout, conferme, boutique/contatti/FAQ, header/footer e metadati. Tono concreto, frasi piu brevi, azioni esplicite. Descrizioni e dati tecnici dei prodotti nel catalogo non riscritti; condizioni legali sostanziali invariate.
+- Rimossi recensioni demo e rating inventati dalle schede/anteprime, percentuali di affinita presentate come misura esatta, promesse di sconto bundle non implementate nel carrello, codice coupon di esempio e lista di tutti i coupon. La selezione multipla ora mostra la somma reale dei prodotti senza sconto automatico; i coupon validi restano utilizzabili in carrello.
+- Richiesta assistita: un errore di rete/server non crea piu un ordine locale con falsa pagina di successo. Restano carrello e dati inseriti, con messaggio per riprovare. Verifica isolata del componente con richieste simulate: offline, rifiuto server, risposta priva di ordine e successo confermato superati; nessun ordine reale creato.
+- Typecheck e build locale superati. Il build locale usa il catalogo di fallback: verificare il catalogo reale in Preview. Controllo visivo Chrome interrotto dal sistema per impossibilita di determinare l'URL con certezza; screenshot desktop/mobile e interazioni browser non verificati. Preview e rilascio da completare.
 
 ## Boutique experience — pubblicata in Production
 

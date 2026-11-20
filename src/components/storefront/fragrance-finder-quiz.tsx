@@ -10,7 +10,7 @@ type Answers = { gender?: string; family?: string; intensity?: string; occasion?
 const questions = [
   {
     key: 'gender',
-    label: 'Per chi la cerchi?',
+    label: 'Per chi cerchi il profumo?',
     options: [
       { label: 'Per lui', value: 'uomo' },
       { label: 'Per lei', value: 'donna' },
@@ -19,7 +19,7 @@ const questions = [
   },
   {
     key: 'family',
-    label: 'Che carattere ti rappresenta?',
+    label: 'Quali note preferisci?',
     options: [
       { label: 'Oud & Legnosi', value: 'oud' },
       { label: 'Gourmand & Dolce', value: 'gourmand' },
@@ -28,16 +28,16 @@ const questions = [
   },
   {
     key: 'intensity',
-    label: 'Quanta presenza vuoi avere?',
+    label: 'Quanto lo vuoi intenso?',
     options: [
-      { label: 'Discreta', value: 'Morbido' },
-      { label: 'Decisa', value: 'Intenso' },
-      { label: 'Da protagonista', value: 'Molto intenso' }
+      { label: 'Delicato', value: 'Morbido' },
+      { label: 'Intenso', value: 'Intenso' },
+      { label: 'Molto intenso', value: 'Molto intenso' }
     ]
   },
   {
     key: 'occasion',
-    label: 'Quando la indosserai?',
+    label: 'Quando lo userai?',
     options: [
       { label: 'Di giorno', value: 'giorno' },
       { label: 'Di sera', value: 'sera' },
@@ -48,7 +48,7 @@ const questions = [
 
 const INTENSITY_RANK: Record<string, number> = { Delicato: 1, Morbido: 1, Intenso: 2, 'Molto intenso': 3 };
 const FAMILY_LABEL: Record<string, string> = { oud: 'Oud & Legnosi', gourmand: 'Gourmand & Dolci', fresco: 'Fresco & Floreale' };
-const INTENSITY_LABEL: Record<string, string> = { Morbido: 'discreta', Intenso: 'decisa', 'Molto intenso': 'da protagonista' };
+const INTENSITY_LABEL: Record<string, string> = { Morbido: 'delicato', Intenso: 'intenso', 'Molto intenso': 'molto intenso' };
 const OCCASION_LABEL: Record<string, string> = { giorno: 'da giorno', sera: 'da sera', ogni: 'per ogni occasione' };
 
 function occasionScore(product: Product, occ: string) {
@@ -67,7 +67,7 @@ export function FragranceFinderQuiz({ products }: { products: Product[] }) {
   const answered = answeredCount > 0;
 
   const wearable = useMemo(
-    () => products.filter((p) => !p.categories.includes('casa') && !p.categories.includes('set-regalo')),
+    () => products.filter((p) => p.stock > 0 && !p.categories.includes('casa') && !p.categories.includes('set-regalo')),
     [products]
   );
 
@@ -115,10 +115,11 @@ export function FragranceFinderQuiz({ products }: { products: Product[] }) {
     if (!answered) return '';
     const parts: string[] = [];
     if (answers.family) parts.push(FAMILY_LABEL[answers.family].toLowerCase());
-    if (answers.intensity) parts.push(`presenza ${INTENSITY_LABEL[answers.intensity]}`);
+    if (answers.intensity) parts.push(INTENSITY_LABEL[answers.intensity]);
     if (answers.occasion) parts.push(OCCASION_LABEL[answers.occasion]);
-    const who = answers.gender === 'uomo' ? 'per lui' : answers.gender === 'donna' ? 'per lei' : answers.gender === 'unisex' ? 'versatile' : '';
-    return `Cerchi una fragranza ${parts.join(', ')}${who ? `, ${who}` : ''}. Ecco le nostre proposte più affini a te.`;
+    const who = answers.gender === 'uomo' ? 'per lui' : answers.gender === 'donna' ? 'per lei' : answers.gender === 'unisex' ? 'unisex' : '';
+    if (who) parts.unshift(who);
+    return parts.join(' · ');
   }, [answers, answered]);
 
   return (
@@ -127,9 +128,9 @@ export function FragranceFinderQuiz({ products }: { products: Product[] }) {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-oud">
-              <Sparkles size={18} /> Finder olfattivo
+              <Sparkles size={18} /> Una guida alla scelta
             </p>
-            <h2 className="mt-3 font-serif text-3xl sm:text-4xl">La tua firma olfattiva, su misura</h2>
+            <h2 className="mt-3 font-serif text-3xl sm:text-4xl">Trova un profumo che ti piace</h2>
           </div>
           {answered ? (
             <button
@@ -144,7 +145,7 @@ export function FragranceFinderQuiz({ products }: { products: Product[] }) {
         <div className="mt-8 grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:gap-10">
           <div className="rounded-2xl border border-saffron/18 bg-cream/70 p-5 shadow-sm sm:p-6">
             <div className="mb-4 flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-widest text-ink/45">Il tuo profilo</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-ink/45">Le tue preferenze</p>
               <span className="text-xs font-semibold text-oud">{answeredCount}/4</span>
             </div>
             <div className="mb-5 h-1.5 overflow-hidden rounded-full bg-ink/8">
@@ -157,6 +158,7 @@ export function FragranceFinderQuiz({ products }: { products: Product[] }) {
                   <div className="mt-2 flex flex-wrap gap-2">
                     {question.options.map((option) => (
                       <button
+                        aria-pressed={answers[question.key as keyof Answers] === option.value}
                         key={option.value}
                         className={`min-h-10 rounded-full border px-4 text-sm font-semibold transition ${
                           answers[question.key as keyof Answers] === option.value
@@ -179,13 +181,13 @@ export function FragranceFinderQuiz({ products }: { products: Product[] }) {
               <div className="mb-5 flex items-start gap-3 rounded-2xl border border-oud/15 bg-oud/[0.04] p-4 sm:p-5">
                 <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-oud/10 text-oud"><Wand2 size={18} /></span>
                 <div>
-                  <p className="font-serif text-xl text-ink sm:text-2xl">La selezione pensata per te</p>
+                  <p className="font-serif text-xl text-ink sm:text-2xl">I profumi da considerare</p>
                   <p className="mt-1 text-sm leading-6 text-ink/65">{profileSubtitle}</p>
                 </div>
               </div>
             ) : (
               <p className="mb-5 text-sm leading-6 text-ink/60">
-                Rispondi alle domande: analizziamo genere, famiglia olfattiva, intensità e occasione per calcolare l&apos;affinità con ogni fragranza del catalogo. Intanto, ecco i più amati.
+                Quattro domande per orientarti tra i profumi. Le proposte si aggiornano a ogni risposta.
               </p>
             )}
 
@@ -199,7 +201,7 @@ export function FragranceFinderQuiz({ products }: { products: Product[] }) {
                           index === 0 ? 'bg-oud text-white' : 'bg-cream text-oud ring-1 ring-oud/25'
                         }`}
                       >
-                        {affinity}% affinità
+                        {index === 0 ? 'Da provare' : 'Un’alternativa'}
                       </span>
                     ) : null}
                     <div className={affinity !== null ? 'pt-2' : ''}>
@@ -210,7 +212,7 @@ export function FragranceFinderQuiz({ products }: { products: Product[] }) {
               </div>
             ) : (
               <div className="rounded-2xl border border-dashed border-ink/20 bg-cream/60 p-8 text-center text-sm text-ink/60">
-                Nessuna corrispondenza esatta: prova a cambiare una risposta.
+                Nessun profumo da suggerire al momento. Prova il catalogo o chiedici un consiglio.
               </div>
             )}
           </div>
